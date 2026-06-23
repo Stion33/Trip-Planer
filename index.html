@@ -1,0 +1,1321 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Trip Planner · Boat Route Calculator</title>
+  <meta name="description" content="Έξυπνος υπολογιστής ταξιδιού για σκάφη: χρόνος, καύσιμα, κόστος, σύγκριση και χρήσιμα ναυτικά links." />
+  <meta name="theme-color" content="#074b5a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Trip Planner" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <style>
+    :root {
+      --bg: #edf5f8;
+      --bg-2: #d6eef4;
+      --card: rgba(255,255,255,.92);
+      --card-solid: #ffffff;
+      --text: #10212b;
+      --muted: #61727d;
+      --primary: #0f6f82;
+      --primary-2: #074b5a;
+      --primary-soft: #e0f3f7;
+      --accent: #ff9d2e;
+      --accent-soft: #fff1dc;
+      --danger: #b42318;
+      --danger-soft: #fee4e2;
+      --ok: #057a55;
+      --ok-soft: #dcfae6;
+      --warn: #8a5a00;
+      --warn-soft: #fff4cc;
+      --line: #d8e6eb;
+      --shadow: 0 18px 45px rgba(8, 47, 62, .13);
+      --shadow-soft: 0 8px 24px rgba(8, 47, 62, .08);
+      --radius-lg: 26px;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 1240px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 5% -10%, rgba(15,111,130,.24) 0, transparent 32rem),
+        radial-gradient(circle at 95% 8%, rgba(255,157,46,.22) 0, transparent 28rem),
+        linear-gradient(180deg, var(--bg), #f7fbfc 70%);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .shell { max-width: var(--max); margin: 0 auto; padding: 22px 22px 96px; }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      margin-bottom: 18px;
+    }
+    .brand { display:flex; align-items:center; gap:12px; min-width: 0; }
+    .logo {
+      width: 46px; height: 46px; border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), #23a0b5);
+      color:white; display:grid; place-items:center; box-shadow: var(--shadow-soft);
+      flex: 0 0 auto;
+    }
+    .brand h1 { margin:0; font-size: 21px; letter-spacing:-.03em; }
+    .brand p { margin:2px 0 0; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-actions { display:flex; gap:9px; flex-wrap: wrap; justify-content:flex-end; }
+    .hero {
+      display:grid; grid-template-columns: 1.35fr .65fr; gap:18px;
+      margin-bottom:18px;
+    }
+    .hero-main, .panel, .stat, .trip-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.84);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius-lg);
+    }
+    .hero-main { padding: 28px; position:relative; overflow:hidden; min-height: 230px; }
+    .hero-main:after {
+      content:""; position:absolute; right:-70px; top:-95px; width:290px; height:290px; border-radius:999px;
+      background: conic-gradient(from 45deg, rgba(15,111,130,.18), rgba(255,157,46,.25), rgba(15,111,130,.18));
+    }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; color: var(--primary-2); background: var(--primary-soft); padding: 8px 11px; border-radius: 999px; font-weight: 850; font-size: 12px; }
+    .hero-main h2 { margin: 18px 0 8px; font-size: clamp(31px, 5vw, 52px); letter-spacing:-.06em; line-height: .98; max-width: 780px; position:relative; z-index:1; }
+    .hero-main p { margin:0; color: var(--muted); line-height: 1.62; max-width: 720px; font-size:16px; position:relative; z-index:1; }
+    .hero-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; position:relative; z-index:1; }
+    .stats { display:grid; gap:12px; }
+    .stat { padding:17px; border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+    .stat .num { font-size: 31px; font-weight: 950; color: var(--primary-2); letter-spacing:-.05em; }
+    .stat .label { color: var(--muted); font-weight: 750; font-size: 13px; margin-top:3px; }
+    .nav {
+      display:flex; gap:9px; flex-wrap:wrap; margin: 18px 0;
+      position: sticky; top: 0; z-index:30; padding: 9px 0;
+      background: rgba(237,245,248,.72); backdrop-filter: blur(12px);
+    }
+    .tab {
+      border:1px solid var(--line); background: rgba(255,255,255,.86); color:var(--text);
+      border-radius:999px; padding: 11px 15px; font-weight:900; cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border .18s ease;
+      min-height: 44px;
+    }
+    .tab:hover { transform: translateY(-1px); }
+    .tab.active { background: var(--primary); color:white; border-color: var(--primary); }
+    .panel { padding: 22px; margin-bottom: 18px; }
+    .panel-head { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; margin-bottom: 18px; }
+    .panel-head h2 { margin:0; font-size:24px; letter-spacing:-.03em; }
+    .hint { color: var(--muted); line-height:1.55; font-size:14px; margin-top:4px; }
+    .grid { display:grid; gap: 14px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .field label, label.field-label { display:block; font-weight:900; color:#263843; font-size:13px; margin-bottom:7px; }
+    input, select, textarea {
+      width:100%; min-height: 46px; border: 1px solid var(--line); border-radius: 14px;
+      background: white; color: var(--text); padding: 12px 12px; outline: none;
+      transition: box-shadow .18s ease, border .18s ease;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(15,111,130,.13); }
+    .subtle { color: var(--muted); font-size:12px; margin-top:5px; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn {
+      border:0; border-radius: 14px; min-height:44px; padding: 12px 15px; cursor:pointer;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; text-decoration:none;
+      background: var(--primary); color:white; font-weight:950; box-shadow: 0 8px 18px rgba(15,111,130,.16);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+    .btn:hover { background: var(--primary-2); transform: translateY(-1px); }
+    .btn.secondary { background:#eaf3f6; color:var(--primary-2); box-shadow:none; }
+    .btn.ghost { background:transparent; color:var(--primary-2); border:1px solid var(--line); box-shadow:none; }
+    .btn.danger { background: var(--danger-soft); color: var(--danger); box-shadow:none; }
+    .btn.small { min-height: 34px; padding: 8px 10px; font-size:13px; border-radius: 11px; }
+    .calculator-grid { display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; align-items:start; }
+    .trip-card { padding:18px; border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+    .trip-card h3 { margin: 0 0 13px; font-size:18px; letter-spacing:-.02em; }
+    .selection-summary { display:grid; gap:10px; }
+    .summary-line { display:flex; justify-content:space-between; gap:16px; border-bottom:1px dashed var(--line); padding-bottom:8px; }
+    .summary-line:last-child { border-bottom:0; padding-bottom:0; }
+    .summary-line span:first-child { color: var(--muted); font-weight:750; }
+    .summary-line span:last-child { font-weight:950; text-align:right; }
+    .results-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+    .result {
+      border:1px solid var(--line); background: linear-gradient(180deg, #fff, #f8fcfd);
+      border-radius: var(--radius); padding: 16px; position:relative; overflow:hidden;
+    }
+    .result.recommended { border-color: rgba(15,111,130,.42); box-shadow: 0 0 0 4px rgba(15,111,130,.08); }
+    .result h3 { margin:0 0 11px; color: var(--primary-2); font-size:21px; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:6px 9px; border-radius:999px; font-size:12px; font-weight:950; }
+    .pill.ok { background: var(--ok-soft); color:var(--ok); }
+    .pill.warn { background: var(--warn-soft); color:var(--warn); }
+    .pill.accent { background: var(--accent-soft); color:#974c00; }
+    .metric-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:9px; }
+    .metric { background:white; border:1px solid var(--line); border-radius: 14px; padding: 12px; min-height: 82px; }
+    .metric .label { color: var(--muted); font-size:12px; font-weight:850; }
+    .metric .value { margin-top: 7px; font-size:18px; font-weight:950; letter-spacing:-.02em; }
+    .metric.primary { background: var(--primary-soft); border-color: rgba(15,111,130,.3); }
+    .compare { margin-top: 14px; display:grid; gap:9px; }
+    .bar-row { display:grid; grid-template-columns: 88px 1fr 82px; gap:8px; align-items:center; font-size:12px; font-weight:850; color:var(--muted); }
+    .bar { height: 10px; background:#e6eff2; border-radius:999px; overflow:hidden; }
+    .bar > span { display:block; height:100%; background: linear-gradient(90deg, var(--primary), #23a0b5); border-radius:999px; }
+    .status { margin-top:12px; padding:11px; border-radius: 13px; font-weight:850; font-size:13px; line-height:1.45; }
+    .status.ok { color:var(--ok); background:var(--ok-soft); }
+    .status.warn { color:var(--warn); background:var(--warn-soft); }
+    .table-wrap { overflow:auto; border:1px solid var(--line); border-radius:16px; background:white; }
+    table { width:100%; border-collapse:collapse; min-width: 780px; }
+    th, td { padding: 11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle; font-size:14px; }
+    th { background:#f2f8fa; color:#263843; font-size:13px; white-space:nowrap; }
+    tr:last-child td { border-bottom:0; }
+    .actions { display:flex; gap:7px; flex-wrap:wrap; }
+    .empty { border:1px dashed var(--line); border-radius: var(--radius); background: #f8fcfd; color: var(--muted); padding: 22px; text-align:center; line-height:1.5; }
+    .hidden { display:none !important; }
+    .toast {
+      position:fixed; right:18px; bottom:18px; z-index:1000; background:#102a34; color:#fff;
+      padding:13px 16px; border-radius: 16px; box-shadow: var(--shadow); max-width:min(420px, calc(100vw - 36px));
+      opacity:0; transform: translateY(12px); pointer-events:none; transition:.22s ease;
+    }
+    .toast.visible { opacity:1; transform: translateY(0); }
+    .backup-note { background: var(--accent-soft); border:1px solid #fed7aa; color:#7c2d12; border-radius:16px; padding:14px; line-height:1.55; }
+    .steps { counter-reset: step; display:grid; gap:10px; }
+    .step { display:flex; gap:12px; align-items:flex-start; background:white; border:1px solid var(--line); border-radius: 15px; padding: 13px; }
+    .step:before { counter-increment: step; content: counter(step); width:28px; height:28px; border-radius:999px; background:var(--primary); color:white; display:grid; place-items:center; font-weight:950; flex:0 0 auto; }
+    .install-card { background:white; border:1px solid var(--line); border-radius: var(--radius); padding:16px; }
+    .history-grid { display:grid; gap:12px; }
+    .history-card { background:white; border:1px solid var(--line); border-radius:16px; padding:14px; display:grid; gap:9px; }
+    .history-card .history-top { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .history-card strong { font-size:16px; }
+    .history-meta { display:flex; gap:8px; flex-wrap:wrap; }
+    .segmented { display:grid; grid-template-columns: repeat(2, 1fr); gap:6px; background:#e9f2f5; padding:5px; border-radius: 15px; }
+    .segmented button { border:0; background:transparent; border-radius: 11px; padding:10px; font-weight:950; cursor:pointer; color:var(--primary-2); }
+    .segmented button.active { background:white; box-shadow: var(--shadow-soft); }
+
+
+    /* Bigger, more app-like typography */
+    body { font-size: 17px; }
+    .brand h1 { font-size: 24px; }
+    .brand p { font-size: 14px; }
+    .hero-main h2 { font-size: clamp(36px, 5.4vw, 60px); }
+    .hero-main p { font-size: 18px; line-height: 1.68; max-width: 820px; }
+    .eyebrow { font-size: 13px; }
+    .tab { font-size: 15px; padding: 12px 16px; }
+    .panel-head h2 { font-size: 28px; }
+    .hint { font-size: 15.5px; }
+    .field label, label.field-label { font-size: 14px; }
+    input, select, textarea { font-size: 16px; min-height: 50px; }
+    .btn { font-size: 15.5px; min-height: 48px; }
+    .metric .label { font-size: 13px; }
+    .metric .value { font-size: 20px; }
+    th, td { font-size: 15px; }
+
+    .grid.six { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .score-panel { background: linear-gradient(135deg, #ffffff, #f4fbfd); border: 1px solid rgba(15,111,130,.16); }
+    .score-settings { border:1px solid var(--line); background: linear-gradient(180deg, #fff, #f8fcfd); border-radius: var(--radius); padding:16px; }
+    .score-settings h3, .score-panel h3 { margin:0 0 8px; color:var(--primary-2); letter-spacing:-.03em; }
+    .score-results { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-top:14px; }
+    .score-card { background:white; border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow: var(--shadow-soft); }
+    .score-card.winner { border-color: rgba(15,111,130,.45); background: linear-gradient(180deg, var(--primary-soft), #fff); }
+    .score-value { font-size:42px; line-height:1; font-weight:1000; color:var(--primary-2); letter-spacing:-.06em; margin: 8px 0 4px; }
+    .score-label { color:var(--muted); font-weight:850; font-size:13px; }
+    .score-reason { color:var(--muted); line-height:1.55; margin-top:8px; }
+    .score-breakdown { margin-top:12px; display:grid; gap:7px; }
+    .score-row { display:grid; grid-template-columns: 1fr 56px 56px; gap:8px; align-items:center; font-size:13px; }
+    .score-row span:first-child { color:var(--muted); font-weight:850; }
+    .score-row span:not(:first-child) { text-align:right; font-weight:950; }
+    .weight-mini { font-size:12px; color:var(--muted); margin-top:5px; line-height:1.35; }
+    @media (max-width: 960px) { .grid.six, .score-results { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 680px) { .grid.six, .score-results { grid-template-columns: 1fr; } .hero-main h2 { font-size: 36px; } .hero-main p { font-size: 16.5px; } }
+
+    .comparison-toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
+    .compare-result-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-top:16px; }
+    .compare-column { background:white; border:1px solid var(--line); border-radius: var(--radius); padding:16px; }
+    .compare-column.diff { background: linear-gradient(180deg, var(--primary-soft), #fff); }
+    .compare-column h3 { margin:0 0 12px; color:var(--primary-2); letter-spacing:-.02em; }
+    .mini-table { width:100%; min-width:0; border-collapse:collapse; }
+    .mini-table th, .mini-table td { padding:9px 7px; font-size:13px; border-bottom:1px solid var(--line); }
+    .mini-table th { background:#f2f8fa; }
+    .diff-pos { color:var(--danger); font-weight:950; }
+    .diff-neg { color:var(--ok); font-weight:950; }
+    .diff-neutral { color:var(--muted); font-weight:950; }
+    .link-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; }
+    .link-card { background:white; border:1px solid var(--line); border-radius: var(--radius); padding:16px; display:flex; flex-direction:column; gap:12px; min-height: 190px; }
+    .link-card h3 { margin:0; color:var(--primary-2); }
+    .link-card p { margin:0; color:var(--muted); line-height:1.55; }
+    .link-url { word-break: break-all; color:var(--muted); font-size:12px; background:#f7fbfc; padding:9px; border-radius:12px; }
+    .install-status { background:#f7fbfc; border:1px solid var(--line); border-radius:15px; padding:13px; color:var(--muted); line-height:1.5; }
+    button:disabled { opacity:.55; cursor:not-allowed; transform:none !important; }
+    @media (max-width: 960px) { .compare-result-grid, .link-grid { grid-template-columns: 1fr; } }
+
+    .print-only { display:none; }
+    @media (max-width: 960px) {
+      .hero, .calculator-grid { grid-template-columns: 1fr; }
+      .grid.four, .grid.five { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .shell { padding: 14px 14px 94px; }
+      .topbar { align-items:flex-start; }
+      .top-actions { display:none; }
+      .hero-main, .panel { padding: 17px; border-radius: 21px; }
+      .hero-main { min-height: 0; }
+      .grid.two, .grid.three, .grid.four, .grid.five { grid-template-columns: 1fr; }
+      .panel-head { display:block; }
+      .nav { position: fixed; bottom: 0; left:0; right:0; top:auto; margin:0; padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); overflow:auto; flex-wrap:nowrap; justify-content:flex-start; background: rgba(244,249,250,.94); border-top:1px solid var(--line); }
+      .tab { white-space:nowrap; min-width:max-content; padding:10px 12px; font-size:13px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .bar-row { grid-template-columns: 72px 1fr 70px; }
+      .brand p { display:none; }
+    }
+    @media print {
+      body { background:white; }
+      .topbar, .hero, .nav, .panel:not(#panel-calculator):not(#panel-compare), .toolbar, .btn, .toast, .no-print { display:none !important; }
+      .shell { max-width: none; padding: 0; }
+      #panel-calculator, #panel-compare { box-shadow:none; border:0; padding:0; }
+      .panel-head { display:block; }
+      .calculator-grid { display:block; }
+      .trip-card, .result { box-shadow:none; break-inside: avoid; }
+      .print-only { display:block; }
+      input, select { border:0; padding:0; min-height:auto; }
+      .field { display:none; }
+      .results-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 14.7c3.1.5 4.9-.2 6.4-2.3l2.3-3.1c.4-.6 1.3-.6 1.8 0l2.2 3.1c1.5 2.1 3.3 2.8 6.4 2.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 17.5c2.4 1.4 4.7 1.4 7.1 0 2.4-1.4 4.7-1.4 7.1 0 .6.3 1.2.6 1.8.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 10.5h10l-2.8-5H9.8L7 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <h1>Trip Planner</h1>
+          <p>Έξυπνος ναυτικός υπολογιστής για διαδρομές, κόστος και σύγκριση σκαφών</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn secondary" id="quickSaveReportBtn">Κράτα το πλάνο</button>
+        <button class="btn" id="quickPrintBtn">Βγάλε αναφορά</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-main">
+        <span class="eyebrow">⚓ Από το Excel σου σε smart trip app · με σύγκριση σκαφών και ναυτικά shortcuts</span>
+        <h2>Σχεδίασε τη διαδρομή σου. Δες χρόνο, καύσιμα και κόστος με μία κίνηση.</h2>
+        <p>Ένα γρήγορο cockpit για τις θαλάσσιες διαδρομές σου: διαλέγεις σκάφος και προορισμό, βλέπεις άμεσα χρόνο, καύσιμα και κόστος, συγκρίνεις δύο επιλογές με smart score και ανοίγεις τα βασικά ναυτικά links χωρίς ψάξιμο. Όλα δουλεύουν τοπικά στον browser σου, με τα δικά σου σκάφη και τις δικές σου πορείες.</p>
+        <div class="hero-actions">
+          <button class="btn" data-jump="calculator">Σχεδίασε ταξίδι</button>
+          <button class="btn secondary" data-jump="boats">Πρόσθεσε σκάφος</button>
+          <button class="btn secondary" data-jump="compare">Βρες καλύτερη επιλογή</button>
+          <button class="btn ghost" data-jump="links">Άνοιξε ναυτικά links</button>
+        </div>
+      </div>
+      <aside class="stats">
+        <div class="stat"><div class="num" id="statBoats">0</div><div class="label">Σκάφη στο dock σου</div></div>
+        <div class="stat"><div class="num" id="statRoutes">0</div><div class="label">Πορείες έτοιμες για πλάνο</div></div>
+        <div class="stat"><div class="num" id="statTrips">0</div><div class="label">Κρατημένα trip plans</div></div>
+      </aside>
+    </section>
+
+    <nav class="nav" aria-label="Πλοήγηση εφαρμογής">
+      <button class="tab active" data-tab="calculator">Υπολογισμός</button>
+      <button class="tab" data-tab="boats">Σκάφη</button>
+      <button class="tab" data-tab="routes">Πορείες</button>
+      <button class="tab" data-tab="compare">Συγκρίσεις</button>
+      <button class="tab" data-tab="links">Links</button>
+      <button class="tab" data-tab="history">Ιστορικό</button>
+      <button class="tab" data-tab="install">Backup / App</button>
+    </nav>
+
+    <main>
+      <section class="panel tab-panel" id="panel-calculator">
+        <div class="panel-head">
+          <div>
+            <h2>Υπολογισμός ταξιδιού</h2>
+            <div class="hint">Διάλεξε σκάφος και πορεία και πάρε αμέσως εικόνα για χρόνο, καύσιμα και κόστος. Θες πιο ακριβή μέτρηση; Άλλαξε την απόσταση χειροκίνητα χωρίς να πειράξεις την αποθηκευμένη πορεία.</div>
+          </div>
+          <div class="toolbar no-print">
+            <button class="btn secondary" id="saveReportBtn">Κράτα το πλάνο</button>
+            <button class="btn ghost" id="exportCsvBtn">Άνοιγμα σε Excel</button>
+            <button class="btn" id="printBtn">Κατέβασε αναφορά</button>
+          </div>
+        </div>
+        <div class="print-only">
+          <h1>Αναφορά ταξιδιού σκάφους</h1>
+          <p id="printDate"></p>
+        </div>
+
+        <div class="calculator-grid">
+          <div class="grid">
+            <div class="grid two">
+              <div class="field">
+                <label>Σκάφος</label>
+                <select id="calcBoat"></select>
+              </div>
+              <div class="field">
+                <label>Πορεία / Προορισμός</label>
+                <select id="calcRoute"></select>
+              </div>
+            </div>
+            <div class="grid four">
+              <div class="field">
+                <label>Απόσταση</label>
+                <input id="distance" type="number" min="0" step="0.1" />
+                <div class="subtle">σε ναυτικά μίλια (nm)</div>
+              </div>
+              <div class="field">
+                <label>Βενζίνη €/L</label>
+                <input id="fuelPrice" type="number" min="0" step="0.01" value="2" />
+              </div>
+              <div class="field">
+                <label>Λάδι €/L</label>
+                <input id="oilPrice" type="number" min="0" step="0.01" value="15" />
+              </div>
+              <div class="field">
+                <label>Ασφάλεια %</label>
+                <input id="safety" type="number" min="0" max="100" step="1" value="10" />
+              </div>
+            </div>
+            <div class="grid two">
+              <div class="field">
+                <label>Τύπος διαδρομής</label>
+                <select id="tripType">
+                  <option value="1">Μόνο μετάβαση</option>
+                  <option value="2">Μετάβαση + επιστροφή</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Προβολή</label>
+                <div class="segmented">
+                  <button type="button" class="mode-btn active" data-mode="both">Και τα δύο</button>
+                  <button type="button" class="mode-btn" data-mode="recommended">Πρόταση</button>
+                </div>
+              </div>
+            </div>
+            <div class="toolbar no-print">
+              <button class="btn" id="calculateBtn">Υπολόγισε</button>
+              <button class="btn secondary" id="resetDistanceBtn">Επαναφορά απόστασης από πορεία</button>
+            </div>
+          </div>
+
+          <aside class="trip-card">
+            <h3>Σύνοψη επιλογής</h3>
+            <div class="selection-summary" id="selectionSummary"></div>
+          </aside>
+        </div>
+
+        <div id="results" class="results-grid" style="margin-top:18px;"></div>
+        <div id="comparison" class="trip-card" style="margin-top:14px;"></div>
+      </section>
+
+      <section class="panel tab-panel hidden" id="panel-boats">
+        <div class="panel-head">
+          <div>
+            <h2>Σκάφη</h2>
+            <div class="hint">Το προσωπικό σου “dock”. Πέρνα τα σκάφη μία φορά και μετά χρησιμοποίησέ τα άμεσα σε κάθε υπολογισμό ή σύγκριση.</div>
+          </div>
+        </div>
+        <form id="boatForm" class="grid four">
+          <input id="boatId" type="hidden" />
+          <div class="field"><label>Όνομα σκάφους</label><input id="boatName" required /></div>
+          <div class="field"><label>Ταχύτητα πλεύσης (kn)</label><input id="cruiseSpeed" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Μέγιστη ταχύτητα (kn)</label><input id="maxSpeed" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Κατανάλωση πλεύσης (L/h)</label><input id="fuelCruise" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Κατανάλωση μέγιστη (L/h)</label><input id="fuelMax" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Δοχείο καυσίμου (L)</label><input id="fuelTank" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Δοχείο λαδιού (L)</label><input id="oilTank" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Λόγος λαδιού/βενζίνης</label><input id="oilRatio" type="number" min="0" step="0.001" required /><div class="subtle">π.χ. 0.02 για 2%</div></div>
+          <div class="toolbar" style="grid-column:1/-1;">
+            <button class="btn" type="submit" id="saveBoatBtn">Αποθήκευση σκάφους</button>
+            <button class="btn secondary" type="button" id="clearBoatBtn">Καθαρισμός</button>
+          </div>
+        </form>
+        <div class="field" style="margin:18px 0 10px;"><label>Αναζήτηση σκάφους</label><input id="boatSearch" placeholder="π.χ. Saxdor, Technohull..." /></div>
+        <div class="table-wrap"><table><thead><tr><th>Σκάφος</th><th>Πλεύση</th><th>Μέγιστη</th><th>L/h πλεύση</th><th>L/h μέγιστη</th><th>Δοχείο καυσίμου</th><th>Δοχείο λαδιού</th><th>Ratio</th><th>Ενέργειες</th></tr></thead><tbody id="boatsTable"></tbody></table></div>
+      </section>
+
+      <section class="panel tab-panel hidden" id="panel-routes">
+        <div class="panel-head">
+          <div>
+            <h2>Πορείες / Προορισμοί</h2>
+            <div class="hint">Φτιάξε τη δική σου λίστα από αγαπημένες διαδρομές. Κράτα αποστάσεις, σημειώσεις και εναλλακτικές ώστε κάθε νέο trip plan να ξεκινάει γρήγορα.</div>
+          </div>
+        </div>
+        <form id="routeForm" class="grid three">
+          <input id="routeId" type="hidden" />
+          <div class="field"><label>Όνομα πορείας</label><input id="routeName" required /></div>
+          <div class="field"><label>Απόσταση (nm)</label><input id="routeDistance" type="number" min="0" step="0.1" required /></div>
+          <div class="field"><label>Σημείωση</label><input id="routeNotes" placeholder="π.χ. αρχικά 13 με 18" /></div>
+          <div class="toolbar" style="grid-column:1/-1;">
+            <button class="btn" type="submit" id="saveRouteBtn">Αποθήκευση πορείας</button>
+            <button class="btn secondary" type="button" id="clearRouteBtn">Καθαρισμός</button>
+          </div>
+        </form>
+        <div class="field" style="margin:18px 0 10px;"><label>Αναζήτηση πορείας</label><input id="routeSearch" placeholder="π.χ. Ύδρα, Αίγινα, Κέα..." /></div>
+        <div class="table-wrap"><table><thead><tr><th>Πορεία</th><th>Απόσταση</th><th>Σημείωση</th><th>Ενέργειες</th></tr></thead><tbody id="routesTable"></tbody></table></div>
+      </section>
+
+
+      <section class="panel tab-panel hidden" id="panel-compare">
+        <div class="panel-head">
+          <div>
+            <h2>Σύγκριση σκαφών</h2>
+            <div class="hint">Δύο σκάφη, ίδια πορεία, καθαρή εικόνα. Δες διαφορές σε χρόνο, καύσιμα και κόστος, μαζί με smart score 0–100 για να φαίνεται ποιο συμφέρει ανάλογα με το προφίλ ταξιδιού.</div>
+          </div>
+          <div class="toolbar no-print">
+            <button class="btn ghost" id="exportCompareCsvBtn">Σύγκριση σε Excel</button>
+            <button class="btn" id="printCompareBtn">Αναφορά σύγκρισης</button>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="grid three">
+            <div class="field"><label>Σκάφος Α</label><select id="compareBoatA"></select></div>
+            <div class="field"><label>Σκάφος Β</label><select id="compareBoatB"></select></div>
+            <div class="field"><label>Πορεία</label><select id="compareRoute"></select></div>
+          </div>
+          <div class="grid five comparison-toolbar">
+            <div class="field"><label>Απόσταση</label><input id="compareDistance" type="number" min="0" step="0.1" /><div class="subtle">σε ναυτικά μίλια</div></div>
+            <div class="field"><label>Βενζίνη €/L</label><input id="compareFuelPrice" type="number" min="0" step="0.01" value="2" /></div>
+            <div class="field"><label>Λάδι €/L</label><input id="compareOilPrice" type="number" min="0" step="0.01" value="15" /></div>
+            <div class="field"><label>Ασφάλεια %</label><input id="compareSafety" type="number" min="0" max="100" step="1" value="10" /></div>
+            <div class="field"><label>Τύπος</label><select id="compareTripType"><option value="1">Μόνο μετάβαση</option><option value="2">Μετάβαση + επιστροφή</option></select></div>
+          </div>
+          <div class="toolbar no-print">
+            <button class="btn" id="compareBtn">Βγάλε σύγκριση</button>
+            <button class="btn secondary" id="resetCompareDistanceBtn">Πάρε απόσταση πορείας</button>
+            <button class="btn ghost" id="swapBoatsBtn">Αντάλλαξε σκάφη</button>
+          </div>
+          <div class="score-settings no-print">
+            <h3>Smart score 0–100</h3>
+            <div class="hint">Διάλεξε πώς θέλεις να αξιολογηθεί το ταξίδι. Το app βαθμολογεί κάθε σκάφος με βάση κόστος, χρόνο, κατανάλωση ανά ναυτικό μίλι, αυτονομία, περιθώριο καυσίμου και ταχύτητα.</div>
+            <div class="grid two" style="margin-top:14px;">
+              <div class="field">
+                <label>Προφίλ σύγκρισης</label>
+                <select id="compareProfile">
+                  <option value="balanced">Ισορροπημένο ταξίδι</option>
+                  <option value="economy">Οικονομικό ταξίδι</option>
+                  <option value="fast">Γρήγορη μετάβαση</option>
+                  <option value="safe">Ασφαλές / μεγάλη απόσταση</option>
+                  <option value="custom">Δικά μου βάρη</option>
+                </select>
+              </div>
+              <div class="install-status" id="scoreProfileText">Ισορροπημένο προφίλ για πρακτική απόφαση: κόστος, χρόνος και κατανάλωση μετράνε περισσότερο, χωρίς να αγνοείται η αυτονομία.</div>
+            </div>
+            <div class="grid six" style="margin-top:14px;">
+              <div class="field"><label>Κόστος %</label><input id="weightCost" class="score-weight" type="number" min="0" max="100" step="1" /></div>
+              <div class="field"><label>Χρόνος %</label><input id="weightTime" class="score-weight" type="number" min="0" max="100" step="1" /></div>
+              <div class="field"><label>Κατανάλωση %</label><input id="weightFuel" class="score-weight" type="number" min="0" max="100" step="1" /></div>
+              <div class="field"><label>Αυτονομία %</label><input id="weightAutonomy" class="score-weight" type="number" min="0" max="100" step="1" /></div>
+              <div class="field"><label>Περιθώριο %</label><input id="weightMargin" class="score-weight" type="number" min="0" max="100" step="1" /></div>
+              <div class="field"><label>Ταχύτητα %</label><input id="weightSpeed" class="score-weight" type="number" min="0" max="100" step="1" /></div>
+            </div>
+            <div class="weight-mini">Τα βάρη δεν χρειάζεται να είναι τέλεια· αν δεν βγαίνουν 100, η εφαρμογή τα κανονικοποιεί αυτόματα.</div>
+          </div>
+        </div>
+        <div id="boatCompareResults" style="margin-top:18px;"></div>
+      </section>
+
+      <section class="panel tab-panel hidden" id="panel-links">
+        <div class="panel-head">
+          <div>
+            <h2>Ναυτικά shortcuts</h2>
+            <div class="hint">Οι χρήσιμοι χάρτες και οι προβλέψεις που χρειάζεσαι πριν φύγεις, συγκεντρωμένα σε ένα σημείο.</div>
+          </div>
+        </div>
+        <div id="linksGrid" class="link-grid"></div>
+      </section>
+
+      <section class="panel tab-panel hidden" id="panel-history">
+        <div class="panel-head">
+          <div>
+            <h2>Ιστορικό ταξιδιών</h2>
+            <div class="hint">Κράτα τα trip plans που σε ενδιαφέρουν, για να τα ξανανοίξεις γρήγορα ή να τα συγκρίνεις αργότερα.</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn ghost" id="exportHistoryBtn">Εξαγωγή ιστορικού CSV</button>
+            <button class="btn danger" id="clearHistoryBtn">Καθαρισμός ιστορικού</button>
+          </div>
+        </div>
+        <div id="historyList" class="history-grid"></div>
+      </section>
+
+      <section class="panel tab-panel hidden" id="panel-install">
+        <div class="panel-head">
+          <div>
+            <h2>Backup και εγκατάσταση app</h2>
+            <div class="hint">Κράτα τα δεδομένα σου ασφαλή και εγκατέστησε το Trip Planner σαν κανονική εφαρμογή στο κινητό ή στον υπολογιστή.</div>
+          </div>
+        </div>
+        <div class="grid two">
+          <div class="backup-note"><strong>Καλό να το θυμάσαι:</strong> Τα δεδομένα μένουν στη συσκευή/browser σου. Αν καθαρίσεις ιστορικό ή αλλάξεις browser μπορεί να χαθούν, οπότε κράτα συχνά ένα backup JSON.</div>
+          <div class="grid">
+            <button class="btn" id="exportBackupBtn">Εξαγωγή backup JSON</button>
+            <button class="btn secondary" id="installPwaBtn" type="button" disabled>Εγκατάσταση ως εφαρμογή</button>
+            <label class="btn secondary" for="importBackup">Εισαγωγή backup JSON</label>
+            <input id="importBackup" class="hidden" type="file" accept="application/json,.json" />
+            <button class="btn danger" id="resetAllBtn">Επαναφορά αρχικών δεδομένων</button>
+          </div>
+        </div>
+        <div class="install-status" id="pwaStatus" style="margin-top:14px;">Για να μπει σαν κανονικό app στην αρχική οθόνη, άνοιξέ το από HTTPS link ή από localhost. Με διπλό κλικ δουλεύει κανονικά, απλώς δεν εγκαθίσταται.</div>
+        <div class="grid two" style="margin-top:18px;">
+          <div class="install-card">
+            <h3 style="margin-top:0;">Πώς το χρησιμοποιείς άμεσα</h3>
+            <div class="steps">
+              <div class="step">Κάνεις unzip τον φάκελο και ανοίγεις το <strong>index.html</strong> με διπλό κλικ.</div>
+              <div class="step">Περνάς/διορθώνεις σκάφη και πορείες από τα αντίστοιχα tabs.</div>
+              <div class="step">Στον υπολογισμό επιλέγεις σκάφος + πορεία και εξάγεις PDF ή CSV.</div>
+            </div>
+          </div>
+          <div class="install-card">
+            <h3 style="margin-top:0;">Πώς γίνεται app στο κινητό</h3>
+            <div class="steps">
+              <div class="step">Ανέβασμα σε <strong>GitHub Pages</strong> ή <strong>Netlify</strong>, ώστε να ανοίγει από κανονικό link.</div>
+              <div class="step">Μετά από Chrome/Edge: <strong>Install app</strong>. Σε iPhone: Share → <strong>Add to Home Screen</strong>.</div>
+              <div class="step">Για συγχρονισμό σε πολλές συσκευές: σύνδεση με <strong>Supabase/Firebase</strong> και login.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORE_KEY = "boatTripPlannerProV2";
+    const OLD_STORE_KEY = "boatTripAppStateV1";
+    const appVersion = "3.0";
+
+    const defaults = {
+      boats: [
+        {id:"boat-galini", name:"Γαλήνη", cruiseSpeed:20, maxSpeed:30, fuelCruise:10, fuelMax:18, fuelTank:25, oilTank:2, oilRatio:0.02},
+        {id:"boat-rib-620", name:"Φουσκωτό 6.2m 120HP", cruiseSpeed:24, maxSpeed:38, fuelCruise:24, fuelMax:42, fuelTank:140, oilTank:0, oilRatio:0},
+        {id:"boat-rafnar-1200", name:"Rafnar 1200 T-Top", cruiseSpeed:32, maxSpeed:50, fuelCruise:128, fuelMax:190, fuelTank:900, oilTank:0, oilRatio:0},
+        {id:"boat-technohull-38", name:"Technohull 38 Grand Sport", cruiseSpeed:35, maxSpeed:73, fuelCruise:60, fuelMax:160, fuelTank:600, oilTank:0, oilRatio:0},
+        {id:"boat-technohull-alpha-50", name:"Technohull Alpha 50", cruiseSpeed:55, maxSpeed:86, fuelCruise:320, fuelMax:500, fuelTank:1800, oilTank:0, oilRatio:0},
+        {id:"boat-hnc-660", name:"Hnc 660 140hp (Ενοικίαση)", cruiseSpeed:32, maxSpeed:40, fuelCruise:30, fuelMax:55, fuelTank:150, oilTank:0, oilRatio:0},
+        {id:"boat-saxdor-320", name:"Saxdor 320 GTO", cruiseSpeed:24.7, maxSpeed:52.5, fuelCruise:56, fuelMax:120, fuelTank:428, oilTank:0, oilRatio:0},
+        {id:"boat-saxdor-400", name:"Saxdor 400 GTO", cruiseSpeed:35, maxSpeed:45, fuelCruise:140, fuelMax:220, fuelTank:1000, oilTank:0, oilRatio:0}
+      ],
+      routes: [
+        {id:"route-mati-evia", name:"Μάτι - Εύβοια", distance:12.5, notes:"Αρχικά: 10 με 15"},
+        {id:"route-mati-sounio", name:"Μάτι - Σούνιο", distance:26, notes:""},
+        {id:"route-mati-lavrio", name:"Μάτι - Λαύριο", distance:23, notes:""},
+        {id:"route-mati-makronisos", name:"Μάτι - Μακρόνησος", distance:23, notes:""},
+        {id:"route-mati-kea", name:"Μάτι - Κέα", distance:30, notes:""},
+        {id:"route-kea-polyegos", name:"Κέα - Πολύεγος", distance:56, notes:""},
+        {id:"route-mati-andros", name:"Μάτι - Άνδρος", distance:45, notes:"Αρχικά: 35 με 55"},
+        {id:"route-anavyssos-paros", name:"Ανάβυσσος - Πάρος", distance:75, notes:""},
+        {id:"route-anavyssos-kea", name:"Ανάβυσσος - Κέα", distance:23, notes:""},
+        {id:"route-anavyssos-kythnos", name:"Ανάβυσσος - Κύθνος", distance:33, notes:""},
+        {id:"route-anavyssos-koufonisia", name:"Ανάβυσσος - Κουφονήσια", distance:110, notes:""},
+        {id:"route-faliro-polyegos", name:"Φάληρο - Πολύεγος", distance:85, notes:""},
+        {id:"route-faliro-ydra", name:"Φάληρο - Ύδρα", distance:36, notes:""},
+        {id:"route-faliro-sounio", name:"Φάληρο - Σούνιο", distance:25, notes:""},
+        {id:"route-faliro-kythnos", name:"Φάληρο - Κύθνος", distance:47, notes:""},
+        {id:"route-faliro-aegina", name:"Φάληρο - Αίγινα", distance:15.5, notes:"Αρχικά: 13 με 18"},
+        {id:"route-faliro-paros", name:"Φάληρο - Πάρος", distance:90, notes:""},
+        {id:"route-faliro-agios-nikolaos", name:"Φάληρο - Άγιος Νικόλαος", distance:170, notes:""},
+        {id:"route-faliro-siteia", name:"Φάληρο - Σητεία", distance:170, notes:""},
+        {id:"route-faliro-gavdos", name:"Φάληρο - Γαύδος", distance:200, notes:""},
+        {id:"route-faliro-heraklion", name:"Φάληρο - Ηράκλειο", distance:170, notes:""},
+        {id:"route-faliro-chania", name:"Φάληρο - Χανιά", distance:150, notes:""},
+        {id:"route-faliro-santorini", name:"Φάληρο - Σαντορίνη", distance:125, notes:""}
+      ],
+      history: [],
+      links: [
+        {id:"link-distance", title:"Υπολογισμός Αποστάσεων", description:"Άνοιξε γρήγορα θαλάσσιο χάρτη για να τσεκάρεις περιοχές, διαδρομές και προσανατολισμό πριν ξεκινήσεις.", url:"https://map.openseamap.org/"},
+        {id:"link-charts", title:"Ναυτικοί Χάρτες", description:"Χρήσιμο shortcut για ναυτικούς χάρτες και επισκόπηση περιοχής όταν οργανώνεις μεγαλύτερη πορεία.", url:"https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p"},
+        {id:"link-weather", title:"Καιρός / Κύματα", description:"Γρήγορος έλεγχος κυματισμού και συνθηκών, ώστε το trip plan να μην μένει μόνο στα λίτρα και στον χρόνο.", url:"https://www.windy.com/-Waves-waves?waves,38.065,24.583,6"}
+      ],
+      settings: { fuelPrice: 2, oilPrice: 15, safety: 10, tripType: "1", viewMode: "both", compareFuelPrice: 2, compareOilPrice: 15, compareSafety: 10, compareTripType: "1", compareProfile: "balanced", scoreWeights: { cost:30, time:25, fuel:20, autonomy:10, margin:5, speed:10 } }
+    };
+
+    let state = loadState();
+    let lastCalc = null;
+
+    function $(id) { return document.getElementById(id); }
+    function $all(sel) { return Array.from(document.querySelectorAll(sel)); }
+    function uid(prefix="id") { return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`; }
+    function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+    function n(value, fallback=0) { const x = Number(String(value).replace(',', '.')); return Number.isFinite(x) ? x : fallback; }
+    function fmt(x, d=2) { if (!Number.isFinite(x)) return "—"; return new Intl.NumberFormat("el-GR", {minimumFractionDigits:d, maximumFractionDigits:d}).format(x); }
+    function smart(x) { if (!Number.isFinite(x)) return "—"; return new Intl.NumberFormat("el-GR", {maximumFractionDigits: x % 1 === 0 ? 0 : 2}).format(x); }
+    function euro(x) { if (!Number.isFinite(x)) return "—"; return new Intl.NumberFormat("el-GR", {style:"currency", currency:"EUR"}).format(x); }
+    function humanMinutes(mins) { if (!Number.isFinite(mins)) return "—"; const r = Math.round(mins); const h = Math.floor(r/60); const m = r%60; return h ? `${h}ω ${m}λ` : `${m}λ`; }
+    function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+    function todayStamp() { return new Date().toISOString().slice(0,10); }
+    function displayDate(iso) { return new Date(iso).toLocaleString("el-GR", {dateStyle:"medium", timeStyle:"short"}); }
+
+    function loadState() {
+      const v2 = localStorage.getItem(STORE_KEY);
+      if (v2) {
+        try { return normalizeState(JSON.parse(v2)); } catch(e) { console.warn(e); }
+      }
+      const v1 = localStorage.getItem(OLD_STORE_KEY);
+      if (v1) {
+        try {
+          const old = JSON.parse(v1);
+          if (Array.isArray(old.boats) && Array.isArray(old.routes)) {
+            return normalizeState({ ...defaults, boats: old.boats, routes: old.routes });
+          }
+        } catch(e) { console.warn(e); }
+      }
+      return clone(defaults);
+    }
+    function normalizeState(s) {
+      return {
+        boats: Array.isArray(s.boats) ? s.boats : clone(defaults.boats),
+        routes: Array.isArray(s.routes) ? s.routes : clone(defaults.routes),
+        history: Array.isArray(s.history) ? s.history : [],
+        links: Array.isArray(s.links) ? s.links : clone(defaults.links),
+        settings: { ...defaults.settings, ...(s.settings || {}) },
+        version: appVersion
+      };
+    }
+    function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state, null, 2)); renderCounts(); }
+
+    function toast(message) {
+      const el = $('toast');
+      el.textContent = message;
+      el.classList.add('visible');
+      clearTimeout(window.__toast);
+      window.__toast = setTimeout(() => el.classList.remove('visible'), 2600);
+    }
+
+    function renderCounts() {
+      $('statBoats').textContent = state.boats.length;
+      $('statRoutes').textContent = state.routes.length;
+      $('statTrips').textContent = state.history.length;
+    }
+
+    function renderAll() {
+      renderCounts();
+      renderSelects();
+      renderBoats();
+      renderRoutes();
+      renderLinks();
+      renderHistory();
+      calculate();
+      compareBoats();
+    }
+
+    function renderSelects() {
+      const prevBoat = $('calcBoat').value;
+      const prevRoute = $('calcRoute').value;
+      const prevCompareA = $('compareBoatA')?.value;
+      const prevCompareB = $('compareBoatB')?.value;
+      const prevCompareRoute = $('compareRoute')?.value;
+      const boatOptions = state.boats.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('');
+      const routeOptions = state.routes.map(r => `<option value="${esc(r.id)}">${esc(r.name)} · ${smart(r.distance)} nm</option>`).join('');
+      $('calcBoat').innerHTML = boatOptions;
+      $('calcRoute').innerHTML = routeOptions;
+      $('compareBoatA').innerHTML = boatOptions;
+      $('compareBoatB').innerHTML = boatOptions;
+      $('compareRoute').innerHTML = routeOptions;
+      if (prevBoat && state.boats.some(b => b.id === prevBoat)) $('calcBoat').value = prevBoat;
+      if (prevRoute && state.routes.some(r => r.id === prevRoute)) $('calcRoute').value = prevRoute;
+      const defaultA = state.boats.find(b => b.name === 'Γαλήνη')?.id || state.boats[0]?.id;
+      const defaultB = state.boats.find(b => b.name === 'Technohull Alpha 50')?.id || state.boats[1]?.id || state.boats[0]?.id;
+      const defaultRoute = state.routes.find(r => r.name.replace(/\s/g,'') === 'Μάτι-Σούνιο'.replace(/\s/g,''))?.id || state.routes[0]?.id;
+      $('compareBoatA').value = prevCompareA && state.boats.some(b => b.id === prevCompareA) ? prevCompareA : defaultA;
+      $('compareBoatB').value = prevCompareB && state.boats.some(b => b.id === prevCompareB) ? prevCompareB : defaultB;
+      $('compareRoute').value = prevCompareRoute && state.routes.some(r => r.id === prevCompareRoute) ? prevCompareRoute : defaultRoute;
+      if (!$('distance').value) syncDistance(false);
+      $('fuelPrice').value = state.settings.fuelPrice;
+      $('oilPrice').value = state.settings.oilPrice;
+      $('safety').value = state.settings.safety;
+      $('tripType').value = state.settings.tripType;
+      $('compareFuelPrice').value = state.settings.compareFuelPrice ?? state.settings.fuelPrice;
+      $('compareOilPrice').value = state.settings.compareOilPrice ?? state.settings.oilPrice;
+      $('compareSafety').value = state.settings.compareSafety ?? state.settings.safety;
+      $('compareTripType').value = state.settings.compareTripType || '1';
+      if ($('compareProfile')) $('compareProfile').value = state.settings.compareProfile || 'balanced';
+      applyScoreProfile(false);
+      if (!$('compareDistance').value) syncCompareDistance(false);
+      setViewMode(state.settings.viewMode || 'both', false);
+    }
+
+    function selectedBoat() { return state.boats.find(b => b.id === $('calcBoat').value); }
+    function selectedRoute() { return state.routes.find(r => r.id === $('calcRoute').value); }
+    function syncDistance(show=true) { const r = selectedRoute(); if (r) $('distance').value = r.distance; if (show) toast('Η απόσταση επανήλθε από την αποθηκευμένη πορεία.'); }
+
+    function persistSettings() {
+      state.settings.fuelPrice = n($('fuelPrice').value, 2);
+      state.settings.oilPrice = n($('oilPrice').value, 15);
+      state.settings.safety = n($('safety').value, 10);
+      state.settings.tripType = $('tripType').value;
+      state.settings.viewMode = state.settings.viewMode || 'both';
+      saveState();
+    }
+
+    function calcMode(distance, speed, lph, boat, fuelPrice, oilPrice, safety) {
+      const timeMinutes = speed > 0 ? (distance / speed) * 60 : NaN;
+      const fuel = timeMinutes * lph / 60;
+      const fuelSafe = fuel * (1 + safety / 100);
+      const oilSafe = fuelSafe * n(boat.oilRatio, 0);
+      const fuelTanks = n(boat.fuelTank, 0) > 0 ? fuelSafe / n(boat.fuelTank, 0) : NaN;
+      const oilTanks = n(boat.oilTank, 0) > 0 ? oilSafe / n(boat.oilTank, 0) : 0;
+      const fuelCost = fuelSafe * fuelPrice;
+      const oilCost = oilSafe * oilPrice;
+      const totalCost = fuelCost + oilCost;
+      return { timeMinutes, fuel, fuelSafe, oilSafe, fuelTanks, oilTanks, fuelCost, oilCost, totalCost, speed, lph };
+    }
+
+    function calculate() {
+      const boat = selectedBoat();
+      const route = selectedRoute();
+      if (!boat || !route) {
+        $('selectionSummary').innerHTML = '<div class="empty">Πρόσθεσε πρώτα σκάφος και πορεία.</div>';
+        $('results').innerHTML = '';
+        $('comparison').innerHTML = '';
+        return;
+      }
+      const baseDistance = n($('distance').value, route.distance);
+      const tripType = n($('tripType').value, 1);
+      const distance = baseDistance * tripType;
+      const fuelPrice = n($('fuelPrice').value, 2);
+      const oilPrice = n($('oilPrice').value, 15);
+      const safety = n($('safety').value, 10);
+
+      persistSettings();
+      const cruise = calcMode(distance, n(boat.cruiseSpeed), n(boat.fuelCruise), boat, fuelPrice, oilPrice, safety);
+      const max = calcMode(distance, n(boat.maxSpeed), n(boat.fuelMax), boat, fuelPrice, oilPrice, safety);
+      const recommendedKey = cruise.totalCost <= max.totalCost ? 'cruise' : 'max';
+      lastCalc = { boat, route, baseDistance, tripType, distance, fuelPrice, oilPrice, safety, cruise, max, recommendedKey, createdAt: new Date().toISOString() };
+      renderSelectionSummary(lastCalc);
+      renderResults(lastCalc);
+      renderComparison(lastCalc);
+      $('printDate').textContent = `Ημερομηνία: ${displayDate(lastCalc.createdAt)}`;
+    }
+
+    function renderSelectionSummary(c) {
+      const tripText = c.tripType === 2 ? 'Μετάβαση + επιστροφή' : 'Μόνο μετάβαση';
+      $('selectionSummary').innerHTML = `
+        <div class="summary-line"><span>Σκάφος</span><span>${esc(c.boat.name)}</span></div>
+        <div class="summary-line"><span>Πορεία</span><span>${esc(c.route.name)}</span></div>
+        <div class="summary-line"><span>Απόσταση υπολογισμού</span><span>${smart(c.distance)} nm</span></div>
+        <div class="summary-line"><span>Τύπος</span><span>${tripText}</span></div>
+        <div class="summary-line"><span>Βενζίνη / Λάδι</span><span>${euro(c.fuelPrice)} / ${euro(c.oilPrice)}</span></div>
+        <div class="summary-line"><span>Περιθώριο ασφαλείας</span><span>${smart(c.safety)}%</span></div>
+      `;
+    }
+
+    function renderResults(c) {
+      const cards = [];
+      if (state.settings.viewMode === 'both' || c.recommendedKey === 'cruise') cards.push(resultCard('Πλεύση', 'cruise', c.cruise, c));
+      if (state.settings.viewMode === 'both' || c.recommendedKey === 'max') cards.push(resultCard('Μέγιστη', 'max', c.max, c));
+      $('results').innerHTML = cards.join('');
+    }
+
+    function resultCard(title, key, r, c) {
+      const recommended = c.recommendedKey === key;
+      const status = tankStatus(r, c.boat);
+      return `<article class="result ${recommended ? 'recommended' : ''}">
+        <div style="display:flex; justify-content:space-between; gap:10px; align-items:start; margin-bottom:8px;">
+          <h3>${title}</h3>
+          ${recommended ? '<span class="pill accent">Πρόταση</span>' : ''}
+        </div>
+        <div class="metric-grid">
+          ${metric('Ταχύτητα', `${smart(r.speed)} kn`)}
+          ${metric('Χρόνος', humanMinutes(r.timeMinutes), true)}
+          ${metric('Κατανάλωση', `${fmt(r.fuel, 2)} L`)}
+          ${metric('Καύσιμο με ασφάλεια', `${fmt(r.fuelSafe, 2)} L`, true)}
+          ${metric('Δοχεία καυσίμου', Number.isFinite(r.fuelTanks) ? fmt(r.fuelTanks, 3) : '—')}
+          ${metric('Λάδι με ασφάλεια', `${fmt(r.oilSafe, 2)} L`)}
+          ${metric('Κόστος καυσίμου', euro(r.fuelCost))}
+          ${metric('Συνολικό κόστος', euro(r.totalCost), true)}
+        </div>
+        <div class="status ${status.cls}">${status.text}</div>
+      </article>`;
+    }
+    function metric(label, value, primary=false) { return `<div class="metric ${primary ? 'primary' : ''}"><div class="label">${label}</div><div class="value">${value}</div></div>`; }
+    function tankStatus(r, boat) {
+      if (!Number.isFinite(r.fuelTanks)) return {cls:'warn', text:'Δεν έχει οριστεί χωρητικότητα δοχείου καυσίμου.'};
+      if (r.fuelTanks <= 1) return {cls:'ok', text:`Εντός δοχείου: περίπου ${fmt(r.fuelTanks * 100, 1)}% του διαθέσιμου καυσίμου.`};
+      return {cls:'warn', text:`Προσοχή: χρειάζεται περίπου ${fmt(r.fuelTanks, 2)} δοχεία καυσίμου.`};
+    }
+
+    function renderComparison(c) {
+      const maxCost = Math.max(c.cruise.totalCost, c.max.totalCost, 1);
+      const maxTime = Math.max(c.cruise.timeMinutes, c.max.timeMinutes, 1);
+      const diff = c.max.totalCost - c.cruise.totalCost;
+      const cheaper = diff >= 0 ? `Η πλεύση είναι φθηνότερη κατά ${euro(Math.abs(diff))}.` : `Η μέγιστη ταχύτητα είναι φθηνότερη κατά ${euro(Math.abs(diff))}.`;
+      $('comparison').innerHTML = `<h3 style="margin-top:0;">Γρήγορη σύγκριση</h3>
+        <div class="compare">
+          ${barRow('Πλεύση κόστος', c.cruise.totalCost, maxCost, euro(c.cruise.totalCost))}
+          ${barRow('Μέγιστη κόστος', c.max.totalCost, maxCost, euro(c.max.totalCost))}
+          ${barRow('Πλεύση χρόνος', c.cruise.timeMinutes, maxTime, humanMinutes(c.cruise.timeMinutes))}
+          ${barRow('Μέγιστη χρόνος', c.max.timeMinutes, maxTime, humanMinutes(c.max.timeMinutes))}
+        </div>
+        <div class="status ${diff >= 0 ? 'ok' : 'warn'}">${cheaper} Η επιλογή «Πρόταση» βασίζεται μόνο στο μικρότερο συνολικό κόστος, όχι σε καιρό/ασφάλεια/άνεση.</div>`;
+    }
+    function barRow(label, value, max, text) { const pct = Math.max(4, Math.min(100, (value / max) * 100)); return `<div class="bar-row"><span>${label}</span><div class="bar"><span style="width:${pct}%"></span></div><span>${text}</span></div>`; }
+
+    function renderBoats() {
+      const term = $('boatSearch')?.value?.toLowerCase().trim() || '';
+      const rows = state.boats.filter(b => b.name.toLowerCase().includes(term));
+      $('boatsTable').innerHTML = rows.length ? rows.map(b => `<tr>
+        <td><strong>${esc(b.name)}</strong></td><td>${smart(b.cruiseSpeed)} kn</td><td>${smart(b.maxSpeed)} kn</td><td>${smart(b.fuelCruise)}</td><td>${smart(b.fuelMax)}</td><td>${smart(b.fuelTank)} L</td><td>${smart(b.oilTank)} L</td><td>${smart(b.oilRatio)}</td>
+        <td class="actions"><button class="btn small secondary" onclick="editBoat('${esc(b.id)}')">Αλλαγή</button><button class="btn small ghost" onclick="duplicateBoat('${esc(b.id)}')">Αντιγραφή</button><button class="btn small danger" onclick="deleteBoat('${esc(b.id)}')">Διαγραφή</button></td>
+      </tr>`).join('') : '<tr><td colspan="9">Δεν βρέθηκαν σκάφη.</td></tr>';
+    }
+    function clearBoatForm() { ['boatId','boatName','cruiseSpeed','maxSpeed','fuelCruise','fuelMax','fuelTank','oilTank','oilRatio'].forEach(id => $(id).value = id === 'oilTank' || id === 'oilRatio' ? '0' : ''); $('saveBoatBtn').textContent = 'Αποθήκευση σκάφους'; }
+    function editBoat(id) { const b = state.boats.find(x => x.id === id); if(!b) return; setTab('boats'); $('boatId').value=b.id; $('boatName').value=b.name; $('cruiseSpeed').value=b.cruiseSpeed; $('maxSpeed').value=b.maxSpeed; $('fuelCruise').value=b.fuelCruise; $('fuelMax').value=b.fuelMax; $('fuelTank').value=b.fuelTank; $('oilTank').value=b.oilTank; $('oilRatio').value=b.oilRatio; $('saveBoatBtn').textContent='Ενημέρωση σκάφους'; window.scrollTo({top:0, behavior:'smooth'}); }
+    function duplicateBoat(id) { const b = state.boats.find(x => x.id === id); if(!b) return; state.boats.push({...b, id:uid('boat'), name: b.name + ' - αντίγραφο'}); saveState(); renderAll(); toast('Δημιουργήθηκε αντίγραφο σκάφους.'); }
+    function deleteBoat(id) { const b = state.boats.find(x => x.id === id); if(!b) return; if(confirm(`Να διαγραφεί το σκάφος «${b.name}»;`)) { state.boats = state.boats.filter(x => x.id !== id); saveState(); renderAll(); toast('Το σκάφος διαγράφηκε.'); } }
+
+    function renderRoutes() {
+      const term = $('routeSearch')?.value?.toLowerCase().trim() || '';
+      const rows = state.routes.filter(r => (r.name + ' ' + (r.notes||'')).toLowerCase().includes(term));
+      $('routesTable').innerHTML = rows.length ? rows.map(r => `<tr>
+        <td><strong>${esc(r.name)}</strong></td><td>${smart(r.distance)} nm</td><td>${esc(r.notes || '')}</td>
+        <td class="actions"><button class="btn small secondary" onclick="editRoute('${esc(r.id)}')">Αλλαγή</button><button class="btn small ghost" onclick="duplicateRoute('${esc(r.id)}')">Αντιγραφή</button><button class="btn small danger" onclick="deleteRoute('${esc(r.id)}')">Διαγραφή</button></td>
+      </tr>`).join('') : '<tr><td colspan="4">Δεν βρέθηκαν πορείες.</td></tr>';
+    }
+    function clearRouteForm() { ['routeId','routeName','routeDistance','routeNotes'].forEach(id => $(id).value=''); $('saveRouteBtn').textContent='Αποθήκευση πορείας'; }
+    function editRoute(id) { const r = state.routes.find(x => x.id === id); if(!r) return; setTab('routes'); $('routeId').value=r.id; $('routeName').value=r.name; $('routeDistance').value=r.distance; $('routeNotes').value=r.notes || ''; $('saveRouteBtn').textContent='Ενημέρωση πορείας'; window.scrollTo({top:0, behavior:'smooth'}); }
+    function duplicateRoute(id) { const r = state.routes.find(x => x.id === id); if(!r) return; state.routes.push({...r, id:uid('route'), name: r.name + ' - αντίγραφο'}); saveState(); renderAll(); toast('Δημιουργήθηκε αντίγραφο πορείας.'); }
+    function deleteRoute(id) { const r = state.routes.find(x => x.id === id); if(!r) return; if(confirm(`Να διαγραφεί η πορεία «${r.name}»;`)) { state.routes = state.routes.filter(x => x.id !== id); saveState(); renderAll(); toast('Η πορεία διαγράφηκε.'); } }
+
+
+    function selectedCompareBoatA() { return state.boats.find(b => b.id === $('compareBoatA').value); }
+    function selectedCompareBoatB() { return state.boats.find(b => b.id === $('compareBoatB').value); }
+    function selectedCompareRoute() { return state.routes.find(r => r.id === $('compareRoute').value); }
+    function syncCompareDistance(show=true) { const r = selectedCompareRoute(); if (r) $('compareDistance').value = r.distance; if (show) toast('Η απόσταση σύγκρισης επανήλθε από την αποθηκευμένη πορεία.'); }
+    function persistCompareSettings() {
+      state.settings.compareFuelPrice = n($('compareFuelPrice').value, 2);
+      state.settings.compareOilPrice = n($('compareOilPrice').value, 15);
+      state.settings.compareSafety = n($('compareSafety').value, 10);
+      state.settings.compareTripType = $('compareTripType').value;
+      state.settings.compareProfile = $('compareProfile')?.value || 'balanced';
+      state.settings.scoreWeights = readScoreWeights();
+      saveState();
+    }
+    function comparePack(boat, distance, fuelPrice, oilPrice, safety) {
+      return {
+        cruise: calcMode(distance, n(boat.cruiseSpeed), n(boat.fuelCruise), boat, fuelPrice, oilPrice, safety),
+        max: calcMode(distance, n(boat.maxSpeed), n(boat.fuelMax), boat, fuelPrice, oilPrice, safety)
+      };
+    }
+
+    const scoreProfiles = {
+      balanced: {
+        title: 'Ισορροπημένο ταξίδι',
+        description: 'Πρακτική απόφαση για τις περισσότερες διαδρομές: κόστος, χρόνος και κατανάλωση μετράνε περισσότερο, χωρίς να αγνοείται η αυτονομία.',
+        weights: { cost:30, time:25, fuel:20, autonomy:10, margin:5, speed:10 }
+      },
+      economy: {
+        title: 'Οικονομικό ταξίδι',
+        description: 'Για όταν θέλεις να πας έξυπνα και οικονομικά: δίνει μεγάλο βάρος στο κόστος και στα λίτρα ανά ναυτικό μίλι.',
+        weights: { cost:45, time:10, fuel:30, autonomy:10, margin:5, speed:0 }
+      },
+      fast: {
+        title: 'Γρήγορη μετάβαση',
+        description: 'Για όταν προτεραιότητα είναι να φτάσεις γρήγορα: ο χρόνος και η ταχύτητα ανεβαίνουν, το κόστος μετράει λιγότερο.',
+        weights: { cost:20, time:45, fuel:10, autonomy:0, margin:0, speed:25 }
+      },
+      safe: {
+        title: 'Ασφαλές / μεγάλη απόσταση',
+        description: 'Για πιο μακρινές πορείες: δίνει έμφαση στην αυτονομία, στο περιθώριο καυσίμου και στην πιο ήρεμη κατανάλωση.',
+        weights: { cost:15, time:10, fuel:20, autonomy:35, margin:15, speed:5 }
+      }
+    };
+    const scoreWeightIds = { cost:'weightCost', time:'weightTime', fuel:'weightFuel', autonomy:'weightAutonomy', margin:'weightMargin', speed:'weightSpeed' };
+    const scoreMetricLabels = { cost:'Κόστος', time:'Χρόνος', fuel:'L/nm', autonomy:'Αυτονομία', margin:'Περιθώριο', speed:'Ταχύτητα' };
+
+    function clamp(x, min=0, max=100) { return Math.max(min, Math.min(max, x)); }
+    function lowerScore(value, other) {
+      const vals = [value, other].filter(v => Number.isFinite(v) && v >= 0);
+      if (!vals.length) return 0;
+      const best = Math.min(...vals);
+      if (best === 0 && value === 0) return 100;
+      if (value <= 0) return 100;
+      return clamp((best / value) * 100);
+    }
+    function higherScore(value, other) {
+      const top = Math.max(Number.isFinite(value) ? value : 0, Number.isFinite(other) ? other : 0);
+      return top > 0 ? clamp((value / top) * 100) : 0;
+    }
+    function boatScoreValues(boat, r, distance) {
+      const fuelPerNm = distance > 0 ? r.fuelSafe / distance : NaN;
+      const tank = n(boat.fuelTank, 0);
+      const autonomyRatio = r.fuelSafe > 0 && tank > 0 ? tank / r.fuelSafe : 0;
+      const marginRatio = tank > 0 ? (tank - r.fuelSafe) / tank : 0;
+      return {
+        cost: r.totalCost,
+        time: r.timeMinutes,
+        fuel: fuelPerNm,
+        autonomy: clamp(autonomyRatio * 100),
+        margin: clamp(marginRatio * 100),
+        speed: r.speed,
+        display: {
+          cost: euro(r.totalCost),
+          time: humanMinutes(r.timeMinutes),
+          fuel: `${fmt(fuelPerNm, 2)} L/nm`,
+          autonomy: autonomyRatio >= 1 ? 'OK' : `${fmt(autonomyRatio * 100, 0)}%`,
+          margin: `${fmt(clamp(marginRatio * 100), 0)}%`,
+          speed: `${smart(r.speed)} kn`
+        }
+      };
+    }
+    function readScoreWeights() {
+      const profile = $('compareProfile')?.value || 'balanced';
+      let weights = profile === 'custom' ? null : scoreProfiles[profile]?.weights;
+      if (!weights) {
+        weights = Object.fromEntries(Object.entries(scoreWeightIds).map(([key, id]) => [key, n($(id)?.value, 0)]));
+      }
+      return weights;
+    }
+    function setScoreWeightInputs(weights) {
+      Object.entries(scoreWeightIds).forEach(([key, id]) => { if ($(id)) $(id).value = weights[key] ?? 0; });
+    }
+    function activeProfileText() {
+      const profile = $('compareProfile')?.value || 'balanced';
+      if (profile === 'custom') return 'Δικά σου βάρη: άλλαξε τα ποσοστά και δες αμέσως πώς αλλάζει η πρόταση.';
+      return scoreProfiles[profile]?.description || scoreProfiles.balanced.description;
+    }
+    function applyScoreProfile(recalc=true) {
+      if (!$('compareProfile')) return;
+      const profile = $('compareProfile').value || 'balanced';
+      if (profile !== 'custom') setScoreWeightInputs(scoreProfiles[profile]?.weights || scoreProfiles.balanced.weights);
+      if ($('scoreProfileText')) $('scoreProfileText').textContent = activeProfileText();
+      if (recalc) compareBoats();
+    }
+    function scorePair(boatA, boatB, ra, rb, distance, weights) {
+      const a = boatScoreValues(boatA, ra, distance);
+      const b = boatScoreValues(boatB, rb, distance);
+      const metricScores = {
+        cost: [lowerScore(a.cost, b.cost), lowerScore(b.cost, a.cost)],
+        time: [lowerScore(a.time, b.time), lowerScore(b.time, a.time)],
+        fuel: [lowerScore(a.fuel, b.fuel), lowerScore(b.fuel, a.fuel)],
+        autonomy: [a.autonomy, b.autonomy],
+        margin: [a.margin, b.margin],
+        speed: [higherScore(a.speed, b.speed), higherScore(b.speed, a.speed)]
+      };
+      const totalWeight = Object.values(weights).reduce((sum, v) => sum + Math.max(0, n(v, 0)), 0) || 1;
+      const scoreA = Object.entries(weights).reduce((sum, [key, w]) => sum + (metricScores[key]?.[0] || 0) * Math.max(0, n(w, 0)), 0) / totalWeight;
+      const scoreB = Object.entries(weights).reduce((sum, [key, w]) => sum + (metricScores[key]?.[1] || 0) * Math.max(0, n(w, 0)), 0) / totalWeight;
+      return { scoreA, scoreB, detailsA:a, detailsB:b, metricScores, totalWeight };
+    }
+    function scoreCard(name, score, winner, subtitle) {
+      return `<article class="score-card ${winner ? 'winner' : ''}">
+        <div class="score-label">${winner ? 'Προτεινόμενο' : 'Score'}</div>
+        <h3>${esc(name)}</h3>
+        <div class="score-value">${fmt(score, 0)}</div>
+        <div class="score-label">/100 · ${subtitle}</div>
+      </article>`;
+    }
+    function scoreBreakdownRows(scores) {
+      return Object.keys(scoreWeightIds).map(key => `<div class="score-row"><span>${scoreMetricLabels[key]}</span><span>${fmt(scores.metricScores[key][0],0)}</span><span>${fmt(scores.metricScores[key][1],0)}</span></div>`).join('');
+    }
+    function scorePanel(label, boatA, boatB, scores) {
+      const diff = scores.scoreA - scores.scoreB;
+      const winnerA = diff > 0.5;
+      const winnerB = diff < -0.5;
+      const conclusion = Math.abs(diff) <= 0.5
+        ? `Σχεδόν ισοπαλία στο ${label.toLowerCase()}. Η τελική επιλογή εξαρτάται από καιρό, άνεση και φόρτωμα.`
+        : (winnerA ? `${esc(boatA.name)} βγαίνει πιο ολοκληρωμένη επιλογή στο ${label.toLowerCase()} με βάση τα τρέχοντα βάρη.` : `${esc(boatB.name)} βγαίνει πιο ολοκληρωμένη επιλογή στο ${label.toLowerCase()} με βάση τα τρέχοντα βάρη.`);
+      return `<div class="trip-card score-panel">
+        <h3>Smart score · ${label}</h3>
+        <div class="score-results">
+          ${scoreCard(boatA.name, scores.scoreA, winnerA, label)}
+          ${scoreCard(boatB.name, scores.scoreB, winnerB, label)}
+          <article class="score-card">
+            <div class="score-label">Γιατί βγήκε έτσι</div>
+            <div class="score-reason">${conclusion}</div>
+            <div class="score-breakdown">
+              <div class="score-row"><span>Κριτήριο</span><span>Α</span><span>Β</span></div>
+              ${scoreBreakdownRows(scores)}
+            </div>
+          </article>
+        </div>
+      </div>`;
+    }
+    function compareBoats() {
+      const a = selectedCompareBoatA();
+      const b = selectedCompareBoatB();
+      const route = selectedCompareRoute();
+      if (!a || !b || !route) { if ($('boatCompareResults')) $('boatCompareResults').innerHTML = '<div class="empty">Πρόσθεσε πρώτα δύο σκάφη και πορεία.</div>'; return; }
+      const tripType = n($('compareTripType').value, 1);
+      const baseDistance = n($('compareDistance').value, route.distance);
+      const distance = baseDistance * tripType;
+      const fuelPrice = n($('compareFuelPrice').value, 2);
+      const oilPrice = n($('compareOilPrice').value, 15);
+      const safety = n($('compareSafety').value, 10);
+      persistCompareSettings();
+      const ca = comparePack(a, distance, fuelPrice, oilPrice, safety);
+      const cb = comparePack(b, distance, fuelPrice, oilPrice, safety);
+      const c = {a, b, route, baseDistance, distance, tripType, fuelPrice, oilPrice, safety, ca, cb, createdAt:new Date().toISOString()};
+      window.lastBoatCompare = c;
+      renderBoatComparison(c);
+    }
+    function diffVal(b, a) { return b - a; }
+    function diffClass(x, mode='generic') { if (Math.abs(x) < 0.000001) return 'diff-neutral'; if (mode === 'lowerIsBetter') return x > 0 ? 'diff-pos' : 'diff-neg'; if (mode === 'higherIsBetter') return x > 0 ? 'diff-neg' : 'diff-pos'; return x > 0 ? 'diff-pos' : 'diff-neg'; }
+    function diffFmt(x, suffix='', d=2, mode='generic') {
+      const sign = x > 0 ? '+' : '';
+      return `<span class="${diffClass(x, mode)}">${sign}${fmt(x, d)}${suffix}</span>`;
+    }
+    function comparisonMetricRows(modeLabel, ra, rb) {
+      return [
+        ['Ταχύτητα', `${smart(ra.speed)} kn`, `${smart(rb.speed)} kn`, diffFmt(diffVal(rb.speed, ra.speed), ' kn', 2, 'higherIsBetter')],
+        ['Χρόνος', humanMinutes(ra.timeMinutes), humanMinutes(rb.timeMinutes), diffFmt(diffVal(rb.timeMinutes, ra.timeMinutes), ' λ', 2, 'lowerIsBetter')],
+        ['Βενζίνη', `${fmt(ra.fuel,2)} L`, `${fmt(rb.fuel,2)} L`, diffFmt(diffVal(rb.fuel, ra.fuel), ' L', 2, 'lowerIsBetter')],
+        ['Βενζίνη + ασφάλεια', `${fmt(ra.fuelSafe,2)} L`, `${fmt(rb.fuelSafe,2)} L`, diffFmt(diffVal(rb.fuelSafe, ra.fuelSafe), ' L', 2, 'lowerIsBetter')],
+        ['Δοχεία καυσίμου', Number.isFinite(ra.fuelTanks) ? fmt(ra.fuelTanks,3) : '—', Number.isFinite(rb.fuelTanks) ? fmt(rb.fuelTanks,3) : '—', Number.isFinite(ra.fuelTanks) && Number.isFinite(rb.fuelTanks) ? diffFmt(diffVal(rb.fuelTanks, ra.fuelTanks), '', 3, 'lowerIsBetter') : '—'],
+        ['Λάδι + ασφάλεια', `${fmt(ra.oilSafe,2)} L`, `${fmt(rb.oilSafe,2)} L`, diffFmt(diffVal(rb.oilSafe, ra.oilSafe), ' L', 2, 'lowerIsBetter')],
+        ['Κόστος βενζίνης', euro(ra.fuelCost), euro(rb.fuelCost), diffFmt(diffVal(rb.fuelCost, ra.fuelCost), ' €', 2, 'lowerIsBetter')],
+        ['Συνολικό κόστος', euro(ra.totalCost), euro(rb.totalCost), diffFmt(diffVal(rb.totalCost, ra.totalCost), ' €', 2, 'lowerIsBetter')]
+      ].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    }
+    function renderBoatComparison(c) {
+      const tripText = c.tripType === 2 ? 'Μετάβαση + επιστροφή' : 'Μόνο μετάβαση';
+      const cruiseCostDiff = c.cb.cruise.totalCost - c.ca.cruise.totalCost;
+      const maxCostDiff = c.cb.max.totalCost - c.ca.max.totalCost;
+      const weights = readScoreWeights();
+      const cruiseScores = scorePair(c.a, c.b, c.ca.cruise, c.cb.cruise, c.distance, weights);
+      const maxScores = scorePair(c.a, c.b, c.ca.max, c.cb.max, c.distance, weights);
+      const profile = $('compareProfile')?.value || 'balanced';
+      const profileTitle = profile === 'custom' ? 'Δικά μου βάρη' : (scoreProfiles[profile]?.title || 'Ισορροπημένο ταξίδι');
+      $('boatCompareResults').innerHTML = `
+        <div class="trip-card">
+          <h3>Σύνοψη σύγκρισης</h3>
+          <div class="grid four">
+            ${metric('Σκάφος Α', esc(c.a.name), true)}
+            ${metric('Σκάφος Β', esc(c.b.name), true)}
+            ${metric('Πορεία', esc(c.route.name))}
+            ${metric('Απόσταση υπολογισμού', `${smart(c.distance)} nm`)}
+            ${metric('Τύπος', tripText)}
+            ${metric('Βενζίνη / Λάδι', `${euro(c.fuelPrice)} / ${euro(c.oilPrice)}`)}
+            ${metric('Ασφάλεια', `${smart(c.safety)}%`)}
+            ${metric('Προφίλ score', esc(profileTitle))}
+          </div>
+        </div>
+        <div style="margin-top:16px; display:grid; gap:16px;">
+          ${scorePanel('Πλεύση', c.a, c.b, cruiseScores)}
+          ${scorePanel('Μέγιστη', c.a, c.b, maxScores)}
+        </div>
+        <div class="table-wrap" style="margin-top:16px;">
+          <table>
+            <thead><tr><th colspan="4">Πλεύση</th></tr><tr><th>Πεδίο</th><th>${esc(c.a.name)}</th><th>${esc(c.b.name)}</th><th>Διαφορά Β - Α</th></tr></thead>
+            <tbody>${comparisonMetricRows('Πλεύση', c.ca.cruise, c.cb.cruise)}</tbody>
+          </table>
+        </div>
+        <div class="table-wrap" style="margin-top:16px;">
+          <table>
+            <thead><tr><th colspan="4">Μέγιστη</th></tr><tr><th>Πεδίο</th><th>${esc(c.a.name)}</th><th>${esc(c.b.name)}</th><th>Διαφορά Β - Α</th></tr></thead>
+            <tbody>${comparisonMetricRows('Μέγιστη', c.ca.max, c.cb.max)}</tbody>
+          </table>
+        </div>
+        <div class="status ${cruiseCostDiff <= 0 && maxCostDiff <= 0 ? 'warn' : 'ok'}" style="margin-top:14px;">
+          Οι διαφορές υπολογίζονται ως <strong>Σκάφος Β - Σκάφος Α</strong>. Το Smart score είναι ενδεικτική αξιολόγηση 0–100 με βάση τα βάρη που διάλεξες· δεν αντικαθιστά έλεγχο καιρού, θάλασσας, φόρτωσης και πραγματικών συνθηκών.
+        </div>`;
+    }
+    function compareCsv() {
+      if (!window.lastBoatCompare) compareBoats();
+      const c = window.lastBoatCompare;
+      const rows = [
+        ['Σύγκριση σκαφών'], ['Σκάφος Α', c.a.name], ['Σκάφος Β', c.b.name], ['Πορεία', c.route.name], ['Απόσταση nm', c.distance], ['Βενζίνη €/L', c.fuelPrice], ['Λάδι €/L', c.oilPrice], ['Ασφάλεια %', c.safety], [],
+        ['Προφίλ score', $('compareProfile')?.value || 'balanced'],
+        ['Βάρη score', JSON.stringify(readScoreWeights())],
+        [],
+        ['Λειτουργία','Πεδίο','Σκάφος Α','Σκάφος Β','Διαφορά Β-Α'],
+        ...scoreRowsForCsv('Πλεύση', c.a, c.b, c.ca.cruise, c.cb.cruise, c.distance),
+        ...compareRowsForCsv('Πλεύση', c.ca.cruise, c.cb.cruise),
+        ...scoreRowsForCsv('Μέγιστη', c.a, c.b, c.ca.max, c.cb.max, c.distance),
+        ...compareRowsForCsv('Μέγιστη', c.ca.max, c.cb.max)
+      ];
+      return '\ufeff' + rows.map(row => row.map(csvEscape).join(';')).join('\n');
+    }
+    function scoreRowsForCsv(label, boatA, boatB, ra, rb, distance) {
+      const scores = scorePair(boatA, boatB, ra, rb, distance, readScoreWeights());
+      return [[label, 'Smart score 0-100', fmt(scores.scoreA,0), fmt(scores.scoreB,0), fmt(scores.scoreB - scores.scoreA,0)]];
+    }
+    function compareRowsForCsv(label, ra, rb) {
+      return [
+        [label,'Ταχύτητα kn', ra.speed, rb.speed, rb.speed - ra.speed],
+        [label,'Χρόνος λεπτά', ra.timeMinutes, rb.timeMinutes, rb.timeMinutes - ra.timeMinutes],
+        [label,'Βενζίνη L', ra.fuel, rb.fuel, rb.fuel - ra.fuel],
+        [label,'Βενζίνη + ασφάλεια L', ra.fuelSafe, rb.fuelSafe, rb.fuelSafe - ra.fuelSafe],
+        [label,'Λάδι + ασφάλεια L', ra.oilSafe, rb.oilSafe, rb.oilSafe - ra.oilSafe],
+        [label,'Συνολικό κόστος €', ra.totalCost, rb.totalCost, rb.totalCost - ra.totalCost]
+      ];
+    }
+    function renderLinks() {
+      const grid = $('linksGrid');
+      if (!grid) return;
+      grid.innerHTML = state.links.map(link => `<article class="link-card">
+        <h3>${esc(link.title)}</h3>
+        <p>${esc(link.description || '')}</p>
+        <div class="link-url">${esc(link.url)}</div>
+        <a class="btn" href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">Άνοιγμα link</a>
+      </article>`).join('');
+    }
+    let deferredInstallPrompt = null;
+    function updatePwaStatus(message) { if ($('pwaStatus')) $('pwaStatus').innerHTML = message; }
+
+    function currentReportObject() {
+      if (!lastCalc) calculate();
+      const c = lastCalc;
+      return {
+        date: c.createdAt,
+        boat: c.boat.name,
+        route: c.route.name,
+        tripType: c.tripType === 2 ? 'Μετάβαση + επιστροφή' : 'Μόνο μετάβαση',
+        distanceNm: c.distance,
+        fuelPrice: c.fuelPrice,
+        oilPrice: c.oilPrice,
+        safetyPercent: c.safety,
+        cruiseTime: humanMinutes(c.cruise.timeMinutes),
+        cruiseFuelSafeL: c.cruise.fuelSafe,
+        cruiseCost: c.cruise.totalCost,
+        maxTime: humanMinutes(c.max.timeMinutes),
+        maxFuelSafeL: c.max.fuelSafe,
+        maxCost: c.max.totalCost,
+        recommended: c.recommendedKey === 'cruise' ? 'Πλεύση' : 'Μέγιστη'
+      };
+    }
+    function saveTripToHistory() {
+      const r = currentReportObject();
+      state.history.unshift({ id: uid('trip'), ...r });
+      state.history = state.history.slice(0, 150);
+      saveState(); renderHistory(); toast('Το ταξίδι αποθηκεύτηκε στο ιστορικό.');
+    }
+    function renderHistory() {
+      const list = $('historyList');
+      if (!list) return;
+      if (!state.history.length) { list.innerHTML = '<div class="empty">Δεν έχεις αποθηκεύσει ακόμα ταξίδια.</div>'; return; }
+      list.innerHTML = state.history.map(h => `<article class="history-card">
+        <div class="history-top"><strong>${esc(h.boat)} · ${esc(h.route)}</strong><span class="pill accent">${esc(h.recommended)}</span></div>
+        <div class="history-meta"><span class="pill ok">${smart(h.distanceNm)} nm</span><span class="pill">${esc(h.tripType)}</span><span class="pill">${displayDate(h.date)}</span></div>
+        <div class="selection-summary">
+          <div class="summary-line"><span>Πλεύση</span><span>${esc(h.cruiseTime)} · ${fmt(h.cruiseFuelSafeL,2)} L · ${euro(h.cruiseCost)}</span></div>
+          <div class="summary-line"><span>Μέγιστη</span><span>${esc(h.maxTime)} · ${fmt(h.maxFuelSafeL,2)} L · ${euro(h.maxCost)}</span></div>
+        </div>
+        <div class="actions"><button class="btn small danger" onclick="deleteHistory('${esc(h.id)}')">Διαγραφή</button></div>
+      </article>`).join('');
+    }
+    function deleteHistory(id) { state.history = state.history.filter(h => h.id !== id); saveState(); renderHistory(); }
+
+    function csvEscape(x) { return '"' + String(x ?? '').replace(/"/g, '""') + '"'; }
+    function downloadText(filename, text, type='text/plain;charset=utf-8') {
+      const blob = new Blob([text], {type});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+    }
+    function reportCsv() {
+      const r = currentReportObject();
+      const rows = [
+        ['Πεδίο','Τιμή'], ['Ημερομηνία', displayDate(r.date)], ['Σκάφος', r.boat], ['Πορεία', r.route], ['Τύπος', r.tripType], ['Απόσταση nm', r.distanceNm], ['Βενζίνη €/L', r.fuelPrice], ['Λάδι €/L', r.oilPrice], ['Ασφάλεια %', r.safetyPercent],
+        [], ['Λειτουργία','Χρόνος','Καύσιμο με ασφάλεια L','Συνολικό κόστος'], ['Πλεύση', r.cruiseTime, fmt(r.cruiseFuelSafeL,2), euro(r.cruiseCost)], ['Μέγιστη', r.maxTime, fmt(r.maxFuelSafeL,2), euro(r.maxCost)], ['Πρόταση', r.recommended]
+      ];
+      return '\ufeff' + rows.map(row => row.map(csvEscape).join(';')).join('\n');
+    }
+    function historyCsv() {
+      const rows = [['Ημερομηνία','Σκάφος','Πορεία','Τύπος','Απόσταση nm','Πλεύση χρόνος','Πλεύση καύσιμο L','Πλεύση κόστος','Μέγιστη χρόνος','Μέγιστη καύσιμο L','Μέγιστη κόστος','Πρόταση']];
+      state.history.forEach(h => rows.push([displayDate(h.date), h.boat, h.route, h.tripType, h.distanceNm, h.cruiseTime, fmt(h.cruiseFuelSafeL,2), euro(h.cruiseCost), h.maxTime, fmt(h.maxFuelSafeL,2), euro(h.maxCost), h.recommended]));
+      return '\ufeff' + rows.map(row => row.map(csvEscape).join(';')).join('\n');
+    }
+
+    function setTab(tab) {
+      $all('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      $all('.tab-panel').forEach(p => p.classList.add('hidden'));
+      $(`panel-${tab}`).classList.remove('hidden');
+    }
+    function setViewMode(mode, recalc=true) {
+      state.settings.viewMode = mode;
+      $all('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      if (recalc) { saveState(); calculate(); }
+    }
+
+    $all('.tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+    $all('[data-jump]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.jump)));
+    $all('.mode-btn').forEach(b => b.addEventListener('click', () => setViewMode(b.dataset.mode)));
+    ['calcBoat','distance','fuelPrice','oilPrice','safety','tripType'].forEach(id => $(id).addEventListener('input', calculate));
+    $('calcRoute').addEventListener('change', () => { syncDistance(false); calculate(); });
+    $('calculateBtn').addEventListener('click', calculate);
+    ['compareBoatA','compareBoatB','compareDistance','compareFuelPrice','compareOilPrice','compareSafety','compareTripType'].forEach(id => $(id).addEventListener('input', compareBoats));
+    $('compareProfile').addEventListener('change', () => applyScoreProfile(true));
+    $all('.score-weight').forEach(input => input.addEventListener('input', () => { $('compareProfile').value = 'custom'; if ($('scoreProfileText')) $('scoreProfileText').textContent = activeProfileText(); compareBoats(); }));
+    $('compareRoute').addEventListener('change', () => { syncCompareDistance(false); compareBoats(); });
+    $('compareBtn').addEventListener('click', compareBoats);
+    $('resetCompareDistanceBtn').addEventListener('click', () => { syncCompareDistance(true); compareBoats(); });
+    $('swapBoatsBtn').addEventListener('click', () => { const a = $('compareBoatA').value; $('compareBoatA').value = $('compareBoatB').value; $('compareBoatB').value = a; compareBoats(); });
+    $('exportCompareCsvBtn').addEventListener('click', () => downloadText(`boat-comparison-${todayStamp()}.csv`, compareCsv(), 'text/csv;charset=utf-8'));
+    $('printCompareBtn').addEventListener('click', () => { setTab('compare'); compareBoats(); window.print(); });
+    $('resetDistanceBtn').addEventListener('click', () => { syncDistance(true); calculate(); });
+    ['printBtn','quickPrintBtn'].forEach(id => $(id).addEventListener('click', () => { calculate(); window.print(); }));
+    ['saveReportBtn','quickSaveReportBtn'].forEach(id => $(id).addEventListener('click', saveTripToHistory));
+    $('exportCsvBtn').addEventListener('click', () => downloadText(`boat-trip-report-${todayStamp()}.csv`, reportCsv(), 'text/csv;charset=utf-8'));
+
+    $('boatForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const id = $('boatId').value || uid('boat');
+      const boat = { id, name: $('boatName').value.trim(), cruiseSpeed:n($('cruiseSpeed').value), maxSpeed:n($('maxSpeed').value), fuelCruise:n($('fuelCruise').value), fuelMax:n($('fuelMax').value), fuelTank:n($('fuelTank').value), oilTank:n($('oilTank').value), oilRatio:n($('oilRatio').value) };
+      if (!boat.name) return toast('Συμπλήρωσε όνομα σκάφους.');
+      const idx = state.boats.findIndex(b => b.id === id); if (idx >= 0) state.boats[idx] = boat; else state.boats.push(boat);
+      saveState(); clearBoatForm(); renderAll(); toast('Το σκάφος αποθηκεύτηκε.');
+    });
+    $('clearBoatBtn').addEventListener('click', clearBoatForm);
+    $('boatSearch').addEventListener('input', renderBoats);
+
+    $('routeForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const id = $('routeId').value || uid('route');
+      const route = { id, name: $('routeName').value.trim(), distance:n($('routeDistance').value), notes:$('routeNotes').value.trim() };
+      if (!route.name || route.distance <= 0) return toast('Συμπλήρωσε όνομα και θετική απόσταση.');
+      const idx = state.routes.findIndex(r => r.id === id); if (idx >= 0) state.routes[idx] = route; else state.routes.push(route);
+      saveState(); clearRouteForm(); renderAll(); toast('Η πορεία αποθηκεύτηκε.');
+    });
+    $('clearRouteBtn').addEventListener('click', clearRouteForm);
+    $('routeSearch').addEventListener('input', renderRoutes);
+
+    $('exportHistoryBtn').addEventListener('click', () => downloadText(`boat-trip-history-${todayStamp()}.csv`, historyCsv(), 'text/csv;charset=utf-8'));
+    $('clearHistoryBtn').addEventListener('click', () => { if(confirm('Να καθαριστεί όλο το ιστορικό;')) { state.history=[]; saveState(); renderHistory(); toast('Το ιστορικό καθαρίστηκε.'); }});
+    $('exportBackupBtn').addEventListener('click', () => downloadText(`boat-trip-backup-${todayStamp()}.json`, JSON.stringify(state, null, 2), 'application/json;charset=utf-8'));
+    $('importBackup').addEventListener('change', async e => {
+      const file = e.target.files[0]; if(!file) return;
+      try { const parsed = JSON.parse(await file.text()); state = normalizeState(parsed); saveState(); renderAll(); toast('Το backup εισήχθη επιτυχώς.'); }
+      catch(err) { console.warn(err); toast('Δεν μπόρεσα να διαβάσω το backup.'); }
+      finally { e.target.value = ''; }
+    });
+    $('resetAllBtn').addEventListener('click', () => { if(confirm('Να χαθούν οι αλλαγές και να γυρίσει στα αρχικά δεδομένα;')) { state = clone(defaults); saveState(); renderAll(); toast('Έγινε επαναφορά.'); }});
+    $('installPwaBtn').addEventListener('click', async () => {
+      if (!deferredInstallPrompt) { toast('Δεν είναι διαθέσιμη αυτόματη εγκατάσταση εδώ. Άνοιξε την εφαρμογή από HTTPS link ή χρησιμοποίησε Add to Home Screen.'); return; }
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice.catch(() => null);
+      deferredInstallPrompt = null;
+      $('installPwaBtn').disabled = true;
+      updatePwaStatus('Το αίτημα εγκατάστασης ολοκληρώθηκε. Αν δεν εγκαταστάθηκε, δοκίμασε από το μενού του browser: Install app / Add to Home Screen.');
+    });
+
+    window.editBoat = editBoat; window.deleteBoat = deleteBoat; window.duplicateBoat = duplicateBoat;
+    window.editRoute = editRoute; window.deleteRoute = deleteRoute; window.duplicateRoute = duplicateRoute;
+    window.deleteHistory = deleteHistory;
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if ($('installPwaBtn')) $('installPwaBtn').disabled = false;
+      updatePwaStatus('Η εφαρμογή είναι έτοιμη για εγκατάσταση. Πάτησε <strong>Εγκατάσταση ως εφαρμογή</strong>.');
+    });
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      if ($('installPwaBtn')) $('installPwaBtn').disabled = true;
+      updatePwaStatus('Η εφαρμογή εγκαταστάθηκε επιτυχώς στη συσκευή σου.');
+      toast('Η εφαρμογή εγκαταστάθηκε.');
+    });
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => updatePwaStatus('Το PWA είναι ενεργό: manifest + service worker έχουν φορτώσει. Αν ο browser το υποστηρίζει, θα εμφανιστεί επιλογή εγκατάστασης.'))
+        .catch(() => updatePwaStatus('Δεν μπόρεσα να ενεργοποιήσω service worker. Έλεγξε ότι η εφαρμογή ανοίγει από HTTPS/localhost.'));
+    } else {
+      updatePwaStatus('Η εφαρμογή λειτουργεί τοπικά, αλλά για εγκατάσταση ως PWA πρέπει να ανοίξει από HTTPS link ή localhost.');
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
