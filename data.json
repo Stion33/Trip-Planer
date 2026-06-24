@@ -1,0 +1,304 @@
+{
+  "boats": [
+    {
+      "id": "boat-galini",
+      "name": "Γαλήνη",
+      "cruiseSpeed": 20,
+      "maxSpeed": 30,
+      "fuelCruise": 10,
+      "fuelMax": 18,
+      "fuelTank": 25,
+      "oilTank": 2,
+      "oilRatio": 0.02
+    },
+    {
+      "id": "boat-rib-620",
+      "name": "Φουσκωτό 6.2m 120HP",
+      "cruiseSpeed": 24,
+      "maxSpeed": 38,
+      "fuelCruise": 24,
+      "fuelMax": 42,
+      "fuelTank": 140,
+      "oilTank": 0,
+      "oilRatio": 0
+    },
+    {
+      "id": "boat-rafnar-1200",
+      "name": "Rafnar 1200 T-Top",
+      "cruiseSpeed": 32,
+      "maxSpeed": 50,
+      "fuelCruise": 128,
+      "fuelMax": 190,
+      "fuelTank": 900,
+      "oilTank": 0,
+      "oilRatio": 0
+    },
+    {
+      "id": "boat-technohull-38",
+      "name": "Technohull 38 Grand Sport",
+      "cruiseSpeed": 35,
+      "maxSpeed": 73,
+      "fuelCruise": 60,
+      "fuelMax": 160,
+      "fuelTank": 600,
+      "oilTank": 0,
+      "oilRatio": 0
+    },
+    {
+      "id": "boat-technohull-alpha-50",
+      "name": "Technohull Alpha 50",
+      "cruiseSpeed": 55,
+      "maxSpeed": 86,
+      "fuelCruise": 320,
+      "fuelMax": 500,
+      "fuelTank": 1800,
+      "oilTank": 0,
+      "oilRatio": 0
+    },
+    {
+      "id": "boat-hnc-660",
+      "name": "Hnc 660 140hp (Ενοικίαση)",
+      "cruiseSpeed": 32,
+      "maxSpeed": 40,
+      "fuelCruise": 30,
+      "fuelMax": 55,
+      "fuelTank": 150,
+      "oilTank": 0,
+      "oilRatio": 0
+    },
+    {
+      "id": "boat-saxdor-320",
+      "name": "Saxdor 320 GTO",
+      "cruiseSpeed": 24.7,
+      "maxSpeed": 52.5,
+      "fuelCruise": 56,
+      "fuelMax": 120,
+      "fuelTank": 428,
+      "oilTank": 0,
+      "oilRatio": 0
+    },
+    {
+      "id": "boat-saxdor-400",
+      "name": "Saxdor 400 GTO",
+      "cruiseSpeed": 35,
+      "maxSpeed": 45,
+      "fuelCruise": 140,
+      "fuelMax": 220,
+      "fuelTank": 1000,
+      "oilTank": 0,
+      "oilRatio": 0
+    }
+  ],
+  "routes": [
+    {
+      "id": "route-mati-evia",
+      "name": "Μάτι - Εύβοια",
+      "distance": 12.5,
+      "notes": "Αρχικά: 10 με 15"
+    },
+    {
+      "id": "route-mati-sounio",
+      "name": "Μάτι - Σούνιο",
+      "distance": 26,
+      "notes": ""
+    },
+    {
+      "id": "route-mati-lavrio",
+      "name": "Μάτι - Λαύριο",
+      "distance": 23,
+      "notes": ""
+    },
+    {
+      "id": "route-mati-makronisos",
+      "name": "Μάτι - Μακρόνησος",
+      "distance": 23,
+      "notes": ""
+    },
+    {
+      "id": "route-mati-kea",
+      "name": "Μάτι - Κέα",
+      "distance": 30,
+      "notes": ""
+    },
+    {
+      "id": "route-kea-polyegos",
+      "name": "Κέα - Πολύεγος",
+      "distance": 56,
+      "notes": ""
+    },
+    {
+      "id": "route-mati-andros",
+      "name": "Μάτι - Άνδρος",
+      "distance": 45,
+      "notes": "Αρχικά: 35 με 55"
+    },
+    {
+      "id": "route-anavyssos-paros",
+      "name": "Ανάβυσσος - Πάρος",
+      "distance": 75,
+      "notes": ""
+    },
+    {
+      "id": "route-anavyssos-kea",
+      "name": "Ανάβυσσος - Κέα",
+      "distance": 23,
+      "notes": ""
+    },
+    {
+      "id": "route-anavyssos-kythnos",
+      "name": "Ανάβυσσος - Κύθνος",
+      "distance": 33,
+      "notes": ""
+    },
+    {
+      "id": "route-anavyssos-koufonisia",
+      "name": "Ανάβυσσος - Κουφονήσια",
+      "distance": 110,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-polyegos",
+      "name": "Φάληρο - Πολύεγος",
+      "distance": 85,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-ydra",
+      "name": "Φάληρο - Ύδρα",
+      "distance": 36,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-sounio",
+      "name": "Φάληρο - Σούνιο",
+      "distance": 25,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-kythnos",
+      "name": "Φάληρο - Κύθνος",
+      "distance": 47,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-aegina",
+      "name": "Φάληρο - Αίγινα",
+      "distance": 15.5,
+      "notes": "Αρχικά: 13 με 18"
+    },
+    {
+      "id": "route-faliro-paros",
+      "name": "Φάληρο - Πάρος",
+      "distance": 90,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-agios-nikolaos",
+      "name": "Φάληρο - Άγιος Νικόλαος",
+      "distance": 170,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-siteia",
+      "name": "Φάληρο - Σητεία",
+      "distance": 170,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-gavdos",
+      "name": "Φάληρο - Γαύδος",
+      "distance": 200,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-heraklion",
+      "name": "Φάληρο - Ηράκλειο",
+      "distance": 170,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-chania",
+      "name": "Φάληρο - Χανιά",
+      "distance": 150,
+      "notes": ""
+    },
+    {
+      "id": "route-faliro-santorini",
+      "name": "Φάληρο - Σαντορίνη",
+      "distance": 125,
+      "notes": ""
+    }
+  ],
+  "rentals": [
+    {
+      "id": "rb1",
+      "name": "HNC 660 140hp",
+      "day": 280,
+      "cruiseSpeed": 32,
+      "maxSpeed": 40,
+      "fuelCruise": 30,
+      "fuelMax": 55,
+      "fuelTank": 150,
+      "oilRatio": 0,
+      "selected": true
+    },
+    {
+      "id": "rb2",
+      "name": "Saxdor 320 GTO",
+      "day": 950,
+      "cruiseSpeed": 24.7,
+      "maxSpeed": 52.5,
+      "fuelCruise": 56,
+      "fuelMax": 120,
+      "fuelTank": 428,
+      "oilRatio": 0,
+      "selected": true
+    },
+    {
+      "id": "rb3",
+      "name": "Technohull 38 GS",
+      "day": 1200,
+      "cruiseSpeed": 35,
+      "maxSpeed": 73,
+      "fuelCruise": 60,
+      "fuelMax": 160,
+      "fuelTank": 600,
+      "oilRatio": 0,
+      "selected": true
+    }
+  ],
+  "trips": [],
+  "settings": {
+    "fuelPrice": 2,
+    "oilPrice": 15,
+    "safety": 10,
+    "tripType": "1",
+    "rentDays": 1,
+    "rentProfile": "balanced",
+    "w": {
+      "cost": 30,
+      "time": 20,
+      "fuel": 15,
+      "range": 15,
+      "speed": 10,
+      "tank": 10
+    }
+  },
+  "links": [
+    {
+      "title": "Υπολογισμός αποστάσεων",
+      "url": "https://map.openseamap.org/",
+      "note": "OpenSeaMap για χάρτη και διαδρομές"
+    },
+    {
+      "title": "Καιρός / κύματα",
+      "url": "https://www.windy.com/-Waves-waves?waves,38.065,24.583,6",
+      "note": "Windy waves και άνεμος"
+    },
+    {
+      "title": "Ναυτικοί χάρτες",
+      "url": "https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p",
+      "note": "Garmin marine chart viewer"
+    }
+  ]
+}
