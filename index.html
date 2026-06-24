@@ -213,7 +213,9 @@ $('measureBtn').onclick=measureNm;
 $('openSeaMapBtn').onclick=()=>open('https://map.openseamap.org/','_blank');
 $('openWindyBtn').onclick=()=>open('https://www.windy.com/-Waves-waves?waves,38.065,24.583,6','_blank');
 $('openChartsBtn').onclick=()=>open('https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p','_blank');
-$('openChartsPanelBtn').onclick=()=>open('https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p','_blank');
+if ($('openChartsPanelBtn')) {
+  $('openChartsPanelBtn').onclick = () => open('https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p','_blank');
+}
 $$('.tab').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 $$('.subtab').forEach(b=>b.onclick=()=>{$$('.subtab').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('#tripPage .drawer').forEach(d=>d.classList.remove('active'));$('trip-'+b.dataset.trip).classList.add('active')});
 $('fab').onclick=()=>{let p=document.querySelector('.page.active').id, d=document.querySelector('#tripPage .drawer.active')?.id; if(p==='rentPage')$('newRentBtn').click(); else if(d==='trip-boats')$('newBoatBtn').click(); else if(d==='trip-destinations')$('newRouteBtn').click(); else toast('Διάλεξε προορισμό ή σκάφος για προσθήκη')};
