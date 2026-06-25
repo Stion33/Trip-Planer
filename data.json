@@ -284,21 +284,5 @@
       "tank": 10
     }
   },
-  "links": [
-    {
-      "title": "Υπολογισμός αποστάσεων",
-      "url": "https://map.openseamap.org/",
-      "note": "OpenSeaMap για χάρτη και διαδρομές"
-    },
-    {
-      "title": "Καιρός / κύματα",
-      "url": "https://www.windy.com/-Waves-waves?waves,38.065,24.583,6",
-      "note": "Windy waves και άνεμος"
-    },
-    {
-      "title": "Ναυτικοί χάρτες",
-      "url": "https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p",
-      "note": "Garmin marine chart viewer"
-    }
-  ]
+  "links": []
 }
