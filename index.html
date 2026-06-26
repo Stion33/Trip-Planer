@@ -2243,16 +2243,7 @@
 
 
     body.navFullscreen .navGpsBar {
-      position: fixed;
-      left: 6px;
-      right: 58px;
-      bottom: calc(56px + env(safe-area-inset-bottom));
-      z-index: 1120;
-      margin: 0;
-      background: rgba(255, 255, 255, .90);
-      backdrop-filter: blur(10px);
-      padding: 6px;
-      border-radius: 14px
+      display: none !important;
     }
 
     body.navFullscreen .navGpsBar #startNavBtn {
@@ -2550,7 +2541,7 @@
           </div>
           <div class="navGpsBar" id="navGpsBar">
             <button class="btn" id="startNavBtn">▶ GPS</button>
-            <div class="gpsStatus" id="gpsStatus">GPS κλειστό · βάση Παλιό Φάληρο</div>
+            <div class="gpsStatus" id="gpsStatus">GPS κλειστό</div>
           </div>
           <div class="liveMap panning" id="liveMap">
             <div class="mapRot" id="mapRot">
@@ -2879,7 +2870,7 @@
     function handleDeviceOrientation(e) { let h = NaN; if (Number.isFinite(e.webkitCompassHeading)) h = e.webkitCompassHeading; else if (Number.isFinite(e.alpha)) h = 360 - e.alpha; if (Number.isFinite(h)) { navState.compassHeading = normDeg(h); if (!navState.pos || navState.speed < 0.8) { navState.heading = navState.compassHeading; navState.headingSource = 'compass'; drawNavMap(); } } }
     async function startCompassHeading() { if (navState.compassReady) return; try { if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') { let res = await DeviceOrientationEvent.requestPermission(); if (res !== 'granted') return; } window.addEventListener('deviceorientation', handleDeviceOrientation, true); window.addEventListener('deviceorientationabsolute', handleDeviceOrientation, true); navState.compassReady = true; } catch (e) { console.warn('Compass heading unavailable', e) } }
     function updateNavPos(pos) { let c = pos.coords, prev = navState.pos, now = { lat: c.latitude, lon: c.longitude, t: Date.now() }; navState.prev = prev || navState.prev; navState.pos = now; updateWeatherForPosition(now); if (navState.followCenter && !navState.drag) navState.center = now; navState.speed = Number.isFinite(c.speed) ? Math.max(0, c.speed * 1.943844) : 0; let d = prev ? havNm(prev, now) : NaN; if (prev && navFuelBoat()) { let dt = Math.max(0, (now.t - (prev.t || now.t)) / 3600000); if (Number.isFinite(d) && d > 0.001 && d < 1 && dt > 0 && dt < 0.25) { let kn = navState.speed || d / dt; navState.fuelNm += d; navState.fuelL += navFuelRate(navFuelBoat(), kn) * dt } } let gpsHeading = (Number.isFinite(c.heading) && c.heading >= 0) ? normDeg(c.heading) : NaN; let moveHeading = (prev && Number.isFinite(d) && d > 0.0006) ? bearing(prev, now) : NaN; if (Number.isFinite(gpsHeading) && navState.speed > 0.8) { navState.heading = gpsHeading; navState.headingSource = 'gps' } else if (Number.isFinite(moveHeading)) { navState.heading = moveHeading; navState.headingSource = 'movement' } else if (Number.isFinite(navState.compassHeading)) { navState.heading = navState.compassHeading; navState.headingSource = 'compass' } updateGpsUi(); drawNavMap() }
-    function updateGpsUi(msg) { let on = navState.watch !== null && navState.watch !== undefined, btn = $('startNavBtn'), st = $('gpsStatus'); if (btn) btn.textContent = on ? '■ stop GPS' : '▶ GPS'; if (st) { st.classList.toggle('on', on); let base = navState.pos ? `${navState.pos.lat.toFixed(5)}, ${navState.pos.lon.toFixed(5)}` : 'βάση Παλιό Φάληρο'; st.textContent = msg || (on ? 'GPS ενεργό · ' + base : 'GPS κλειστό · ' + base) } }
+    function updateGpsUi(msg) { let on = navState.watch !== null && navState.watch !== undefined, btn = $('startNavBtn'), st = $('gpsStatus'); if (btn) btn.textContent = on ? '■ stop GPS' : '▶ GPS'; if (st) { st.classList.toggle('on', on); let base = navState.pos ? `${navState.pos.lat.toFixed(5)}, ${navState.pos.lon.toFixed(5)}` : 'βάση'; st.textContent = msg || (on ? 'GPS ενεργό · ' + base : 'GPS κλειστό · ' + base) } }
     function stopNav() { if (navState.watch !== null && navState.watch !== undefined) { try { navigator.geolocation.clearWatch(navState.watch) } catch (e) { console.warn('GPS stop failed', e) } } navState.watch = null; updateGpsUi('GPS κλειστό · κρατήθηκε η τελευταία θέση'); toast('GPS stop') }
     function startNav() { if (!navigator.geolocation) { toast('Δεν υποστηρίζεται GPS'); return } if (navState.watch !== null && navState.watch !== undefined) { stopNav(); return } startCompassHeading(); updateGpsUi('Ζητάω GPS…'); navState.watch = navigator.geolocation.watchPosition(updateNavPos, e => { updateGpsUi(e.code === 1 ? 'Χρειάζεται άδεια τοποθεσίας' : 'Δεν βρέθηκε στίγμα'); toast(e.code === 1 ? 'Χρειάζεται άδεια τοποθεσίας' : 'Δεν βρέθηκε στίγμα') }, { enableHighAccuracy: true, maximumAge: 1000, timeout: 12000 }); updateGpsUi('GPS ενεργό · περιμένω στίγμα'); toast('GPS live') }
     function screenToLatLon(clientX, clientY) { let m = $('liveMap'), r = m.getBoundingClientRect(), x = clientX - r.left, y = clientY - r.top, cp = navCenterPx(), rot = (($('navMode').value === 'heading' || $('navMode').value === 'bottom')) ? -normDeg(navState.heading) : 0, ang = rad(-rot), dx = x - cp.x, dy = y - cp.y, mx = cp.x + dx * Math.cos(ang) - dy * Math.sin(ang), my = cp.y + dx * Math.sin(ang) + dy * Math.cos(ang), center = navState.center || navState.pos || NAV_DEFAULT_POS, cw = tileXY(center.lat, center.lon, navState.zoom); return invTileXY(cw.x + (mx - cp.x), cw.y + (my - cp.y), navState.zoom) }
