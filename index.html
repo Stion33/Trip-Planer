@@ -35,6 +35,79 @@ body.navFullscreen .navTop{grid-template-columns:repeat(7,minmax(0,1fr))}
 .tripFuelWarn{border-color:rgba(180,35,24,.45)!important;background:linear-gradient(180deg,#fff0ee,#fff)!important}.metric.warn{background:#fee4e2;border-color:rgba(180,35,24,.28);color:var(--bad)}.metric.warn small,.metric.warn b{color:var(--bad)}
 .infoGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.infoCard{background:white;border:1px solid var(--line);border-radius:24px;padding:15px;display:grid;gap:8px}.infoCard b{font-size:16px;color:var(--deep);font-weight:900}.infoCard .signal{font-size:24px;letter-spacing:.08em;color:var(--deep);font-weight:1000}.infoCard .shape{font-size:30px;line-height:1;color:var(--deep)}.infoNote{font-size:12px;color:var(--muted);font-weight:700}.lightDot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.2)}.lightWhite{background:#fff}.lightRed{background:#e0342f}.lightGreen{background:#18a66a}.lightYellow{background:#f5c542}.lightBlack{background:#111}.navWeatherTop{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:12px}.navWeatherTop .navStat{background:#f8fcfd}.weatherRefresh{font-size:11px;color:var(--muted);font-weight:750;margin:-5px 0 10px;text-align:right}body.navFullscreen .navWeatherTop{position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top));z-index:25;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0;pointer-events:none}body.navFullscreen .navWeatherTop .navStat{min-height:48px;padding:6px;border-radius:13px;background:rgba(8,28,36,.72);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.16)}body.navFullscreen .navWeatherTop .navStat small{font-size:8px;color:rgba(255,255,255,.72)}body.navFullscreen .navWeatherTop .navStat b{font-size:13px;color:#fff;margin-top:3px}body.navFullscreen .weatherRefresh{display:none!important}body.navFullscreen .navTop{top:calc(62px + env(safe-area-inset-top))}body.navFullscreen .navCompass{top:calc(124px + env(safe-area-inset-top))}body.navFullscreen .waypointBar{top:calc(224px + env(safe-area-inset-top))}@media(max-width:820px){.infoGrid{grid-template-columns:1fr}.navWeatherTop{grid-template-columns:repeat(2,minmax(0,1fr))}body.navFullscreen .navWeatherTop{grid-template-columns:repeat(6,minmax(0,1fr))}}
 
+
+
+/* Compact live navigation layout for mobile */
+body.navFullscreen.navCompact .mapCredit{display:none!important}
+body.navFullscreen.navCompact .navPanel{background:#000!important}
+
+@media(max-width:820px){
+  body.navFullscreen .navWeatherTop{left:6px;right:6px;top:calc(6px + env(safe-area-inset-top));grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;z-index:30}
+  body.navFullscreen .navWeatherTop .navStat{min-height:34px;padding:5px 6px;border-radius:10px;background:rgba(8,28,36,.70)}
+  body.navFullscreen .navWeatherTop .navStat small{font-size:7px;line-height:1;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.navFullscreen .navWeatherTop .navStat b{font-size:11px;line-height:1.05;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.navFullscreen .navWeatherTop .navStat:nth-child(1),
+  body.navFullscreen .navWeatherTop .navStat:nth-child(3){display:none!important}
+
+  body.navFullscreen .navTop{left:6px;right:6px;top:calc(46px + env(safe-area-inset-top));grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;z-index:30}
+  body.navFullscreen .navTop .navStat{min-height:40px;padding:5px 6px;border-radius:10px;background:rgba(8,28,36,.74)}
+  body.navFullscreen .navTop .navStat small{font-size:7px;line-height:1;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.navFullscreen .navTop .navStat b{font-size:13px;line-height:1.05;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.navFullscreen .navTop .navStat:nth-child(2),
+  body.navFullscreen .navTop .navStat:nth-child(4),
+  body.navFullscreen .navTop .navStat:nth-child(6){display:none!important}
+
+  body.navFullscreen .navCompass{left:6px;right:6px;top:calc(92px + env(safe-area-inset-top));height:70px;border-radius:14px;z-index:29;background:rgba(10,35,45,.82)}
+  body.navFullscreen .navCompassRibbon{top:5px;height:30px}
+  body.navFullscreen .compassTick{width:38px;flex-basis:38px;font-size:8px;padding-top:15px}
+  body.navFullscreen .compassTick:before{height:10px}
+  body.navFullscreen .compassTick.major:before{height:14px}
+  body.navFullscreen .compassTick strong{font-size:10px}
+  body.navFullscreen .compassTick em{font-size:8px;margin-top:1px}
+  body.navFullscreen .navCompass:before{width:2px}
+  body.navFullscreen .navCompassTarget{top:4px;border-left-width:8px;border-right-width:8px;border-top-width:16px}
+  body.navFullscreen .navCompassCenter{top:34px;border-left-width:6px;border-right-width:6px;border-bottom-width:10px}
+  body.navFullscreen .navCompassReadout{left:8px;right:8px;bottom:6px;grid-template-columns:1fr auto 1fr;gap:6px}
+  body.navFullscreen .navCompassReadout span{font-size:13px}
+  body.navFullscreen .navCompassReadout b{font-size:28px}
+  body.navFullscreen .navCompassReadout small{font-size:11px}
+
+  body.navFullscreen .waypointBar{left:6px;right:6px;top:auto;bottom:calc(86px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr auto auto;gap:6px;z-index:28}
+  body.navFullscreen .waypointBar select{min-width:0;min-height:36px;height:36px;border-radius:12px;font-size:13px;padding:7px 9px;background:rgba(255,255,255,.90)}
+  body.navFullscreen .waypointBar .btn{min-height:36px;height:36px;border-radius:12px;font-size:12px;padding:7px 9px}
+  body.navFullscreen .waypointBar #prevWpBtn,
+  body.navFullscreen .waypointBar #nextWpBtn,
+  body.navFullscreen .waypointBar #deleteWpBtn,
+  body.navFullscreen .waypointBar #resetFuelBtn{display:none!important}
+  body.navFullscreen .waypointBar #navBoatSelect{display:none!important}
+  body.navFullscreen .waypointBar:after{content:'εργαλεία από έξοδο';display:inline-flex;align-items:center;justify-content:center;min-height:36px;border-radius:12px;padding:7px 9px;background:rgba(226,243,247,.88);color:var(--deep);font-weight:900;font-size:12px;white-space:nowrap}
+
+  body.navFullscreen .mapTools{left:6px;right:58px;bottom:calc(8px + env(safe-area-inset-bottom));gap:6px;z-index:31;display:grid;grid-template-columns:auto auto 1fr auto;align-items:center}
+  body.navFullscreen .mapTools .btn,body.navFullscreen .mapTools select{min-height:40px;height:40px;border-radius:14px;font-size:13px;padding:8px 10px;box-shadow:none}
+  body.navFullscreen .mapTools #startNavBtn{grid-column:auto;white-space:nowrap}
+  body.navFullscreen .mapTools #centerNavBtn{white-space:nowrap}
+  body.navFullscreen .mapTools #fullscreenNavBtn{white-space:nowrap}
+  body.navFullscreen .mapTools #navMode{grid-column:1/4;width:100%;font-size:13px;font-weight:900;background:rgba(255,255,255,.92)}
+  body.navFullscreen .mapTools #toggleWpLineBtn,
+  body.navFullscreen .mapTools #clearWpBtn{display:none!important}
+
+  body.navFullscreen .zoomStack{right:6px;bottom:calc(8px + env(safe-area-inset-bottom));gap:6px;z-index:32}
+  body.navFullscreen .zoomStack .btn{width:46px;min-height:46px;height:46px;border-radius:14px;font-size:22px;background:rgba(226,243,247,.90)}
+  body.navFullscreen .liveMap{min-height:100dvh}
+}
+
+@media(max-width:820px) and (orientation:landscape){
+  body.navFullscreen .navWeatherTop{grid-template-columns:repeat(4,minmax(0,1fr));max-width:58vw;right:auto}
+  body.navFullscreen .navTop{top:calc(6px + env(safe-area-inset-top));left:calc(58vw + 10px);right:6px;grid-template-columns:repeat(4,minmax(0,1fr))}
+  body.navFullscreen .navCompass{top:calc(52px + env(safe-area-inset-top));height:62px}
+  body.navFullscreen .navCompassReadout b{font-size:24px}
+  body.navFullscreen .waypointBar{bottom:calc(58px + env(safe-area-inset-bottom));grid-template-columns:1fr auto}
+  body.navFullscreen .waypointBar:after{display:none!important}
+  body.navFullscreen .mapTools{grid-template-columns:auto auto 1fr auto;bottom:calc(6px + env(safe-area-inset-bottom));right:58px}
+  body.navFullscreen .mapTools #navMode{grid-column:auto;width:auto}
+  body.navFullscreen .zoomStack .btn{width:44px;min-height:44px;height:44px}
+}
+
 </style>
 </head>
 <body>
