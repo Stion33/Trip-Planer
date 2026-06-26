@@ -9,9 +9,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Captain Stion">
-  <link rel="manifest" href="manifest.json?v=22">
-  <link rel="icon" href="icon.svg?v=22" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon-192.png?v=22">
+  <link rel="manifest" href="manifest.json?v=21">
+  <link rel="icon" href="icon.svg?v=21" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png?v=21">
   <style>
     :root {
       --sea: #137988;
@@ -52,7 +52,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=22");
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=21");
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
@@ -2299,185 +2299,13 @@
         top: calc(118px + env(safe-area-inset-top))
       }
     }
-
-
-    /* Advanced marine GPS instruments v22 */
-    .navExtraTop {
-      display: grid;
-      grid-template-columns: repeat(10, minmax(0, 1fr));
-      gap: 8px;
-      margin: -4px 0 12px
-    }
-
-    .navExtraTop .navStat {
-      min-height: 66px;
-      padding: 10px;
-      border-radius: 17px;
-      background: rgba(255, 255, 255, .92)
-    }
-
-    .navExtraTop .navStat b {
-      font-size: 15px;
-      margin-top: 5px
-    }
-
-    .navStat.good {
-      background: #e7f8f1 !important;
-      border-color: rgba(8, 121, 93, .22) !important
-    }
-
-    .navStat.good small,
-    .navStat.good b {
-      color: var(--ok) !important
-    }
-
-    .navStat.caution {
-      background: #fff7ed !important;
-      border-color: rgba(255, 179, 92, .42) !important
-    }
-
-    .navStat.caution small,
-    .navStat.caution b {
-      color: #974c00 !important
-    }
-
-    .navAdvancedTools {
-      display: grid;
-      grid-template-columns: auto auto auto auto auto 1fr;
-      gap: 8px;
-      align-items: center;
-      margin: 0 0 12px
-    }
-
-    .navAdvancedTools .btn {
-      min-height: 40px;
-      border-radius: 15px;
-      padding: 9px 11px;
-      font-size: 13px
-    }
-
-    .btn.danger {
-      background: #d92d20;
-      color: white
-    }
-
-    .navAlarmPanel,
-    .navTripPanel,
-    .mobPanel {
-      margin-top: 14px;
-      padding: 16px;
-      display: grid;
-      gap: 12px
-    }
-
-    .compactSettings {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px
-    }
-
-    .summaryGrid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 8px
-    }
-
-    .summaryChip {
-      background: #f8fcfd;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 10px
-    }
-
-    .summaryChip small {
-      display: block;
-      color: var(--muted);
-      font-weight: 800;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .04em
-    }
-
-    .summaryChip b {
-      display: block;
-      color: var(--deep);
-      font-weight: 900;
-      margin-top: 5px;
-      font-size: 15px
-    }
-
-    .navTrack {
-      stroke: #0a84ff;
-      stroke-width: 4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-      opacity: .85
-    }
-
-    .navMobLine {
-      stroke: #d92d20;
-      stroke-width: 5;
-      stroke-linecap: round;
-      stroke-dasharray: 4 8;
-      fill: none;
-      opacity: .95
-    }
-
-    .mobMarker {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #d92d20;
-      color: white;
-      border: 3px solid white;
-      box-shadow: 0 10px 28px rgba(217, 45, 32, .35);
-      font-size: 13px;
-      font-weight: 1000
-    }
-
-    .mobMarker:before {
-      content: "MOB"
-    }
-
-    body.navFullscreen .navExtraTop,
-    body.navFullscreen .navAdvancedTools,
-    body.navFullscreen .navAlarmPanel,
-    body.navFullscreen .navTripPanel,
-    body.navFullscreen .mobPanel {
-      display: none !important
-    }
-
-    @media(max-width:820px) {
-      .navExtraTop {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px
-      }
-
-      .navAdvancedTools {
-        grid-template-columns: repeat(3, minmax(0, 1fr))
-      }
-
-      .navAdvancedTools .gpsStatus {
-        grid-column: 1/-1
-      }
-
-      .compactSettings {
-        grid-template-columns: repeat(2, minmax(0, 1fr))
-      }
-
-      .summaryGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr))
-      }
-    }
-
   </style>
 </head>
 
 <body>
   <div class="app">
     <header class="top">
-      <div class="logo"><img src="icon.svg?v=22" alt="">
+      <div class="logo"><img src="icon.svg?v=21" alt="">
         <div class="brand">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
@@ -2726,18 +2554,6 @@
             <div class="navStat"><small>Καύσιμο live</small><b id="navFuel">— L</b></div>
             <div class="navStat"><small>ETA</small><b id="navEta">—</b></div>
           </div>
-          <div class="navExtraTop" id="navExtraTop">
-            <div class="navStat"><small>SOG / COG</small><b id="navCogSog">—</b></div>
-            <div class="navStat"><small>HDG source</small><b id="navHdgSource">—</b></div>
-            <div class="navStat"><small>VMG στόχου</small><b id="navVmg">— kn</b></div>
-            <div class="navStat"><small>XTE</small><b id="navXte">—</b></div>
-            <div class="navStat"><small>Route left</small><b id="navRouteLeft">— nm</b></div>
-            <div class="navStat"><small>Progress</small><b id="navProgress">—%</b></div>
-            <div class="navStat"><small>GPS accuracy</small><b id="navAccuracy">—</b></div>
-            <div class="navStat"><small>Άνεμος/πορεία</small><b id="navWindRel">—</b></div>
-            <div class="navStat"><small>SeaTrip score</small><b id="navSeaScore">—</b></div>
-            <div class="navStat"><small>Fuel reserve</small><b id="navFuelReserve">—</b></div>
-          </div>
           <div class="navCompass" aria-label="Πυξίδα πορείας Garmin style">
             <div class="navCompassSide left" id="navCompassLeft"></div>
             <div class="navCompassSide right" id="navCompassRight"></div>
@@ -2763,26 +2579,15 @@
             <button class="btn" id="startNavBtn">▶ GPS</button>
             <div class="gpsStatus" id="gpsStatus">GPS κλειστό</div>
           </div>
-          <div class="navAdvancedTools" id="navAdvancedTools">
-            <button class="btn danger" id="mobBtn">MOB</button>
-            <button class="btn soft" id="trackToggleBtn">● track</button>
-            <button class="btn ghost" id="trackResetBtn">↺ track</button>
-            <button class="btn soft" id="saveTripBtn">✓ trip</button>
-            <button class="btn ghost" id="exportGpxBtn">GPX</button>
-            <div class="gpsStatus" id="advancedStatus">Advanced GPS έτοιμο</div>
-          </div>
           <div class="liveMap panning" id="liveMap">
             <div class="mapRot" id="mapRot">
               <div class="tileLayer baseTiles" id="baseTiles"></div>
               <div class="tileLayer seaTiles" id="seaTiles"></div><svg class="navSvg" id="navSvg">
                 <path class="navWpLine" id="navWpPath"></path>
                 <path class="navRoute" id="navRoutePath"></path>
-                <path class="navTrack" id="navTrackPath"></path>
-                <path class="navMobLine" id="navMobPath"></path>
                 <path class="navHeadingLine" id="navHeadingPath"></path>
               </svg>
               <div id="wpLayer"></div>
-              <div id="mobLayer"></div>
               <div class="navMarker boatMarker" id="boatMarker"></div>
             </div>
             <div class="mapTools">
@@ -2800,58 +2605,6 @@
             <div class="zoomStack"><button class="btn soft" id="zoomInBtn">+</button><button class="btn soft"
                 id="zoomOutBtn">−</button></div>
             <div class="mapCredit">OSM + OpenSeaMap tiles</div>
-          </div>
-
-          <div class="navAlarmPanel glass" id="navAlarmPanel">
-            <div class="anchorHead">
-              <div>
-                <div class="name">Route alarms & fuel safety</div>
-                <div class="mini">Arrival alarm, off-course alarm, GPS accuracy και point of no return/fuel reserve.</div>
-              </div>
-            </div>
-            <div class="compactSettings">
-              <div class="field"><label>Arrival m</label><input id="arrivalRadius" type="number" min="10" step="5" value="100"></div>
-              <div class="field"><label>Off-course m</label><input id="offCourseLimit" type="number" min="20" step="10" value="185"></div>
-              <div class="field"><label>Tank start %</label><input id="tankStartPct" type="number" min="1" max="100" step="1" value="100"></div>
-              <div class="field"><label>Reserve %</label><input id="fuelReservePct" type="number" min="5" max="80" step="1" value="30"></div>
-            </div>
-            <div class="anchorStatus" id="routeAlarmStatus">Δεν υπάρχουν ενεργά route alarms.</div>
-          </div>
-          <div class="mobPanel glass" id="mobPanel">
-            <div class="anchorHead">
-              <div>
-                <div class="name">MOB / Man Overboard</div>
-                <div class="mini">Το κόκκινο MOB αποθηκεύει αμέσως το τωρινό GPS και δείχνει bearing, απόσταση και ETA επιστροφής.</div>
-              </div>
-              <div class="actions"><button class="btn bad" id="clearMobBtn">καθαρισμός MOB</button></div>
-            </div>
-            <div class="summaryGrid">
-              <div class="summaryChip"><small>Bearing</small><b id="mobBearing">—</b></div>
-              <div class="summaryChip"><small>Απόσταση</small><b id="mobDistance">—</b></div>
-              <div class="summaryChip"><small>ETA</small><b id="mobEta">—</b></div>
-              <div class="summaryChip"><small>Στίγμα</small><b id="mobPoint">—</b></div>
-              <div class="summaryChip"><small>Status</small><b id="mobStatus">off</b></div>
-            </div>
-          </div>
-          <div class="navTripPanel glass" id="navTripPanel">
-            <div class="anchorHead">
-              <div>
-                <div class="name">Track log / Trip summary</div>
-                <div class="mini">Καταγράφει ίχνος, απόσταση GPS, μέση/max ταχύτητα, χρόνο κίνησης/στάσης και export GPX.</div>
-              </div>
-            </div>
-            <div class="summaryGrid">
-              <div class="summaryChip"><small>Track</small><b id="trackStatus">off</b></div>
-              <div class="summaryChip"><small>GPS nm</small><b id="trackNm">0,00</b></div>
-              <div class="summaryChip"><small>Μέση</small><b id="trackAvg">— kn</b></div>
-              <div class="summaryChip"><small>Max</small><b id="trackMax">— kn</b></div>
-              <div class="summaryChip"><small>Χρόνος</small><b id="trackTime">—</b></div>
-              <div class="summaryChip"><small>Κίνηση</small><b id="trackMoving">—</b></div>
-              <div class="summaryChip"><small>Στάση</small><b id="trackStopped">—</b></div>
-              <div class="summaryChip"><small>Καύσιμο</small><b id="trackFuel">— L</b></div>
-              <div class="summaryChip"><small>Κόστος</small><b id="trackCost">—</b></div>
-              <div class="summaryChip"><small>Last saved</small><b id="lastTripSaved">—</b></div>
-            </div>
           </div>
           <div class="anchorAlarm glass" id="anchorAlarmBox">
             <div class="anchorHead">
@@ -3305,107 +3058,6 @@
     $('anchorRadius').addEventListener('input', saveAnchor);
     $('offlineSaveBtn')?.addEventListener('click', saveOfflineAssets);
     if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => { }));
-
-
-    /* Advanced marine GPS instruments v22 */
-    const ADV_KEY = 'captain_stion_advanced_nav_v22';
-    const SAFE_POINTS = [
-      { name: 'Φλοίσβος / Φάληρο', lat: 37.9325, lon: 23.6839 },
-      { name: 'Άλιμος Marina', lat: 37.9135, lon: 23.7047 },
-      { name: 'Λαύριο', lat: 37.7126, lon: 24.0577 },
-      { name: 'Σούνιο', lat: 37.6506, lon: 24.0243 },
-      { name: 'Ραφήνα', lat: 38.0234, lon: 24.0107 },
-      { name: 'Μάτι', lat: 38.0490, lon: 23.9990 },
-      { name: 'Αίγινα', lat: 37.7462, lon: 23.4285 },
-      { name: 'Ύδρα', lat: 37.3503, lon: 23.4668 },
-      { name: 'Κέα / Κορησσία', lat: 37.6617, lon: 24.3122 },
-      { name: 'Κύθνος / Μέριχας', lat: 37.3915, lon: 24.3958 }
-    ];
-    const advState = {
-      trackOn: false,
-      track: [],
-      trackNm: 0,
-      maxKn: 0,
-      movingMs: 0,
-      stoppedMs: 0,
-      startedAt: null,
-      lastT: null,
-      lastSaved: null,
-      mob: null,
-      arrivalHit: {},
-      offCourseHit: false,
-      fuelWarnHit: false,
-      accuracy: NaN,
-      cog: NaN
-    };
-    function advLoad() { try { Object.assign(advState, JSON.parse(localStorage.getItem(ADV_KEY) || '{}')) } catch { } }
-    function advSave() { try { localStorage.setItem(ADV_KEY, JSON.stringify({ trackOn: advState.trackOn, track: advState.track.slice(-2500), trackNm: advState.trackNm, maxKn: advState.maxKn, movingMs: advState.movingMs, stoppedMs: advState.stoppedMs, startedAt: advState.startedAt, lastT: advState.lastT, lastSaved: advState.lastSaved, mob: advState.mob })) } catch { } }
-    function setTextSafe(id, text) { let el = $(id); if (el) el.textContent = text }
-    function setStatClass(id, cls) { let el = $(id)?.closest('.navStat'); if (!el) return; el.classList.remove('warn', 'good', 'caution'); if (cls) el.classList.add(cls) }
-    function timeDur(ms) { if (!Number.isFinite(ms) || ms < 0) return '—'; let m = Math.round(ms / 60000), h = Math.floor(m / 60); m = m % 60; return h ? `${h}ω ${m}λ` : `${m}λ` }
-    function nearestSafePoint(p) { if (!p) return null; return SAFE_POINTS.map(s => ({ ...s, dist: havNm(p, s), brg: bearing(p, s) })).sort((a, b) => a.dist - b.dist)[0] || null }
-    function routeTotalLeft(p) { let wps = navState.waypoints || [], wp = activeWp(); if (!p || !wp) return NaN; let i = Math.max(0, wps.findIndex(w => w.id === wp.id)); let total = havNm(p, wp); for (let n = i; n < wps.length - 1; n++) total += havNm(wps[n], wps[n + 1]); return total }
-    function windRelativeText(brg) { if (!Number.isFinite(WX.windDir) || !Number.isFinite(brg)) return '—'; let rel = signedDeg(WX.windDir - brg), a = Math.abs(rel), side = rel > 0 ? 'δεξιά' : 'αριστερά', kind = a < 35 ? 'κόντρα' : a < 75 ? 'πλαγιομετωπικός' : a < 115 ? 'πλάγιος' : a < 155 ? 'πλαγιοπρύμνιος' : 'πρύμα'; return `${kind} ${fmt(a, 0)}° ${side}` }
-    function seaScore(brg) { let score = 100, notes = []; let bf = Number.isFinite(WX.windKn) ? beaufort(WX.windKn) : NaN; if (Number.isFinite(bf)) { score -= Math.max(0, bf - 2) * 9; if (bf >= 5) notes.push(`${bf} Bf`) } if (Number.isFinite(WX.wave)) { score -= Math.max(0, WX.wave - .3) * 28; if (WX.wave >= .8) notes.push(`${fmt(WX.wave, 1)}m`) } if (Number.isFinite(WX.windDir) && Number.isFinite(brg) && Number.isFinite(WX.windKn)) { let rel = Math.abs(signedDeg(WX.windDir - brg)); if (rel < 60 && WX.windKn >= 10) { score -= 14; notes.push('κόντρα') } }
-      score = Math.max(0, Math.min(100, Math.round(score))); return { score, label: score >= 75 ? 'OK' : score >= 50 ? 'οριακό' : 'όχι καλό', notes } }
-    function currentLpnm() { let b = navFuelBoat(); if (!b) return NaN; if (advState.trackNm > .2 && navState.fuelL > .2) return navState.fuelL / advState.trackNm; let cs = num(b.cruiseSpeed, 0), fc = num(b.fuelCruise, 0); return cs > 0 ? fc / cs : NaN }
-    function updateFuelReserve(totalLeft) { let b = navFuelBoat(), elId = 'navFuelReserve'; setStatClass(elId, ''); if (!b) { setTextSafe(elId, 'διάλεξε σκάφος'); return }
-      let startPct = Math.max(1, Math.min(100, num($('tankStartPct')?.value, 100))) / 100;
-      let reservePct = Math.max(0, Math.min(90, num($('fuelReservePct')?.value, 30))) / 100;
-      let tank = num(b.fuelTank, 0), remaining = Math.max(0, tank * startPct - navState.fuelL), reserve = tank * reservePct, lpnm = currentLpnm();
-      let p = navState.pos, home = advState.track[0] || null, returnNm = (p && home) ? havNm(p, home) : 0;
-      let need = Number.isFinite(lpnm) && Number.isFinite(totalLeft) ? (totalLeft + returnNm) * lpnm + reserve : NaN;
-      let pct = tank > 0 ? remaining / tank * 100 : NaN;
-      if (Number.isFinite(need) && remaining < need) { setTextSafe(elId, `${fmt(pct, 0)}% · PNR`); setStatClass(elId, 'warn'); routeAlarm('fuel', `⚠ Fuel reserve / Point of no return: δεν φτάνει άνετα με ${fmt(reservePct * 100, 0)}% reserve.`) }
-      else if (Number.isFinite(pct)) { setTextSafe(elId, `${fmt(pct, 0)}% OK`); setStatClass(elId, pct < reservePct * 100 + 10 ? 'caution' : 'good'); advState.fuelWarnHit = false }
-      else setTextSafe(elId, '—') }
-    function routeAlarm(kind, text) { let key = kind + 'Hit'; if (kind === 'fuel') key = 'fuelWarnHit'; if (advState[key]) return; advState[key] = true; toast(text); try { navigator.vibrate && navigator.vibrate([350, 100, 350]) } catch { } try { if ('Notification' in window && Notification.permission === 'granted') new Notification('Captain Stion', { body: text }) } catch { } }
-    function updateRouteAlarms(dist, xte, totalLeft) { let messages = []; let wp = activeWp(); if (wp && Number.isFinite(dist)) { let r = Math.max(10, num($('arrivalRadius')?.value, 100)); if (dist * 1852 <= r && !advState.arrivalHit[wp.id]) { advState.arrivalHit[wp.id] = true; routeAlarm('arrival' + wp.id, `✓ Arrival alarm: έφτασες στο ${wp.name || 'waypoint'} (${fmt(dist * 1852, 0)} m).`) } if (dist * 1852 <= r) messages.push(`Arrival zone ${fmt(dist * 1852, 0)} m`) }
-      if (Number.isFinite(xte)) { let limit = Math.max(20, num($('offCourseLimit')?.value, 185)); let xm = Math.abs(xte) * 1852; if (xm > limit) { messages.push(`Off-course ${fmt(xm, 0)} m`); routeAlarm('offCourse', `⚠ Off-course alarm: ${fmt(xm, 0)} m εκτός γραμμής.`) } else advState.offCourseHit = false }
-      let near = nearestSafePoint(navState.pos); if (near) messages.push(`Nearest safe: ${near.name} ${fmt(near.dist, 1)} nm`);
-      setTextSafe('routeAlarmStatus', messages.length ? messages.join(' · ') : 'Route alarms OK.');
-      let st = $('routeAlarmStatus'); if (st) { st.classList.toggle('alarm', messages.some(m => m.includes('Off-course'))); st.classList.toggle('ok', !messages.some(m => m.includes('Off-course'))) }
-    }
-    function updateAdvancedInstruments() { let p = navState.pos, wp = activeWp(); let br = (p && wp) ? bearing(p, wp) : NaN; let dist = (p && wp) ? havNm(p, wp) : NaN; let cog = Number.isFinite(advState.cog) ? advState.cog : navState.heading; let sog = navState.speed; let xte = (p && wp && wp.start) ? crossTrackNm(wp.start, wp, p) : NaN; let totalLeft = routeTotalLeft(p); let vmg = Number.isFinite(br) && Number.isFinite(cog) ? sog * Math.cos(rad(signedDeg(cog - br))) : NaN; let prog = Number.isFinite(totalLeft) && advState.trackNm > 0 ? advState.trackNm / (advState.trackNm + totalLeft) * 100 : NaN;
-      setTextSafe('navCogSog', `${fmt(sog, 1)} kn · ${Number.isFinite(cog) ? fmt(cog, 0) + '°' : '—'}`);
-      setTextSafe('navHdgSource', `${Number.isFinite(navState.heading) ? fmt(normDeg(navState.heading), 0) + '°' : '—'} · ${navState.headingSource || '—'}`);
-      setTextSafe('navVmg', Number.isFinite(vmg) ? fmt(vmg, 1) + ' kn' : '— kn'); setStatClass('navVmg', Number.isFinite(vmg) && vmg < 0 ? 'warn' : (Number.isFinite(vmg) ? 'good' : ''));
-      setTextSafe('navXte', Number.isFinite(xte) ? `${fmt(Math.abs(xte) * 1852, 0)} m ${xte > 0 ? 'δεξιά' : 'αριστερά'}` : '—'); setStatClass('navXte', Number.isFinite(xte) && Math.abs(xte) * 1852 > num($('offCourseLimit')?.value, 185) ? 'warn' : '');
-      setTextSafe('navRouteLeft', Number.isFinite(totalLeft) ? fmt(totalLeft, 2) + ' nm' : '— nm');
-      setTextSafe('navProgress', Number.isFinite(prog) ? fmt(prog, 0) + '%' : '—%');
-      setTextSafe('navAccuracy', Number.isFinite(advState.accuracy) ? '±' + fmt(advState.accuracy, 0) + ' m' : '—'); setStatClass('navAccuracy', Number.isFinite(advState.accuracy) ? (advState.accuracy <= 10 ? 'good' : advState.accuracy <= 30 ? 'caution' : 'warn') : '');
-      setTextSafe('navWindRel', windRelativeText(br));
-      let ss = seaScore(br); setTextSafe('navSeaScore', Number.isFinite(ss.score) ? `${ss.score}/100 ${ss.label}` : '—'); setStatClass('navSeaScore', ss.score >= 75 ? 'good' : ss.score >= 50 ? 'caution' : 'warn');
-      updateFuelReserve(totalLeft); updateRouteAlarms(dist, xte, totalLeft); updateMOBText(); updateTrackSummary();
-      let adv = $('advancedStatus'); if (adv) adv.textContent = wp ? `VMG ${Number.isFinite(vmg) ? fmt(vmg, 1) : '—'} kn · XTE ${Number.isFinite(xte) ? fmt(Math.abs(xte) * 1852, 0) : '—'} m` : 'Πάτα στον χάρτη για waypoint ή MOB για ασφάλεια';
-    }
-    function updateTrackFromPosition(pos) { if (!pos || !advState.trackOn) return; let t = pos.t || Date.now(), last = advState.track[advState.track.length - 1]; let speed = navState.speed || 0; if (!advState.startedAt) advState.startedAt = t; if (last) { let dt = Math.max(0, t - (last.t || t)), d = havNm(last, pos); if (d > .001 && d < 1) advState.trackNm += d; if (dt < 10 * 60 * 1000) { if (speed >= .8) advState.movingMs += dt; else advState.stoppedMs += dt } }
-      advState.maxKn = Math.max(advState.maxKn || 0, speed); advState.lastT = t; advState.track.push({ lat: pos.lat, lon: pos.lon, t, kn: speed }); if (advState.track.length > 2500) advState.track.splice(0, advState.track.length - 2500); advSave(); }
-    function updateTrackSummary() { setTextSafe('trackStatus', advState.trackOn ? 'recording' : (advState.track.length ? 'paused' : 'off')); setTextSafe('trackNm', fmt(advState.trackNm || 0, 2) + ' nm'); let hrs = advState.movingMs / 3600000; setTextSafe('trackAvg', hrs > 0 ? fmt((advState.trackNm || 0) / hrs, 1) + ' kn' : '— kn'); setTextSafe('trackMax', advState.maxKn ? fmt(advState.maxKn, 1) + ' kn' : '— kn'); let elapsed = advState.startedAt ? ((advState.lastT || Date.now()) - advState.startedAt) : NaN; setTextSafe('trackTime', timeDur(elapsed)); setTextSafe('trackMoving', timeDur(advState.movingMs)); setTextSafe('trackStopped', timeDur(advState.stoppedMs)); setTextSafe('trackFuel', Number.isFinite(navState.fuelL) ? fmt(navState.fuelL, 1) + ' L' : '— L'); let fp = num(state.settings?.fuelPrice, 2); setTextSafe('trackCost', Number.isFinite(navState.fuelL) ? eur(navState.fuelL * fp) : '—'); setTextSafe('lastTripSaved', advState.lastSaved ? new Date(advState.lastSaved).toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' }) : '—') }
-    function updateMOBText() { let m = advState.mob, p = navState.pos; if (!m) { ['mobBearing', 'mobDistance', 'mobEta', 'mobPoint'].forEach(id => setTextSafe(id, '—')); setTextSafe('mobStatus', 'off'); return } let br = p ? bearing(p, m) : NaN, d = p ? havNm(p, m) : NaN; setTextSafe('mobBearing', Number.isFinite(br) ? fmt(br, 0) + '°' : '—'); setTextSafe('mobDistance', Number.isFinite(d) ? fmt(d, 2) + ' nm' : '—'); setTextSafe('mobEta', etaText(d, navState.speed)); setTextSafe('mobPoint', `${m.lat.toFixed(5)}, ${m.lon.toFixed(5)}`); setTextSafe('mobStatus', 'ACTIVE') }
-    function projectNavPoint(q) { let m = $('liveMap'); if (!m || !q) return null; let p = navState.center || navState.pos || NAV_DEFAULT_POS, z = navState.zoom, c = tileXY(p.lat, p.lon, z), cp = navCenterPx(), xy = tileXY(q.lat, q.lon, z); return { x: xy.x - c.x + cp.x, y: xy.y - c.y + cp.y } }
-    function drawAdvancedMap() { let tp = $('navTrackPath'), mp = $('navMobPath'), ml = $('mobLayer'); if (tp) { let pts = advState.track.slice(-800).map(projectNavPoint).filter(Boolean); tp.setAttribute('d', pts.map((p, i) => (i ? 'L' : 'M') + p.x + ' ' + p.y).join(' ')) }
-      if (mp) { if (advState.mob && navState.pos) { let a = projectNavPoint(navState.pos), b = projectNavPoint(advState.mob); mp.setAttribute('d', a && b ? `M${a.x} ${a.y} L${b.x} ${b.y}` : '') } else mp.setAttribute('d', '') }
-      if (ml) { if (advState.mob) { let p = projectNavPoint(advState.mob); ml.innerHTML = p ? `<div class="navMarker mobMarker" style="left:${p.x}px;top:${p.y}px"></div>` : '' } else ml.innerHTML = '' }
-    }
-    function setMOB() { if (!navState.pos) { toast('Πάτα πρώτα GPS για MOB'); return } advState.mob = { lat: navState.pos.lat, lon: navState.pos.lon, t: Date.now() }; advSave(); toast('MOB αποθηκεύτηκε'); try { navigator.vibrate && navigator.vibrate([600, 120, 600]) } catch { } drawAdvancedMap(); updateMOBText() }
-    function clearMOB() { advState.mob = null; advSave(); drawAdvancedMap(); updateMOBText(); toast('MOB καθαρίστηκε') }
-    function toggleTrack() { advState.trackOn = !advState.trackOn; if (advState.trackOn && navState.pos && !advState.track.length) { advState.startedAt = navState.pos.t || Date.now(); advState.track.push({ lat: navState.pos.lat, lon: navState.pos.lon, t: advState.startedAt, kn: navState.speed || 0 }) } advSave(); updateTrackSummary(); toast(advState.trackOn ? 'Track recording' : 'Track pause') }
-    function resetTrack() { if (!confirm('Να καθαρίσει το track log;')) return; advState.track = []; advState.trackNm = 0; advState.maxKn = 0; advState.movingMs = 0; advState.stoppedMs = 0; advState.startedAt = null; advState.lastT = null; navState.fuelNm = 0; navState.fuelL = 0; advSave(); drawAdvancedMap(); updateTrackSummary(); toast('Track reset') }
-    function saveTripSummary() { let summary = { id: id('trip'), at: new Date().toISOString(), distance: advState.trackNm || 0, maxSpeed: advState.maxKn || 0, movingMs: advState.movingMs || 0, stoppedMs: advState.stoppedMs || 0, fuel: navState.fuelL || 0, points: advState.track.length }; state.trips = Array.isArray(state.trips) ? state.trips : []; state.trips.unshift(summary); state.trips = state.trips.slice(0, 30); advState.lastSaved = summary.at; save(); advSave(); updateTrackSummary(); toast('✓ trip summary') }
-    function exportGPX() { if (!advState.track.length) { toast('Δεν υπάρχει track'); return } let pts = advState.track.map(pt => `    <trkpt lat="${pt.lat.toFixed(7)}" lon="${pt.lon.toFixed(7)}"><time>${new Date(pt.t || Date.now()).toISOString()}</time></trkpt>`).join('\n'); let gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Captain Stion" xmlns="http://www.topografix.com/GPX/1/1">\n  <trk><name>Captain Stion Track</name><trkseg>\n${pts}\n  </trkseg></trk>\n</gpx>`; let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([gpx], { type: 'application/gpx+xml' })); a.download = 'captain-stion-track.gpx'; a.click(); toast('GPX export') }
-    function bindAdvancedNav() { advLoad(); updateTrackSummary(); updateMOBText(); ['arrivalRadius', 'offCourseLimit', 'tankStartPct', 'fuelReservePct'].forEach(id => $(id)?.addEventListener('input', () => { advSave(); updateAdvancedInstruments() })); $('mobBtn')?.addEventListener('click', setMOB); $('clearMobBtn')?.addEventListener('click', clearMOB); $('trackToggleBtn')?.addEventListener('click', toggleTrack); $('trackResetBtn')?.addEventListener('click', resetTrack); $('saveTripBtn')?.addEventListener('click', saveTripSummary); $('exportGpxBtn')?.addEventListener('click', exportGPX) }
-    const __oldUpdateNavPos = updateNavPos;
-    updateNavPos = function(pos) { if (pos && pos.coords) { advState.accuracy = Number(pos.coords.accuracy); if (Number.isFinite(pos.coords.heading) && pos.coords.heading >= 0) advState.cog = normDeg(pos.coords.heading) } __oldUpdateNavPos(pos); if (navState.pos) updateTrackFromPosition(navState.pos); updateAdvancedInstruments(); };
-    const __oldSetNavText = setNavText;
-    setNavText = function() { __oldSetNavText(); updateAdvancedInstruments(); };
-    const __oldDrawNavMap = drawNavMap;
-    drawNavMap = function() { __oldDrawNavMap(); drawAdvancedMap(); };
-    const __oldInitNav = initNav;
-    initNav = function() { __oldInitNav(); bindAdvancedNav(); updateAdvancedInstruments(); drawAdvancedMap(); };
-    const __oldUpdateWeatherWarning = updateWeatherWarning;
-    updateWeatherWarning = function() { __oldUpdateWeatherWarning(); updateAdvancedInstruments(); };
-
     async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo() }
     initApp();
   </script>
