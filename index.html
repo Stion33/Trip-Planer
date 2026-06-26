@@ -211,18 +211,20 @@ body.navFullscreen .zoomStack{z-index:1110!important}
         <div class="panel glass grid" id="navRulesInfo">
           <div class="card" style="box-shadow:none">
             <div class="name">Συριγμοί, φώτα και ημερήσια σήματα</div>
-            <div class="mini">Γρήγορη επανάληψη για εξετάσεις/πρακτική. Βραχύς = περίπου 1 δευτ., μακρύς = περίπου 4–6 δευτ.</div>
+            <div class="mini">Βραχύς = περίπου 1 δευτ., μακρύς = περίπου 4–6 δευτ.</div>
           </div>
-          <div class="name">Πρόσθετα εφόδια ανά απόσταση από ακτή</div>
-          <div class="infoGrid" id="extraGearGrid"></div>
           <div class="name">Συριγμοί χειρισμών / προειδοποίησης</div>
           <div class="infoGrid" id="soundSignalsGrid"></div>
           <div class="name">Φώτα ανά περίσταση και μήκος</div>
           <div class="infoGrid" id="lightsGrid"></div>
           <div class="name">Ημερήσια σχήματα</div>
           <div class="infoGrid" id="shapesGrid"></div>
+          <div class="name">Αποστάσεις ασφαλείας από ακτή / λουόμενους</div>
+          <div class="infoGrid" id="shoreSafetyGrid"></div>
           <div class="name">Υποχρεωτικός εξοπλισμός / εφόδια μικρού σκάφους</div>
           <div class="infoGrid" id="requiredGearGrid"></div>
+          <div class="name">Πρόσθετα εφόδια ανά απόσταση από ακτή</div>
+          <div class="infoGrid" id="extraGearGrid"></div>
         </div>
         <div class="panel glass"><div class="linkgrid" id="usefulLinks"></div></div>
       </section>
@@ -476,6 +478,14 @@ const dayShapes=[
   {sh:'⬤',t:'Περιορισμένο από βύθισμα',d:'Μαύρος κύλινδρος.'},
   {sh:'◆◆◆',t:'Ναρκαλιευτικό',d:'Τρεις σφαίρες: μία πάνω, δύο χαμηλότερα δεξιά/αριστερά.'}
 ];
+const shoreSafety=[
+  {i:'🏊',t:'Περιοχές λουομένων',d:'Μην μπαίνεις μέσα σε οριοθετημένη περιοχή λουομένων. Χρησιμοποίησε μόνο τον διάδρομο εισόδου/εξόδου.'},
+  {i:'100 m',t:'Από σημαδούρες λουομένων',d:'Κράτα τουλάχιστον 100 m από το εξωτερικό μέρος των πλωτών σημαντήρων που οριοθετούν τους λουόμενους.'},
+  {i:'200 m',t:'Χωρίς σημαδούρες',d:'Κράτα τουλάχιστον 200 m από το συνηθισμένο σημείο που φτάνουν κολυμπώντας οι λουόμενοι.'},
+  {i:'≤3 kn',t:'Διάδρομος προς ακτή',d:'Μέσα σε διάδρομο ή κατά την προσέγγιση/απομάκρυνση κινήσου με ελάχιστη ταχύτητα, περίπου έως 3 κόμβους.'},
+  {i:'≤5 kn',t:'Κοντά σε ακτή χωρίς λουόμενους',d:'Σε απόσταση κάτω από 200 m από ακτογραμμή χωρίς λουόμενους, κράτα χαμηλή ταχύτητα έως 5 κόμβους.'},
+  {i:'⚠️',t:'Τοπικοί περιορισμοί',d:'Έλεγχε πάντα πινακίδες, σημαδούρες, διαδρόμους, λιμενικές οδηγίες και την άδεια πλόων του σκάφους.'}
+];
 const requiredGear=[
   {i:'🦺',t:'Σωσίβιες ζώνες',d:'Για τον μέγιστο επιτρεπόμενο αριθμό επιβαινόντων + 10% επιπλέον, με στρογγυλοποίηση προς τα πάνω.'},
   {i:'⭕',t:'Κυκλικό σωσίβιο',d:'Ένα κυκλικό σωσίβιο με σχοινί τουλάχιστον 15 m. Δεν απαιτείται αν δεν απομακρύνεται πέραν των 3 ν.μ. από την ακτή.'},
@@ -500,7 +510,7 @@ const extraGear=[
   {i:'επαγγελματικά επιβατών',t:'Σημείωση',d:'Για επαγγελματικά μεταφοράς επιβατών οι απαιτήσεις είναι αυξημένες, π.χ. 3 κόκκινα βεγγαλικά + 3 καπνογόνα σε στεγανό κουτί με σπίρτα.'},
   {i:'έλεγχος άδειας',t:'Προσοχή',d:'Τα τοπικά όρια πλόων και τυχόν ειδικοί περιορισμοί αναγράφονται στην άδεια. Επιβεβαίωσε πάντα με Λιμεναρχείο/τρέχον ΦΕΚ.'}
 ];
-function renderNavRulesInfo(){let rg=$('requiredGearGrid'),eg=$('extraGearGrid'),sg=$('soundSignalsGrid'),lg=$('lightsGrid'),sh=$('shapesGrid');if(rg)rg.innerHTML=requiredGear.map(x=>`<article class="infoCard"><div class="shape">${x.i}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(eg)eg.innerHTML=extraGear.map(x=>`<article class="infoCard"><div class="signal">${x.i}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(sg)sg.innerHTML=soundSignals.map(x=>`<article class="infoCard"><div class="signal">${x.s}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(lg)lg.innerHTML=lightRules.map(x=>`<article class="infoCard"><div class="signal">${x.l}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(sh)sh.innerHTML=dayShapes.map(x=>`<article class="infoCard"><div class="shape">${x.sh}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('')}
+function renderNavRulesInfo(){let rg=$('requiredGearGrid'),eg=$('extraGearGrid'),sg=$('soundSignalsGrid'),lg=$('lightsGrid'),sh=$('shapesGrid'),ss=$('shoreSafetyGrid');if(sg)sg.innerHTML=soundSignals.map(x=>`<article class="infoCard"><div class="signal">${x.s}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(lg)lg.innerHTML=lightRules.map(x=>`<article class="infoCard"><div class="signal">${x.l}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(sh)sh.innerHTML=dayShapes.map(x=>`<article class="infoCard"><div class="shape">${x.sh}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(ss)ss.innerHTML=shoreSafety.map(x=>`<article class="infoCard"><div class="signal">${x.i}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(rg)rg.innerHTML=requiredGear.map(x=>`<article class="infoCard"><div class="shape">${x.i}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('');if(eg)eg.innerHTML=extraGear.map(x=>`<article class="infoCard"><div class="signal">${x.i}</div><b>${esc(x.t)}</b><div class="mini">${esc(x.d)}</div></article>`).join('')}
 const WX={last:0,lat:null,lon:null};
 function weatherName(code){const m={0:'Καθαρός',1:'Κυρίως αίθριος',2:'Μερική συννεφιά',3:'Συννεφιά',45:'Ομίχλη',48:'Ομίχλη',51:'Ψιλόβροχο',53:'Ψιλόβροχο',55:'Ψιλόβροχο',61:'Βροχή',63:'Βροχή',65:'Δυνατή βροχή',80:'Μπόρα',81:'Μπόρα',82:'Δυνατή μπόρα',95:'Καταιγίδα'};return m[code]||'Καιρός'}
 function beaufort(kn){kn=num(kn,0);let limits=[1,4,7,11,17,22,28,34,41,48,56,64];for(let i=0;i<limits.length;i++)if(kn<limits[i])return i;return 12}
