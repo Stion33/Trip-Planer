@@ -191,12 +191,12 @@ body.navFullscreen .zoomStack{z-index:1110!important}
             <div class="field"><label>Lat B</label><input id="latB" type="number" step="0.000001" placeholder="37.740"></div>
             <div class="field"><label>Lon B</label><input id="lonB" type="number" step="0.000001" placeholder="23.430"></div>
           </div>
-          <div class="actions"><button class="btn" id="measureBtn">nm</button><button class="btn soft" id="openSeaMapBtn">OpenSeaMap</button><button class="btn soft" id="openChartsBtn">Ναυτικοί χάρτες</button><button class="btn ghost" id="openWindyBtn">Windy</button></div>
+          <div class="actions"><button class="btn" id="measureBtn">nm</button><button class="btn soft" id="openSeaMapBtn">OpenSeaMap</button><button class="btn ghost" id="openWindyBtn">Windy</button><button class="btn soft" id="openChartsBtn">Ναυτικοί χάρτες</button></div>
           <div class="cards"><article class="card best"><div class="name">Απόσταση</div><div class="score" id="nmResult">—</div><div class="mini">σε ναυτικά μίλια, από τις συντεταγμένες που βάζεις</div></article><article class="card"><div class="name">Links</div><div class="mini">Για interactive μέτρηση και ναυτικούς χάρτες χρησιμοποίησε OpenSeaMap ή Garmin Marine Maps.</div></article></div>
         </div>
         <div class="panel glass mapbox"><iframe title="OpenSeaMap" src="https://map.openseamap.org/"></iframe></div>
-        <div class="panel glass grid"><div class="card" style="box-shadow:none"><div class="name">Ναυτικοί χάρτες</div><div class="mini">Άνοιγμα Garmin Marine Maps για επισκόπηση περιοχής και marine chart viewer.</div></div><div class="actions"><button class="btn" id="openChartsPanelBtn">Άνοιγμα χαρτών</button></div></div>
         <div class="panel glass weatherbox"><iframe title="Windy Waves" src="https://embed.windy.com/embed2.html?lat=37.9&lon=24.0&detailLat=37.9&detailLon=24.0&width=650&height=450&zoom=7&level=surface&overlay=waves&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"></iframe></div>
+        <div class="panel glass grid"><div class="card" style="box-shadow:none"><div class="name">Ναυτικοί χάρτες</div><div class="mini">Άνοιγμα Garmin Marine Maps για επισκόπηση περιοχής και marine chart viewer.</div></div><div class="actions"><button class="btn" id="openChartsPanelBtn">Άνοιγμα χαρτών</button></div></div>
         <div class="panel glass grid">
           <div class="card" style="box-shadow:none">
             <div class="name">Info ανάγκης</div>
@@ -207,19 +207,12 @@ body.navFullscreen .zoomStack{z-index:1110!important}
             <div class="emergencyCard"><b>Ευρωπαϊκό SOS</b><a href="tel:112">112</a><div class="mini">Γενικός αριθμός έκτακτης ανάγκης</div></div>
             <div class="emergencyCard"><b>VHF Distress</b><a href="#">CH 16</a><div class="mini">156.800 MHz · Mayday / Pan-Pan</div></div>
           </div>
-          <div class="card" style="box-shadow:none">
-            <div class="name">Offline mode</div>
-            <div class="mini">Το app αποθηκεύει τα βασικά αρχεία για χρήση χωρίς internet. Οι χάρτες/καιρός θέλουν σύνδεση εκτός αν έχουν ήδη φορτωθεί στην cache.</div>
-            <div class="actions" style="margin-top:12px"><button class="btn soft" id="offlineSaveBtn">Αποθήκευση offline</button><span class="offlineBadge" id="offlineStatus">έλεγχος...</span></div>
-          </div>
         </div>
         <div class="panel glass grid" id="navRulesInfo">
           <div class="card" style="box-shadow:none">
             <div class="name">Συριγμοί, φώτα και ημερήσια σήματα</div>
             <div class="mini">Γρήγορη επανάληψη για εξετάσεις/πρακτική. Βραχύς = περίπου 1 δευτ., μακρύς = περίπου 4–6 δευτ.</div>
           </div>
-          <div class="name">Υποχρεωτικός εξοπλισμός / εφόδια μικρού σκάφους</div>
-          <div class="infoGrid" id="requiredGearGrid"></div>
           <div class="name">Πρόσθετα εφόδια ανά απόσταση από ακτή</div>
           <div class="infoGrid" id="extraGearGrid"></div>
           <div class="name">Συριγμοί χειρισμών / προειδοποίησης</div>
@@ -228,6 +221,8 @@ body.navFullscreen .zoomStack{z-index:1110!important}
           <div class="infoGrid" id="lightsGrid"></div>
           <div class="name">Ημερήσια σχήματα</div>
           <div class="infoGrid" id="shapesGrid"></div>
+          <div class="name">Υποχρεωτικός εξοπλισμός / εφόδια μικρού σκάφους</div>
+          <div class="infoGrid" id="requiredGearGrid"></div>
         </div>
         <div class="panel glass"><div class="linkgrid" id="usefulLinks"></div></div>
       </section>
@@ -309,6 +304,11 @@ body.navFullscreen .zoomStack{z-index:1110!important}
           <div class="card" style="box-shadow:none">
             <div class="name">Backup</div>
             <div class="mini">Τα σκάφη, οι προορισμοί και τα rentals αποθηκεύονται τοπικά στον browser. Από εδώ μπορείς να κρατήσεις αρχείο, να το ξαναφορτώσεις ή να γυρίσεις στα αρχικά δεδομένα της εφαρμογής.</div>
+          </div>
+          <div class="card" style="box-shadow:none">
+            <div class="name">Offline mode</div>
+            <div class="mini">Το app αποθηκεύει τα βασικά αρχεία για χρήση χωρίς internet. Οι χάρτες/καιρός θέλουν σύνδεση εκτός αν έχουν ήδη φορτωθεί στην cache.</div>
+            <div class="actions" style="margin-top:12px"><button class="btn soft" id="offlineSaveBtn">Αποθήκευση offline</button><span class="offlineBadge" id="offlineStatus">έλεγχος...</span></div>
           </div>
           <div class="actions">
             <button class="btn" id="backupExportBtn">⇩ Export JSON</button>
@@ -560,6 +560,33 @@ $('liveMap').addEventListener('touchend',e=>{if(e.touches.length<2){navState.pin
 window.addEventListener('resize',()=>{navState.tilesKey='';drawNavMap()});
 function bindFullscreenTouchButton(id){let el=$(id);if(!el||el.dataset.touchFix)return;el.dataset.touchFix='1';let last=0;el.addEventListener('touchend',e=>{if(document.body.classList.contains('navFullscreen')){e.preventDefault();e.stopPropagation();last=Date.now();if(typeof el.onclick==='function')el.onclick.call(el,e);}}, {passive:false});el.addEventListener('click',e=>{if(Date.now()-last<500){e.preventDefault();e.stopImmediatePropagation();}}, true)}
 ['startNavBtn','centerNavBtn','fullscreenNavBtn','zoomInBtn','zoomOutBtn'].forEach(bindFullscreenTouchButton);
+
+function fullscreenControlAction(id){
+  if(id==='startNavBtn')startNav();
+  else if(id==='centerNavBtn'){$('centerNavBtn').onclick();}
+  else if(id==='fullscreenNavBtn'){$('fullscreenNavBtn').onclick();}
+  else if(id==='zoomInBtn')zoomNav(1);
+  else if(id==='zoomOutBtn')zoomNav(-1);
+}
+function fullscreenControlTouchFallback(e){
+  if(!document.body.classList.contains('navFullscreen'))return;
+  let t=e.changedTouches&&e.changedTouches[0];
+  if(!t)return;
+  let ids=['startNavBtn','centerNavBtn','fullscreenNavBtn','zoomInBtn','zoomOutBtn'];
+  for(let id of ids){
+    let el=$(id);
+    if(!el)continue;
+    let r=el.getBoundingClientRect();
+    if(t.clientX>=r.left-8&&t.clientX<=r.right+8&&t.clientY>=r.top-8&&t.clientY<=r.bottom+8){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      fullscreenControlAction(id);
+      navState.suppressClickUntil=Date.now()+600;
+      return;
+    }
+  }
+}
+window.addEventListener('touchend',fullscreenControlTouchFallback,{capture:true,passive:false});
 
 
 
