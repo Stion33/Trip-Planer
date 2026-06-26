@@ -108,6 +108,17 @@ body.navFullscreen.navCompact .navPanel{background:#000!important}
   body.navFullscreen .zoomStack .btn{width:44px;min-height:44px;height:44px}
 }
 
+/* Fix iOS fullscreen control taps: keep controls above the map gesture layer */
+body.navFullscreen .mapTools,
+body.navFullscreen .zoomStack,
+body.navFullscreen .waypointBar{position:fixed!important;z-index:1000!important;pointer-events:auto!important;-webkit-transform:translateZ(0);transform:translateZ(0)}
+body.navFullscreen .mapTools *,
+body.navFullscreen .zoomStack *,
+body.navFullscreen .waypointBar *{pointer-events:auto!important;touch-action:manipulation}
+body.navFullscreen .mapRot{z-index:1}
+body.navFullscreen .mapTools{z-index:1100!important}
+body.navFullscreen .zoomStack{z-index:1110!important}
+
 </style>
 </head>
 <body>
@@ -547,6 +558,9 @@ $('liveMap').addEventListener('touchstart',e=>{if(e.touches.length===2){let a=e.
 $('liveMap').addEventListener('touchmove',e=>{if(e.touches.length===2&&navState.pinch){let a=e.touches[0],b=e.touches[1],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),focus={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2},ratio=d/navState.pinch.d;navState.suppressClickUntil=Date.now()+500;if(ratio>1.16||ratio<0.86){zoomNav(ratio>1?1:-1,focus);navState.pinch={d,x:focus.x,y:focus.y}}e.preventDefault()}},{passive:false});
 $('liveMap').addEventListener('touchend',e=>{if(e.touches.length<2){navState.pinch=null;navState.suppressClickUntil=Date.now()+350}});
 window.addEventListener('resize',()=>{navState.tilesKey='';drawNavMap()});
+function bindFullscreenTouchButton(id){let el=$(id);if(!el||el.dataset.touchFix)return;el.dataset.touchFix='1';let last=0;el.addEventListener('touchend',e=>{if(document.body.classList.contains('navFullscreen')){e.preventDefault();e.stopPropagation();last=Date.now();if(typeof el.onclick==='function')el.onclick.call(el,e);}}, {passive:false});el.addEventListener('click',e=>{if(Date.now()-last<500){e.preventDefault();e.stopImmediatePropagation();}}, true)}
+['startNavBtn','centerNavBtn','fullscreenNavBtn','zoomInBtn','zoomOutBtn'].forEach(bindFullscreenTouchButton);
+
 
 
 $('setAnchorBtn').onclick=()=>{if(!navState.pos){toast('Πάτα πρώτα live GPS');return}anchorState.point={lat:navState.pos.lat,lon:navState.pos.lon,t:Date.now()};anchorState.on=true;saveAnchor();toast('✓ ορίστηκε άγκυρα')};
