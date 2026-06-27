@@ -2043,15 +2043,8 @@
     }
 
     @keyframes anchorAlarmFlash {
-
-      0%,
-      100% {
-        filter: none
-      }
-
-      50% {
-        filter: saturate(1.35) brightness(.92)
-      }
+      0%, 100% { filter: none }
+      50% { filter: saturate(1.35) brightness(.92) }
     }
 
     .anchorStatus.ringing {
@@ -2060,15 +2053,8 @@
     }
 
     @keyframes anchorPulse {
-
-      0%,
-      100% {
-        transform: translateZ(0) scale(1)
-      }
-
-      50% {
-        transform: translateZ(0) scale(1.015)
-      }
+      0%, 100% { transform: translateZ(0) scale(1) }
+      50% { transform: translateZ(0) scale(1.015) }
     }
 
     .anchorSoundHint {
@@ -2484,6 +2470,106 @@
         grid-template-columns: repeat(2, minmax(0, 1fr))
       }
     }
+
+
+    /* Navigation visibility settings drawer */
+    .navHidden {
+      display: none !important
+    }
+
+    .navPrefsEntry {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 13px;
+      font-weight: 850;
+      color: var(--deep)
+    }
+
+    .navPrefsEntry small {
+      display: block;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 11px;
+      margin-top: 2px
+    }
+
+    .navPrefsEntry input {
+      width: 24px;
+      min-height: 24px;
+      accent-color: var(--sea);
+      flex: 0 0 auto
+    }
+
+    .navPrefsBackdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(3, 23, 31, .28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease
+    }
+
+    .navPrefsSheet {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 90;
+      width: min(440px, 92vw);
+      background: rgba(246, 251, 252, .96);
+      backdrop-filter: blur(18px);
+      border-left: 1px solid rgba(255, 255, 255, .88);
+      box-shadow: -18px 0 55px rgba(6, 50, 65, .20);
+      transform: translateX(104%);
+      transition: transform .28s ease;
+      padding: calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
+      overflow: auto
+    }
+
+    .navPrefsHead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: -2px -2px 12px;
+      padding: 2px 2px 12px;
+      background: linear-gradient(180deg, rgba(246, 251, 252, .98), rgba(246, 251, 252, .86))
+    }
+
+    .navPrefsList {
+      display: grid;
+      gap: 9px
+    }
+
+    body.navPrefsOpen .navPrefsBackdrop {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    body.navPrefsOpen .navPrefsSheet {
+      transform: translateX(0)
+    }
+
+    body.navPrefsOpen .app {
+      transform: translateX(-38px);
+      transition: transform .28s ease
+    }
+
+    @media(max-width:820px) {
+      body.navPrefsOpen .app {
+        transform: translateX(-22vw)
+      }
+    }
+
   </style>
 </head>
 
@@ -2819,19 +2905,14 @@
             <div class="anchorHead">
               <div>
                 <div class="name">Route alarms & fuel safety</div>
-                <div class="mini">Arrival alarm, off-course alarm, GPS accuracy και point of no return/fuel reserve.
-                </div>
+                <div class="mini">Arrival alarm, off-course alarm, GPS accuracy και point of no return/fuel reserve.</div>
               </div>
             </div>
             <div class="compactSettings">
-              <div class="field"><label>Arrival m</label><input id="arrivalRadius" type="number" min="10" step="5"
-                  value="100"></div>
-              <div class="field"><label>Off-course m</label><input id="offCourseLimit" type="number" min="20" step="10"
-                  value="185"></div>
-              <div class="field"><label>Tank start %</label><input id="tankStartPct" type="number" min="1" max="100"
-                  step="1" value="100"></div>
-              <div class="field"><label>Reserve %</label><input id="fuelReservePct" type="number" min="5" max="80"
-                  step="1" value="30"></div>
+              <div class="field"><label>Arrival m</label><input id="arrivalRadius" type="number" min="10" step="5" value="100"></div>
+              <div class="field"><label>Off-course m</label><input id="offCourseLimit" type="number" min="20" step="10" value="185"></div>
+              <div class="field"><label>Tank start %</label><input id="tankStartPct" type="number" min="1" max="100" step="1" value="100"></div>
+              <div class="field"><label>Reserve %</label><input id="fuelReservePct" type="number" min="5" max="80" step="1" value="30"></div>
             </div>
             <div class="anchorStatus" id="routeAlarmStatus">Δεν υπάρχουν ενεργά route alarms.</div>
           </div>
@@ -2839,8 +2920,7 @@
             <div class="anchorHead">
               <div>
                 <div class="name">MOB / Man Overboard</div>
-                <div class="mini">Το κόκκινο MOB αποθηκεύει αμέσως το τωρινό GPS και δείχνει bearing, απόσταση και ETA
-                  επιστροφής.</div>
+                <div class="mini">Το κόκκινο MOB αποθηκεύει αμέσως το τωρινό GPS και δείχνει bearing, απόσταση και ETA επιστροφής.</div>
               </div>
               <div class="actions"><button class="btn bad" id="clearMobBtn">καθαρισμός MOB</button></div>
             </div>
@@ -2856,8 +2936,7 @@
             <div class="anchorHead">
               <div>
                 <div class="name">Track log / Trip summary</div>
-                <div class="mini">Καταγράφει ίχνος, απόσταση GPS, μέση/max ταχύτητα, χρόνο κίνησης/στάσης και export
-                  GPX.</div>
+                <div class="mini">Καταγράφει ίχνος, απόσταση GPS, μέση/max ταχύτητα, χρόνο κίνησης/στάσης και export GPX.</div>
               </div>
             </div>
             <div class="summaryGrid">
@@ -2892,8 +2971,7 @@
               <div class="field"><label>Σημείο άγκυρας</label><input id="anchorPoint" value="—" readonly></div>
             </div>
             <div class="anchorStatus" id="anchorStatus">Δεν έχει οριστεί σημείο άγκυρας.</div>
-            <div class="anchorSoundHint" id="anchorSoundHint">Ο ήχος ενεργοποιείται μόλις πατήσεις θέση ή alarm on.
-            </div>
+            <div class="anchorSoundHint" id="anchorSoundHint">Ο ήχος ενεργοποιείται μόλις πατήσεις θέση ή alarm on.</div>
           </div>
         </div>
       </section>
@@ -2911,6 +2989,11 @@
               σύνδεση εκτός αν έχουν ήδη φορτωθεί στην cache.</div>
             <div class="actions" style="margin-top:12px"><button class="btn soft" id="offlineSaveBtn">Αποθήκευση
                 offline</button><span class="offlineBadge" id="offlineStatus">έλεγχος...</span></div>
+          </div>
+          <div class="card" style="box-shadow:none">
+            <div class="name">Navigation εμφάνιση</div>
+            <div class="mini">Επιλέγεις ποια όργανα και κουτάκια θέλεις να φαίνονται στο Navigation. Ο χάρτης και τα σημεία μένουν πάντα ενεργά.</div>
+            <div class="actions" style="margin-top:12px"><button class="btn soft" id="openNavPrefsBtn">› επιλογές οργάνων</button></div>
           </div>
           <div class="actions">
             <button class="btn" id="backupExportBtn">⇩ Export JSON</button>
@@ -2943,6 +3026,21 @@
             stroke-width="5" stroke-linecap="round" />
         </svg></span></button><button class="tab" data-page="mapPage"><span class="infoIcon">i</span></button></nav>
   <div class="toast" id="toast"></div>
+  <div class="navPrefsBackdrop" id="navPrefsBackdrop"></div>
+  <aside class="navPrefsSheet" id="navPrefsSheet" aria-label="Επιλογές οργάνων Navigation">
+    <div class="navPrefsHead">
+      <div>
+        <div class="name">Όργανα Navigation</div>
+        <div class="mini">Άνοιξε/κλείσε ό,τι δεν χρειάζεσαι.</div>
+      </div>
+      <button class="btn ghost" id="closeNavPrefsBtn">← back</button>
+    </div>
+    <div class="actions" style="margin-bottom:12px">
+      <button class="btn soft" id="navPrefsAllBtn">✓ όλα</button>
+      <button class="btn ghost" id="navPrefsMinimalBtn">καθαρό</button>
+    </div>
+    <div class="navPrefsList" id="navPrefsList"></div>
+  </aside>
 
   <script>
     const KEY = 'seatrip_app_v1';
@@ -2984,21 +3082,58 @@
         { id: 'rb1', name: 'HNC 660 140hp', day: 280, cruiseSpeed: 32, maxSpeed: 40, fuelCruise: 30, fuelMax: 55, fuelTank: 150, oilRatio: 0, selected: true },
         { id: 'rb2', name: 'Saxdor 320 GTO', day: 950, cruiseSpeed: 24.7, maxSpeed: 52.5, fuelCruise: 56, fuelMax: 120, fuelTank: 428, oilRatio: 0, selected: true },
         { id: 'rb3', name: 'Technohull 38 GS', day: 1200, cruiseSpeed: 35, maxSpeed: 73, fuelCruise: 60, fuelMax: 160, fuelTank: 600, oilRatio: 0, selected: true }
-      ], trips: [], settings: { fuelPrice: 2, oilPrice: 15, safety: 10, tripType: '1', rentDays: 1, rentProfile: 'balanced', w: { cost: 30, time: 20, fuel: 15, range: 15, speed: 10, tank: 10 } }, links: []
+      ], trips: [], settings: { fuelPrice: 2, oilPrice: 15, safety: 10, tripType: '1', rentDays: 1, rentProfile: 'balanced', w: { cost: 30, time: 20, fuel: 15, range: 15, speed: 10, tank: 10 }, navVisible: {} }, links: []
     };
     const DATA_URL = './data.json';
     let state = structuredClone(defaults), lastTrip = null; const $ = id => document.getElementById(id); const $$ = s => [...document.querySelectorAll(s)];
     const clone = o => JSON.parse(JSON.stringify(o));
-    function normalizeData(data) { let base = clone(defaults), d = data || {}; return { ...base, ...d, boats: Array.isArray(d.boats) ? d.boats : base.boats, routes: Array.isArray(d.routes) ? d.routes : base.routes, rentals: Array.isArray(d.rentals) ? d.rentals : base.rentals, trips: Array.isArray(d.trips) ? d.trips : base.trips, settings: { ...base.settings, ...(d.settings || {}), w: { ...base.settings.w, ...((d.settings || {}).w || {}) } }, links: Array.isArray(d.links) ? d.links : base.links } }
+    const NAV_VISIBILITY_OPTIONS = [
+      { key: 'weatherTop', label: 'Καιρός / θάλασσα πάνω', note: 'Καιρός, θερμοκρασία, άνεμος, μποφόρ, κύμα.', selector: '#navWeatherTop' },
+      { key: 'weatherUpdated', label: 'Ώρα ενημέρωσης καιρού', note: 'Μικρή γραμμή ενημέρωσης κάτω από τον καιρό.', selector: '#wxUpdated' },
+      { key: 'weatherAlert', label: 'Προειδοποίηση καιρού', note: 'Κόκκινη/πορτοκαλί ειδοποίηση για άνεμο ή κύμα.', selector: '#weatherAlert' },
+      { key: 'speed', label: 'Ταχύτητα', note: 'Live ταχύτητα σε knots.', selector: '#navSpeed', card: true },
+      { key: 'position', label: 'Στίγμα', note: 'Live lat/lon.', selector: '#navPos', card: true },
+      { key: 'heading', label: 'Heading', note: 'Κατεύθυνση σκάφους.', selector: '#navHeading', card: true },
+      { key: 'bearing', label: 'Πορεία προς σημείο', note: 'Bearing για το ενεργό waypoint.', selector: '#navBearing', card: true },
+      { key: 'distance', label: 'Απόσταση', note: 'Απόσταση μέχρι το ενεργό σημείο.', selector: '#navDistance', card: true },
+      { key: 'liveFuel', label: 'Καύσιμο live', note: 'Εκτίμηση λίτρων με βάση το επιλεγμένο σκάφος.', selector: '#navFuel', card: true },
+      { key: 'eta', label: 'ETA', note: 'Εκτιμώμενη ώρα άφιξης.', selector: '#navEta', card: true },
+      { key: 'cogSog', label: 'SOG / COG', note: 'Πορεία και ταχύτητα από GPS.', selector: '#navCogSog', card: true },
+      { key: 'hdgSource', label: 'HDG source', note: 'Πηγή heading.', selector: '#navHdgSource', card: true },
+      { key: 'vmg', label: 'VMG στόχου', note: 'Ταχύτητα προσέγγισης προς το σημείο.', selector: '#navVmg', card: true },
+      { key: 'xte', label: 'XTE', note: 'Απόκλιση από τη γραμμή πορείας.', selector: '#navXte', card: true },
+      { key: 'routeLeft', label: 'Route left', note: 'Υπόλοιπο διαδρομής.', selector: '#navRouteLeft', card: true },
+      { key: 'progress', label: 'Progress', note: 'Ποσοστό προόδου διαδρομής.', selector: '#navProgress', card: true },
+      { key: 'accuracy', label: 'GPS accuracy', note: 'Ακρίβεια GPS.', selector: '#navAccuracy', card: true },
+      { key: 'windRel', label: 'Άνεμος / πορεία', note: 'Σχετικός άνεμος με την πορεία.', selector: '#navWindRel', card: true },
+      { key: 'seaScore', label: 'SeaTrip score', note: 'Γρήγορη ένδειξη συνθηκών.', selector: '#navSeaScore', card: true },
+      { key: 'fuelReserve', label: 'Fuel reserve', note: 'Reserve και point of no return.', selector: '#navFuelReserve', card: true },
+      { key: 'compass', label: 'Πυξίδα', note: 'Η μεγάλη πυξίδα πορείας.', selector: '.navCompass' },
+      { key: 'waypointsBar', label: 'Μπάρα σημείων', note: 'Επιλογή/διαγραφή waypoint και σκάφος fuel.', selector: '.waypointBar' },
+      { key: 'gpsBar', label: 'GPS κουμπί και status', note: 'Start GPS και κατάσταση GPS.', selector: '#navGpsBar' },
+      { key: 'advancedTools', label: 'Advanced εργαλεία', note: 'MOB, track, GPX, save trip.', selector: '#navAdvancedTools' },
+      { key: 'routeAlarms', label: 'Route alarms & fuel safety', note: 'Arrival, off-course, reserve.', selector: '#navAlarmPanel' },
+      { key: 'mobPanel', label: 'MOB panel', note: 'Man Overboard πληροφορίες.', selector: '#mobPanel' },
+      { key: 'tripPanel', label: 'Track log / Trip summary', note: 'Σύνοψη track και trip.', selector: '#navTripPanel' },
+      { key: 'anchorAlarm', label: 'Anchor alarm', note: 'Όργανα άγκυρας και ακτίνα.', selector: '#anchorAlarmBox' }
+    ];
+    function defaultNavVisible() { return Object.fromEntries(NAV_VISIBILITY_OPTIONS.map(o => [o.key, true])) }
+    function navVisibility() { state.settings = state.settings || {}; state.settings.navVisible = { ...defaultNavVisible(), ...(state.settings.navVisible || {}) }; return state.settings.navVisible }
+    function navOptionElement(opt) { let el = document.querySelector(opt.selector); return opt.card ? (el?.closest('.navStat') || el) : el }
+    function applyNavVisibility() { let visible = navVisibility(); NAV_VISIBILITY_OPTIONS.forEach(opt => { let el = navOptionElement(opt); if (el) el.classList.toggle('navHidden', visible[opt.key] === false) }) }
+    function renderNavVisibilitySettings() { let list = $('navPrefsList'); if (!list) return; let visible = navVisibility(); list.innerHTML = NAV_VISIBILITY_OPTIONS.map(opt => `<label class="navPrefsEntry"><span>${esc(opt.label)}<small>${esc(opt.note || '')}</small></span><input type="checkbox" data-nav-visible="${opt.key}" ${visible[opt.key] !== false ? 'checked' : ''}></label>`).join(''); list.querySelectorAll('[data-nav-visible]').forEach(ch => { ch.onchange = e => { navVisibility()[e.target.dataset.navVisible] = e.target.checked; save(); applyNavVisibility() } }); applyNavVisibility() }
+    function openNavPrefs() { renderNavVisibilitySettings(); document.body.classList.add('navPrefsOpen') }
+    function closeNavPrefs() { document.body.classList.remove('navPrefsOpen') }
+    function normalizeData(data) { let base = clone(defaults), d = data || {}; return { ...base, ...d, boats: Array.isArray(d.boats) ? d.boats : base.boats, routes: Array.isArray(d.routes) ? d.routes : base.routes, rentals: Array.isArray(d.rentals) ? d.rentals : base.rentals, trips: Array.isArray(d.trips) ? d.trips : base.trips, settings: { ...base.settings, ...(d.settings || {}), w: { ...base.settings.w, ...((d.settings || {}).w || {}) }, navVisible: { ...defaultNavVisible(), ...(((d.settings || {}).navVisible) || {}) } }, links: Array.isArray(d.links) ? d.links : base.links } }
     function setDefaults(data) { let next = normalizeData(data); Object.keys(defaults).forEach(k => delete defaults[k]); Object.assign(defaults, next) }
     async function loadDataJson(show = false, overwriteLocal = false) { try { let res = await fetch(DATA_URL + '?v=' + Date.now(), { cache: 'no-store' }); if (!res.ok) throw new Error('HTTP ' + res.status); let data = await res.json(); setDefaults(data); if (overwriteLocal) { localStorage.removeItem(KEY); state = clone(defaults); save(); render() } if (show) toast('✓ data.json'); return true } catch (e) { console.warn('data.json not loaded', e); if (show) toast('Δεν φορτώθηκε το data.json'); return false } }
-    function load() { try { let saved = JSON.parse(localStorage.getItem(KEY) || '{}'), base = clone(defaults); return { ...base, ...saved, settings: { ...base.settings, ...(saved.settings || {}), w: { ...base.settings.w, ...((saved.settings || {}).w || {}) } }, links: saved.links || base.links } } catch { return clone(defaults) } }
+    function load() { try { let saved = JSON.parse(localStorage.getItem(KEY) || '{}'), base = clone(defaults); return { ...base, ...saved, settings: { ...base.settings, ...(saved.settings || {}), w: { ...base.settings.w, ...((saved.settings || {}).w || {}) }, navVisible: { ...defaultNavVisible(), ...(((saved.settings || {}).navVisible) || {}) } }, links: saved.links || base.links } } catch { return clone(defaults) } }
     function save() { localStorage.setItem(KEY, JSON.stringify(state)); counts() } function id(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
     function num(v, d = 0) { const x = Number(String(v).replace(',', '.')); return Number.isFinite(x) ? x : d } function fmt(x, d = 1) { return Number.isFinite(x) ? x.toLocaleString('el-GR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—' } function eur(x) { return Number.isFinite(x) ? x.toLocaleString('el-GR', { style: 'currency', currency: 'EUR' }) : '—' } function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])) }
     function toast(t) { $('toast').textContent = t; $('toast').classList.add('on'); clearTimeout(window.tt); window.tt = setTimeout(() => $('toast').classList.remove('on'), 1800) }
     function counts() { $('boatCount').textContent = state.boats.length; $('tripCount').textContent = state.routes.length; $('rentCount').textContent = state.rentals.length }
     function fillSelect(el, arr) { $(el).innerHTML = arr.map(x => `<option value="${x.id}">${esc(x.name)}${x.distance ? ' · ' + fmt(x.distance) + ' nm' : ''}</option>`).join('') }
-    function render() { counts(); fillSelect('calcBoat', state.boats); fillSelect('calcRoute', state.routes); fillSelect('rentRoute', state.routes); $('fuelPrice').value = state.settings.fuelPrice; $('oilPrice').value = state.settings.oilPrice; $('safety').value = state.settings.safety; $('tripType').value = state.settings.tripType; $('rentFuelPrice').value = state.settings.fuelPrice; $('rentOilPrice').value = state.settings.oilPrice; $('rentSafety').value = state.settings.safety; $('rentTripType').value = state.settings.tripType; $('rentDays').value = state.settings.rentDays; $('rentProfile').value = state.settings.rentProfile || 'balanced'; Object.entries(state.settings.w).forEach(([k, v]) => { let el = $('w' + k[0].toUpperCase() + k.slice(1)); if (el) el.value = v }); applyProfile(false); syncDistance(); syncRentDistance(); renderBoats(); renderRoutes(); renderRentals(); renderLinks(); renderNavRulesInfo(); calculate(); rankRentals() }
+    function render() { counts(); fillSelect('calcBoat', state.boats); fillSelect('calcRoute', state.routes); fillSelect('rentRoute', state.routes); $('fuelPrice').value = state.settings.fuelPrice; $('oilPrice').value = state.settings.oilPrice; $('safety').value = state.settings.safety; $('tripType').value = state.settings.tripType; $('rentFuelPrice').value = state.settings.fuelPrice; $('rentOilPrice').value = state.settings.oilPrice; $('rentSafety').value = state.settings.safety; $('rentTripType').value = state.settings.tripType; $('rentDays').value = state.settings.rentDays; $('rentProfile').value = state.settings.rentProfile || 'balanced'; Object.entries(state.settings.w).forEach(([k, v]) => { let el = $('w' + k[0].toUpperCase() + k.slice(1)); if (el) el.value = v }); applyProfile(false); syncDistance(); syncRentDistance(); renderBoats(); renderRoutes(); renderRentals(); renderLinks(); renderNavRulesInfo(); renderNavVisibilitySettings(); applyNavVisibility(); calculate(); rankRentals() }
     function route(sel) { return state.routes.find(r => r.id === $(sel).value) || state.routes[0] } function boat(sel) { return state.boats.find(b => b.id === $(sel).value) || state.boats[0] }
     function syncDistance() { let r = route('calcRoute'); if (r) $('distance').value = r.distance } function syncRentDistance() { let r = route('rentRoute'); if (r) $('rentDistance').value = r.distance }
     function calc(distance, b, fp, op, safety, type = 1, mode = 'cruise') { distance *= type; let sp = mode === 'max' ? b.maxSpeed : b.cruiseSpeed, lph = mode === 'max' ? b.fuelMax : b.fuelCruise; let h = sp > 0 ? distance / sp : NaN; let fuel = h * lph; let fuelSafe = fuel * (1 + safety / 100); let oil = fuelSafe * (b.oilRatio || 0); let cost = fuelSafe * fp + oil * op; let range = b.fuelCruise > 0 ? b.fuelTank / (b.fuelCruise / b.cruiseSpeed) : 0; let margin = range ? range - distance : 0; let tankPct = b.fuelTank > 0 ? (fuelSafe / b.fuelTank * 100) : NaN; return { distance, h, min: h * 60, fuel, fuelSafe, oil, cost, sp, lph, range, margin, lpnm: fuelSafe / distance, tankPct } }
@@ -3032,7 +3167,7 @@
     function scoreItems(items, w) { let keys = { cost: 'low', h: 'low', lpnm: 'low', range: 'high', sp: 'high', tankPct: 'low' }; return items.map(it => { let score = 0, total = 0; Object.entries({ cost: w.cost, h: w.time, lpnm: w.fuel, range: w.range, sp: w.speed, tankPct: w.tank }).forEach(([k, wt]) => { wt = num(wt); if (!wt) return; let vals = items.map(i => i[k]).filter(Number.isFinite), min = Math.min(...vals), max = Math.max(...vals); let part = max === min ? 1 : (keys[k] === 'low' ? (max - it[k]) / (max - min) : (it[k] - min) / (max - min)); score += part * wt; total += wt }); return { ...it, score: total ? Math.round(score / total * 100) : 0 } }).sort((a, b) => b.score - a.score) }
     function rankRentals() { let dist = num($('rentDistance').value), days = num($('rentDays').value, 1), fp = num($('rentFuelPrice').value, 2), op = num($('rentOilPrice').value, 15), s = num($('rentSafety').value, 10), t = num($('rentTripType').value, 1); let w = { cost: num($('wCost').value, 30), time: num($('wTime').value, 20), fuel: num($('wFuel').value, 15), range: num($('wRange').value, 15), speed: num($('wSpeed').value, 10), tank: num($('wTank').value, 10) }; state.settings = { ...state.settings, fuelPrice: fp, oilPrice: op, safety: s, tripType: String(t), rentDays: days, rentProfile: $('rentProfile').value, w }; let items = state.rentals.filter(b => b.selected).map(b => { let r = calc(dist, b, fp, op, s, t, 'cruise'); return { ...b, ...r, cost: r.cost + (b.day * days), tripCost: r.cost, rentalCost: b.day * days } }); let ranked = scoreItems(items, w); $('rentResults').innerHTML = ranked.length ? ranked.map((r, i) => `<article class="card ${i === 0 ? 'best' : ''}"><div class="cardTop"><div><div class="name">${esc(r.name)}</div><div class="score">${r.score}</div></div>${i === 0 ? '<div class="pill">best</div>' : ''}</div><div class="metrics">${metric('σύνολο', eur(r.cost), 'main')}${metric('ενοικίαση', eur(r.rentalCost))}${metric('ταξίδι', eur(r.tripCost))}${metric('ώρα', fmt(r.h, 2) + ' h', 'main')}${metric('L/nm', fmt(r.lpnm, 2))}${metric('δοχείο', fmt(r.tankPct, 1) + '%')}${metric('range', fmt(r.range, 0) + ' nm')}${metric('margin', fmt(r.margin, 0) + ' nm')}${metric('kn', fmt(r.sp, 1))}</div></article>`).join('') : '<div class="empty">—</div>'; save() }
     function csv(name, rows) { let data = rows.map(r => r.map(v => '"' + String(v).replaceAll('"', '""') + '"').join(',')).join('\n'); let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: 'text/csv' })); a.download = name; a.click() }
-    function showPage(pageId) { $$('.tab').forEach(x => x.classList.toggle('active', x.dataset.page === pageId)); $$('.page').forEach(p => p.classList.toggle('active', p.id === pageId)); document.body.classList.toggle('gpsPageOn', pageId === 'navPage'); if (pageId === 'navPage') setTimeout(initNav, 60); window.scrollTo({ top: 0, behavior: 'smooth' }); } $('settingsBtn').onclick = () => showPage('backupPage')
+    function showPage(pageId) { $$('.tab').forEach(x => x.classList.toggle('active', x.dataset.page === pageId)); $$('.page').forEach(p => p.classList.toggle('active', p.id === pageId)); document.body.classList.toggle('gpsPageOn', pageId === 'navPage'); if (pageId === 'navPage') setTimeout(initNav, 60); window.scrollTo({ top: 0, behavior: 'smooth' }); } $('settingsBtn').onclick = () => showPage('backupPage'); $('openNavPrefsBtn')?.addEventListener('click', openNavPrefs); $('closeNavPrefsBtn')?.addEventListener('click', closeNavPrefs); $('navPrefsBackdrop')?.addEventListener('click', closeNavPrefs); $('navPrefsAllBtn')?.addEventListener('click', () => { state.settings.navVisible = defaultNavVisible(); save(); renderNavVisibilitySettings(); toast('Όλα τα όργανα εμφανίζονται') }); $('navPrefsMinimalBtn')?.addEventListener('click', () => { let v = defaultNavVisible(); Object.keys(v).forEach(k => v[k] = false); ['speed','heading','distance','eta','compass','gpsBar'].forEach(k => v[k] = true); state.settings.navVisible = v; save(); renderNavVisibilitySettings(); toast('Καθαρή πλοήγηση') })
     function exportBackup() { let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })); a.download = 'seatrip-backup.json'; a.click() }
     $('backupExportBtn').onclick = exportBackup;
     $('backupImportFile').onchange = e => { let f = e.target.files[0]; if (!f) return; let reader = new FileReader(); reader.onload = () => { try { let data = JSON.parse(reader.result); state = normalizeData(data); save(); render(); toast('✓ import') } catch (err) { toast('Το JSON δεν φορτώθηκε') } }; reader.readAsText(f) };
@@ -3047,6 +3182,7 @@
     $('openChartsBtn').onclick = () => open('https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p', '_blank');
     $('openChartsPanelBtn').onclick = () => open('https://maps.garmin.com/en-US/marine/?maps=another-brand&overlay=false&key=sw9pc6q5058p', '_blank');
     $$('.tab').forEach(b => b.onclick = () => showPage(b.dataset.page));
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeNavPrefs() });
     $$('.subtab').forEach(b => b.onclick = () => { $$('.subtab').forEach(x => x.classList.remove('active')); b.classList.add('active'); $$('#tripPage .drawer').forEach(d => d.classList.remove('active')); $('trip-' + b.dataset.trip).classList.add('active') });
     const fabBtn = $('fab'); if (fabBtn) fabBtn.onclick = () => { let p = document.querySelector('.page.active').id, d = document.querySelector('#tripPage .drawer.active')?.id; if (p === 'rentPage') $('newRentBtn').click(); else if (d === 'trip-boats') $('newBoatBtn').click(); else if (d === 'trip-destinations') $('newRouteBtn').click(); else toast('Διάλεξε προορισμό ή σκάφος για προσθήκη') };
 
@@ -3141,7 +3277,7 @@
     function markWxWarn(ids) { ids.forEach(id => $(id)?.closest('.navStat')?.classList.add('warn')) }
     function updateWeatherWarning() { let el = $('weatherAlert'); if (!el) return; clearWxWarnClasses(); let alerts = [], warnIds = new Set(); let bf = Number.isFinite(WX.windKn) ? beaufort(WX.windKn) : NaN; if (Number.isFinite(bf) && bf >= 5) { alerts.push('Άνεμος ' + bf + ' Bf'); warnIds.add('wxBeaufort'); warnIds.add('wxWindKn') } if (Number.isFinite(WX.windKn) && WX.windKn >= 22) { alerts.push('ισχυρός άνεμος ' + fmt(WX.windKn, 1) + ' kn'); warnIds.add('wxWindKn'); warnIds.add('wxWindDir') } if (Number.isFinite(WX.wave) && WX.wave >= 0.8) { alerts.push('κύμα ' + fmt(WX.wave, 1) + ' m'); warnIds.add('wxWave') } if ([80, 81, 82, 95, 96, 99].includes(Number(WX.code))) { alerts.push('πιθανή μπόρα/καταιγίδα'); warnIds.add('wxNow') } let wp = activeWp && activeWp(); if (wp && navState.pos && Number.isFinite(WX.windDir)) { let br = bearing(navState.pos, wp), head = Math.abs(signedDeg(WX.windDir - br)); if (head < 60 && Number.isFinite(WX.windKn) && WX.windKn >= 10) { alerts.push('κόντρα άνεμος προς το ενεργό σημείο'); warnIds.add('wxWindDir'); warnIds.add('wxWindKn') } } markWxWarn([...warnIds]); if (alerts.length) { el.className = 'weatherAlert warn'; el.textContent = '⚠️ Προσοχή: ' + alerts.join(' · ') } else { el.className = 'weatherAlert'; el.textContent = '' } }
     async function updateWeatherForPosition(p, force = false) { if (!p) return; let now = Date.now(); if (!force && WX.last && now - WX.last < 10 * 60 * 1000 && Math.abs((WX.lat || 0) - p.lat) < 0.02 && Math.abs((WX.lon || 0) - p.lon) < 0.02) return; WX.last = now; WX.lat = p.lat; WX.lon = p.lon; try { let u = `https://api.open-meteo.com/v1/forecast?latitude=${p.lat.toFixed(5)}&longitude=${p.lon.toFixed(5)}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m&wind_speed_unit=kn`; let mu = `https://marine-api.open-meteo.com/v1/marine?latitude=${p.lat.toFixed(5)}&longitude=${p.lon.toFixed(5)}&current=wave_height`; let [wr, mr] = await Promise.all([fetch(u), fetch(mu)]); let w = await wr.json(), marine = await mr.json(); let c = w.current || {}, mc = marine.current || {}; setWx('wxNow', weatherName(c.weather_code)); setWx('wxTemp', fmt(c.temperature_2m, 1) + ' °C'); setWx('wxWindDir', windGreek(c.wind_direction_10m)); setWx('wxBeaufort', beaufort(c.wind_speed_10m) + ' Bf'); setWx('wxWindKn', fmt(c.wind_speed_10m, 1) + ' kn'); WX.code = c.weather_code; WX.windKn = Number(c.wind_speed_10m); WX.windDir = Number(c.wind_direction_10m); WX.wave = Number(mc.wave_height); setWx('wxWave', Number.isFinite(WX.wave) ? fmt(WX.wave, 1) + ' m' : '— m'); updateWeatherWarning(); let up = $('wxUpdated'); if (up) up.textContent = 'Ενημέρωση καιρού: ' + new Date().toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' }); } catch (e) { let up = $('wxUpdated'); if (up) up.textContent = 'Δεν φορτώθηκε ο καιρός. Χρειάζεται internet.' } }
-    const NAV_KEY = 'seatrip_nav_waypoints_v2';
+    const NAV_KEY = 'seatrip_nav_waypoints_v3_clean';
     const navState = { watch: null, pos: null, prev: null, heading: 0, compassHeading: null, headingSource: 'gps', speed: 0, waypoints: [], activeWpId: null, zoom: 13, center: null, followCenter: true, mode: 'north', connectWps: false, fuelBoatId: null, fuelNm: 0, fuelL: 0, lastFuelT: null, tilesKey: '', drag: null, lastTap: 0, pinch: null, suppressClickUntil: 0, compassReady: false };
     function rad(d) { return d * Math.PI / 180 } function deg(r) { return r * 180 / Math.PI } function normDeg(d) { return (d % 360 + 360) % 360 } function signedDeg(d) { return ((d + 540) % 360) - 180 }
     function havNm(a, b) { let R = 3440.065, dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon), la1 = rad(a.lat), la2 = rad(b.lat), x = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2; return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x)) }
@@ -3274,7 +3410,7 @@
     function setActiveDelta(step) { if (!navState.waypoints.length) return; let i = Math.max(0, navState.waypoints.findIndex(w => w.id === navState.activeWpId)); i = (i + step + navState.waypoints.length) % navState.waypoints.length; navState.activeWpId = navState.waypoints[i].id; saveWaypoints(); drawNavMap() }
     function zoomNav(delta, focus) { let before = focus ? screenToLatLon(focus.x, focus.y) : null; let oldZoom = navState.zoom; navState.zoom = Math.max(3, Math.min(18, navState.zoom + delta)); if (navState.zoom === oldZoom) return; navState.followCenter = false; navState.tilesKey = ''; if (before && focus) { let after = screenToLatLon(focus.x, focus.y), center = navState.center || navState.pos || NAV_DEFAULT_POS; navState.center = { lat: center.lat + (before.lat - after.lat), lon: center.lon + (before.lon - after.lon) } } drawNavMap() }
     function panBy(dx, dy) { let center = navState.center || navState.pos || NAV_DEFAULT_POS, cp = tileXY(center.lat, center.lon, navState.zoom), mode = $('navMode')?.value || 'north', rot = (mode === 'heading' || mode === 'bottom') ? -normDeg(navState.heading) : 0, ang = rad(-rot), ux = dx * Math.cos(ang) - dy * Math.sin(ang), uy = dx * Math.sin(ang) + dy * Math.cos(ang); navState.followCenter = false; navState.center = invTileXY(cp.x - ux, cp.y - uy, navState.zoom); navState.tilesKey = ''; drawNavMap() }
-    function initNav() { let saved = localStorage.getItem(NAV_KEY); if (saved && !navState.waypoints.length) { try { let d = JSON.parse(saved); if (Array.isArray(d)) { navState.waypoints = d } else { navState.waypoints = d.waypoints || []; navState.activeWpId = d.activeWpId || null; navState.connectWps = !!d.connectWps; navState.fuelBoatId = d.fuelBoatId || null } } catch { } } let old = localStorage.getItem('seatrip_nav_waypoint_v1'); if (old && !navState.waypoints.length) { try { let w = JSON.parse(old); navState.waypoints = [{ id: 'wp_old', name: 'Σημείο 1', lat: w.lat, lon: w.lon, start: null }]; navState.activeWpId = 'wp_old'; saveWaypoints() } catch { } } fillNavBoatSelect(); updateGpsUi(); let btn = $('toggleWpLineBtn'); if (btn) btn.textContent = navState.connectWps ? 'ένωση σημείων: on' : 'ένωση σημείων: off'; drawNavMap(); if (!WX.last) updateWeatherForPosition(navState.pos || navState.center || NAV_DEFAULT_POS); }
+    function initNav() { let saved = localStorage.getItem(NAV_KEY); if (saved && !navState.waypoints.length) { try { let d = JSON.parse(saved); if (Array.isArray(d)) { navState.waypoints = d } else { navState.waypoints = d.waypoints || []; navState.activeWpId = d.activeWpId || null; navState.connectWps = !!d.connectWps; navState.fuelBoatId = d.fuelBoatId || null } } catch { } } fillNavBoatSelect(); updateGpsUi(); let btn = $('toggleWpLineBtn'); if (btn) btn.textContent = navState.connectWps ? 'ένωση σημείων: on' : 'ένωση σημείων: off'; drawNavMap(); applyNavVisibility(); if (!WX.last) updateWeatherForPosition(navState.pos || navState.center || NAV_DEFAULT_POS); }
     $('startNavBtn').onclick = startNav; $('centerNavBtn').onclick = () => { navState.followCenter = true; navState.center = navState.pos || navState.center; navState.tilesKey = ''; drawNavMap(); toast('Ο χάρτης ξανακεντράρισε') }; $('navMode').onchange = () => { if (navState.followCenter) navState.center = navState.pos || navState.center; navState.tilesKey = ''; drawNavMap() }; $('toggleWpLineBtn').onclick = () => { navState.connectWps = !navState.connectWps; $('toggleWpLineBtn').textContent = navState.connectWps ? 'ένωση σημείων: on' : 'ένωση σημείων: off'; saveWaypoints(); drawNavMap() }; $('navBoatSelect').onchange = e => { navState.fuelBoatId = e.target.value || null; navState.fuelNm = 0; navState.fuelL = 0; saveWaypoints(); updateNavFuelText(); toast(navState.fuelBoatId ? 'Υπολογισμός fuel ενεργός' : 'Fuel off') }; $('resetFuelBtn').onclick = () => { navState.fuelNm = 0; navState.fuelL = 0; updateNavFuelText(); toast('Μηδενίστηκε το fuel') }; $('clearWpBtn').onclick = () => { navState.waypoints = []; navState.activeWpId = null; saveWaypoints(); drawNavMap(); toast('Καθαρίστηκαν τα σημεία') }; $('deleteWpBtn').onclick = () => { let id = navState.activeWpId; navState.waypoints = navState.waypoints.filter(w => w.id !== id); navState.activeWpId = navState.waypoints[0]?.id || null; saveWaypoints(); drawNavMap(); toast('Σβήστηκε το ενεργό σημείο') }; $('prevWpBtn').onclick = () => setActiveDelta(-1); $('nextWpBtn').onclick = () => setActiveDelta(1); $('wpSelect').onchange = e => { navState.activeWpId = e.target.value || null; saveWaypoints(); drawNavMap() }; $('zoomInBtn').onclick = () => zoomNav(1); $('zoomOutBtn').onclick = () => zoomNav(-1); $('fullscreenNavBtn').onclick = () => { let on = document.body.classList.toggle('navFullscreen'); document.body.classList.toggle('navClean', on); $('fullscreenNavBtn').textContent = on ? '× έξοδος' : '⛶ full map'; let tb = $('navToolsBtn'); if (tb) tb.textContent = '☰ εργαλεία'; setTimeout(() => { navState.tilesKey = ''; drawNavMap() }, 80) }; $('navToolsBtn').onclick = () => { if (!document.body.classList.contains('navFullscreen')) { toast('Πάτα πρώτα full map'); return } let clean = document.body.classList.toggle('navClean'); $('navToolsBtn').textContent = clean ? '☰ εργαλεία' : '✓ καθαρή'; setTimeout(() => { navState.tilesKey = ''; drawNavMap() }, 80) };
     $('liveMap').addEventListener('click', e => { if (Date.now() < navState.suppressClickUntil || e.target.closest('.mapTools') || e.target.closest('.zoomStack') || navState.drag?.moved) return; let wpEl = e.target.closest('.wpMarker'); if (wpEl) { navState.activeWpId = wpEl.dataset.wpid; saveWaypoints(); drawNavMap(); return } let now = Date.now(); if (now - navState.lastTap < 260) { zoomNav(1, { x: e.clientX, y: e.clientY }); navState.lastTap = 0; return } navState.lastTap = now; setTimeout(() => { if (Date.now() - navState.lastTap >= 250) { addWaypoint(screenToLatLon(e.clientX, e.clientY)); navState.lastTap = 0 } }, 255) });
     $('liveMap').addEventListener('wheel', e => { e.preventDefault(); zoomNav(e.deltaY < 0 ? 1 : -1, { x: e.clientX, y: e.clientY }) }, { passive: false });
@@ -3367,13 +3503,10 @@
     function nearestSafePoint(p) { if (!p) return null; return SAFE_POINTS.map(s => ({ ...s, dist: havNm(p, s), brg: bearing(p, s) })).sort((a, b) => a.dist - b.dist)[0] || null }
     function routeTotalLeft(p) { let wps = navState.waypoints || [], wp = activeWp(); if (!p || !wp) return NaN; let i = Math.max(0, wps.findIndex(w => w.id === wp.id)); let total = havNm(p, wp); for (let n = i; n < wps.length - 1; n++) total += havNm(wps[n], wps[n + 1]); return total }
     function windRelativeText(brg) { if (!Number.isFinite(WX.windDir) || !Number.isFinite(brg)) return '—'; let rel = signedDeg(WX.windDir - brg), a = Math.abs(rel), side = rel > 0 ? 'δεξιά' : 'αριστερά', kind = a < 35 ? 'κόντρα' : a < 75 ? 'πλαγιομετωπικός' : a < 115 ? 'πλάγιος' : a < 155 ? 'πλαγιοπρύμνιος' : 'πρύμα'; return `${kind} ${fmt(a, 0)}° ${side}` }
-    function seaScore(brg) {
-      let score = 100, notes = []; let bf = Number.isFinite(WX.windKn) ? beaufort(WX.windKn) : NaN; if (Number.isFinite(bf)) { score -= Math.max(0, bf - 2) * 9; if (bf >= 5) notes.push(`${bf} Bf`) } if (Number.isFinite(WX.wave)) { score -= Math.max(0, WX.wave - .3) * 28; if (WX.wave >= .8) notes.push(`${fmt(WX.wave, 1)}m`) } if (Number.isFinite(WX.windDir) && Number.isFinite(brg) && Number.isFinite(WX.windKn)) { let rel = Math.abs(signedDeg(WX.windDir - brg)); if (rel < 60 && WX.windKn >= 10) { score -= 14; notes.push('κόντρα') } }
-      score = Math.max(0, Math.min(100, Math.round(score))); return { score, label: score >= 75 ? 'OK' : score >= 50 ? 'οριακό' : 'όχι καλό', notes }
-    }
+    function seaScore(brg) { let score = 100, notes = []; let bf = Number.isFinite(WX.windKn) ? beaufort(WX.windKn) : NaN; if (Number.isFinite(bf)) { score -= Math.max(0, bf - 2) * 9; if (bf >= 5) notes.push(`${bf} Bf`) } if (Number.isFinite(WX.wave)) { score -= Math.max(0, WX.wave - .3) * 28; if (WX.wave >= .8) notes.push(`${fmt(WX.wave, 1)}m`) } if (Number.isFinite(WX.windDir) && Number.isFinite(brg) && Number.isFinite(WX.windKn)) { let rel = Math.abs(signedDeg(WX.windDir - brg)); if (rel < 60 && WX.windKn >= 10) { score -= 14; notes.push('κόντρα') } }
+      score = Math.max(0, Math.min(100, Math.round(score))); return { score, label: score >= 75 ? 'OK' : score >= 50 ? 'οριακό' : 'όχι καλό', notes } }
     function currentLpnm() { let b = navFuelBoat(); if (!b) return NaN; if (advState.trackNm > .2 && navState.fuelL > .2) return navState.fuelL / advState.trackNm; let cs = num(b.cruiseSpeed, 0), fc = num(b.fuelCruise, 0); return cs > 0 ? fc / cs : NaN }
-    function updateFuelReserve(totalLeft) {
-      let b = navFuelBoat(), elId = 'navFuelReserve'; setStatClass(elId, ''); if (!b) { setTextSafe(elId, 'διάλεξε σκάφος'); return }
+    function updateFuelReserve(totalLeft) { let b = navFuelBoat(), elId = 'navFuelReserve'; setStatClass(elId, ''); if (!b) { setTextSafe(elId, 'διάλεξε σκάφος'); return }
       let startPct = Math.max(1, Math.min(100, num($('tankStartPct')?.value, 100))) / 100;
       let reservePct = Math.max(0, Math.min(90, num($('fuelReservePct')?.value, 30))) / 100;
       let tank = num(b.fuelTank, 0), remaining = Math.max(0, tank * startPct - navState.fuelL), reserve = tank * reservePct, lpnm = currentLpnm();
@@ -3382,18 +3515,15 @@
       let pct = tank > 0 ? remaining / tank * 100 : NaN;
       if (Number.isFinite(need) && remaining < need) { setTextSafe(elId, `${fmt(pct, 0)}% · PNR`); setStatClass(elId, 'warn'); routeAlarm('fuel', `⚠ Fuel reserve / Point of no return: δεν φτάνει άνετα με ${fmt(reservePct * 100, 0)}% reserve.`) }
       else if (Number.isFinite(pct)) { setTextSafe(elId, `${fmt(pct, 0)}% OK`); setStatClass(elId, pct < reservePct * 100 + 10 ? 'caution' : 'good'); advState.fuelWarnHit = false }
-      else setTextSafe(elId, '—')
-    }
+      else setTextSafe(elId, '—') }
     function routeAlarm(kind, text) { let key = kind + 'Hit'; if (kind === 'fuel') key = 'fuelWarnHit'; if (advState[key]) return; advState[key] = true; toast(text); try { navigator.vibrate && navigator.vibrate([350, 100, 350]) } catch { } try { if ('Notification' in window && Notification.permission === 'granted') new Notification('Captain Stion', { body: text }) } catch { } }
-    function updateRouteAlarms(dist, xte, totalLeft) {
-      let messages = []; let wp = activeWp(); if (wp && Number.isFinite(dist)) { let r = Math.max(10, num($('arrivalRadius')?.value, 100)); if (dist * 1852 <= r && !advState.arrivalHit[wp.id]) { advState.arrivalHit[wp.id] = true; routeAlarm('arrival' + wp.id, `✓ Arrival alarm: έφτασες στο ${wp.name || 'waypoint'} (${fmt(dist * 1852, 0)} m).`) } if (dist * 1852 <= r) messages.push(`Arrival zone ${fmt(dist * 1852, 0)} m`) }
+    function updateRouteAlarms(dist, xte, totalLeft) { let messages = []; let wp = activeWp(); if (wp && Number.isFinite(dist)) { let r = Math.max(10, num($('arrivalRadius')?.value, 100)); if (dist * 1852 <= r && !advState.arrivalHit[wp.id]) { advState.arrivalHit[wp.id] = true; routeAlarm('arrival' + wp.id, `✓ Arrival alarm: έφτασες στο ${wp.name || 'waypoint'} (${fmt(dist * 1852, 0)} m).`) } if (dist * 1852 <= r) messages.push(`Arrival zone ${fmt(dist * 1852, 0)} m`) }
       if (Number.isFinite(xte)) { let limit = Math.max(20, num($('offCourseLimit')?.value, 185)); let xm = Math.abs(xte) * 1852; if (xm > limit) { messages.push(`Off-course ${fmt(xm, 0)} m`); routeAlarm('offCourse', `⚠ Off-course alarm: ${fmt(xm, 0)} m εκτός γραμμής.`) } else advState.offCourseHit = false }
       let near = nearestSafePoint(navState.pos); if (near) messages.push(`Nearest safe: ${near.name} ${fmt(near.dist, 1)} nm`);
       setTextSafe('routeAlarmStatus', messages.length ? messages.join(' · ') : 'Route alarms OK.');
       let st = $('routeAlarmStatus'); if (st) { st.classList.toggle('alarm', messages.some(m => m.includes('Off-course'))); st.classList.toggle('ok', !messages.some(m => m.includes('Off-course'))) }
     }
-    function updateAdvancedInstruments() {
-      let p = navState.pos, wp = activeWp(); let br = (p && wp) ? bearing(p, wp) : NaN; let dist = (p && wp) ? havNm(p, wp) : NaN; let cog = Number.isFinite(advState.cog) ? advState.cog : navState.heading; let sog = navState.speed; let xte = (p && wp && wp.start) ? crossTrackNm(wp.start, wp, p) : NaN; let totalLeft = routeTotalLeft(p); let vmg = Number.isFinite(br) && Number.isFinite(cog) ? sog * Math.cos(rad(signedDeg(cog - br))) : NaN; let prog = Number.isFinite(totalLeft) && advState.trackNm > 0 ? advState.trackNm / (advState.trackNm + totalLeft) * 100 : NaN;
+    function updateAdvancedInstruments() { let p = navState.pos, wp = activeWp(); let br = (p && wp) ? bearing(p, wp) : NaN; let dist = (p && wp) ? havNm(p, wp) : NaN; let cog = Number.isFinite(advState.cog) ? advState.cog : navState.heading; let sog = navState.speed; let xte = (p && wp && wp.start) ? crossTrackNm(wp.start, wp, p) : NaN; let totalLeft = routeTotalLeft(p); let vmg = Number.isFinite(br) && Number.isFinite(cog) ? sog * Math.cos(rad(signedDeg(cog - br))) : NaN; let prog = Number.isFinite(totalLeft) && advState.trackNm > 0 ? advState.trackNm / (advState.trackNm + totalLeft) * 100 : NaN;
       setTextSafe('navCogSog', `${fmt(sog, 1)} kn · ${Number.isFinite(cog) ? fmt(cog, 0) + '°' : '—'}`);
       setTextSafe('navHdgSource', `${Number.isFinite(navState.heading) ? fmt(normDeg(navState.heading), 0) + '°' : '—'} · ${navState.headingSource || '—'}`);
       setTextSafe('navVmg', Number.isFinite(vmg) ? fmt(vmg, 1) + ' kn' : '— kn'); setStatClass('navVmg', Number.isFinite(vmg) && vmg < 0 ? 'warn' : (Number.isFinite(vmg) ? 'good' : ''));
@@ -3406,15 +3536,12 @@
       updateFuelReserve(totalLeft); updateRouteAlarms(dist, xte, totalLeft); updateMOBText(); updateTrackSummary();
       let adv = $('advancedStatus'); if (adv) adv.textContent = wp ? `VMG ${Number.isFinite(vmg) ? fmt(vmg, 1) : '—'} kn · XTE ${Number.isFinite(xte) ? fmt(Math.abs(xte) * 1852, 0) : '—'} m` : 'Πάτα στον χάρτη για waypoint ή MOB για ασφάλεια';
     }
-    function updateTrackFromPosition(pos) {
-      if (!pos || !advState.trackOn) return; let t = pos.t || Date.now(), last = advState.track[advState.track.length - 1]; let speed = navState.speed || 0; if (!advState.startedAt) advState.startedAt = t; if (last) { let dt = Math.max(0, t - (last.t || t)), d = havNm(last, pos); if (d > .001 && d < 1) advState.trackNm += d; if (dt < 10 * 60 * 1000) { if (speed >= .8) advState.movingMs += dt; else advState.stoppedMs += dt } }
-      advState.maxKn = Math.max(advState.maxKn || 0, speed); advState.lastT = t; advState.track.push({ lat: pos.lat, lon: pos.lon, t, kn: speed }); if (advState.track.length > 2500) advState.track.splice(0, advState.track.length - 2500); advSave();
-    }
+    function updateTrackFromPosition(pos) { if (!pos || !advState.trackOn) return; let t = pos.t || Date.now(), last = advState.track[advState.track.length - 1]; let speed = navState.speed || 0; if (!advState.startedAt) advState.startedAt = t; if (last) { let dt = Math.max(0, t - (last.t || t)), d = havNm(last, pos); if (d > .001 && d < 1) advState.trackNm += d; if (dt < 10 * 60 * 1000) { if (speed >= .8) advState.movingMs += dt; else advState.stoppedMs += dt } }
+      advState.maxKn = Math.max(advState.maxKn || 0, speed); advState.lastT = t; advState.track.push({ lat: pos.lat, lon: pos.lon, t, kn: speed }); if (advState.track.length > 2500) advState.track.splice(0, advState.track.length - 2500); advSave(); }
     function updateTrackSummary() { setTextSafe('trackStatus', advState.trackOn ? 'recording' : (advState.track.length ? 'paused' : 'off')); setTextSafe('trackNm', fmt(advState.trackNm || 0, 2) + ' nm'); let hrs = advState.movingMs / 3600000; setTextSafe('trackAvg', hrs > 0 ? fmt((advState.trackNm || 0) / hrs, 1) + ' kn' : '— kn'); setTextSafe('trackMax', advState.maxKn ? fmt(advState.maxKn, 1) + ' kn' : '— kn'); let elapsed = advState.startedAt ? ((advState.lastT || Date.now()) - advState.startedAt) : NaN; setTextSafe('trackTime', timeDur(elapsed)); setTextSafe('trackMoving', timeDur(advState.movingMs)); setTextSafe('trackStopped', timeDur(advState.stoppedMs)); setTextSafe('trackFuel', Number.isFinite(navState.fuelL) ? fmt(navState.fuelL, 1) + ' L' : '— L'); let fp = num(state.settings?.fuelPrice, 2); setTextSafe('trackCost', Number.isFinite(navState.fuelL) ? eur(navState.fuelL * fp) : '—'); setTextSafe('lastTripSaved', advState.lastSaved ? new Date(advState.lastSaved).toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' }) : '—') }
     function updateMOBText() { let m = advState.mob, p = navState.pos; if (!m) { ['mobBearing', 'mobDistance', 'mobEta', 'mobPoint'].forEach(id => setTextSafe(id, '—')); setTextSafe('mobStatus', 'off'); return } let br = p ? bearing(p, m) : NaN, d = p ? havNm(p, m) : NaN; setTextSafe('mobBearing', Number.isFinite(br) ? fmt(br, 0) + '°' : '—'); setTextSafe('mobDistance', Number.isFinite(d) ? fmt(d, 2) + ' nm' : '—'); setTextSafe('mobEta', etaText(d, navState.speed)); setTextSafe('mobPoint', `${m.lat.toFixed(5)}, ${m.lon.toFixed(5)}`); setTextSafe('mobStatus', 'ACTIVE') }
     function projectNavPoint(q) { let m = $('liveMap'); if (!m || !q) return null; let p = navState.center || navState.pos || NAV_DEFAULT_POS, z = navState.zoom, c = tileXY(p.lat, p.lon, z), cp = navCenterPx(), xy = tileXY(q.lat, q.lon, z); return { x: xy.x - c.x + cp.x, y: xy.y - c.y + cp.y } }
-    function drawAdvancedMap() {
-      let tp = $('navTrackPath'), mp = $('navMobPath'), ml = $('mobLayer'); if (tp) { let pts = advState.track.slice(-800).map(projectNavPoint).filter(Boolean); tp.setAttribute('d', pts.map((p, i) => (i ? 'L' : 'M') + p.x + ' ' + p.y).join(' ')) }
+    function drawAdvancedMap() { let tp = $('navTrackPath'), mp = $('navMobPath'), ml = $('mobLayer'); if (tp) { let pts = advState.track.slice(-800).map(projectNavPoint).filter(Boolean); tp.setAttribute('d', pts.map((p, i) => (i ? 'L' : 'M') + p.x + ' ' + p.y).join(' ')) }
       if (mp) { if (advState.mob && navState.pos) { let a = projectNavPoint(navState.pos), b = projectNavPoint(advState.mob); mp.setAttribute('d', a && b ? `M${a.x} ${a.y} L${b.x} ${b.y}` : '') } else mp.setAttribute('d', '') }
       if (ml) { if (advState.mob) { let p = projectNavPoint(advState.mob); ml.innerHTML = p ? `<div class="navMarker mobMarker" style="left:${p.x}px;top:${p.y}px"></div>` : '' } else ml.innerHTML = '' }
     }
@@ -3424,17 +3551,17 @@
     function resetTrack() { if (!confirm('Να καθαρίσει το track log;')) return; advState.track = []; advState.trackNm = 0; advState.maxKn = 0; advState.movingMs = 0; advState.stoppedMs = 0; advState.startedAt = null; advState.lastT = null; navState.fuelNm = 0; navState.fuelL = 0; advSave(); drawAdvancedMap(); updateTrackSummary(); toast('Track reset') }
     function saveTripSummary() { let summary = { id: id('trip'), at: new Date().toISOString(), distance: advState.trackNm || 0, maxSpeed: advState.maxKn || 0, movingMs: advState.movingMs || 0, stoppedMs: advState.stoppedMs || 0, fuel: navState.fuelL || 0, points: advState.track.length }; state.trips = Array.isArray(state.trips) ? state.trips : []; state.trips.unshift(summary); state.trips = state.trips.slice(0, 30); advState.lastSaved = summary.at; save(); advSave(); updateTrackSummary(); toast('✓ trip summary') }
     function exportGPX() { if (!advState.track.length) { toast('Δεν υπάρχει track'); return } let pts = advState.track.map(pt => `    <trkpt lat="${pt.lat.toFixed(7)}" lon="${pt.lon.toFixed(7)}"><time>${new Date(pt.t || Date.now()).toISOString()}</time></trkpt>`).join('\n'); let gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Captain Stion" xmlns="http://www.topografix.com/GPX/1/1">\n  <trk><name>Captain Stion Track</name><trkseg>\n${pts}\n  </trkseg></trk>\n</gpx>`; let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([gpx], { type: 'application/gpx+xml' })); a.download = 'captain-stion-track.gpx'; a.click(); toast('GPX export') }
-    function bindAdvancedNav() { advLoad(); updateTrackSummary(); updateMOBText();['arrivalRadius', 'offCourseLimit', 'tankStartPct', 'fuelReservePct'].forEach(id => $(id)?.addEventListener('input', () => { advSave(); updateAdvancedInstruments() })); $('mobBtn')?.addEventListener('click', setMOB); $('clearMobBtn')?.addEventListener('click', clearMOB); $('trackToggleBtn')?.addEventListener('click', toggleTrack); $('trackResetBtn')?.addEventListener('click', resetTrack); $('saveTripBtn')?.addEventListener('click', saveTripSummary); $('exportGpxBtn')?.addEventListener('click', exportGPX) }
+    function bindAdvancedNav() { advLoad(); updateTrackSummary(); updateMOBText(); ['arrivalRadius', 'offCourseLimit', 'tankStartPct', 'fuelReservePct'].forEach(id => $(id)?.addEventListener('input', () => { advSave(); updateAdvancedInstruments() })); $('mobBtn')?.addEventListener('click', setMOB); $('clearMobBtn')?.addEventListener('click', clearMOB); $('trackToggleBtn')?.addEventListener('click', toggleTrack); $('trackResetBtn')?.addEventListener('click', resetTrack); $('saveTripBtn')?.addEventListener('click', saveTripSummary); $('exportGpxBtn')?.addEventListener('click', exportGPX) }
     const __oldUpdateNavPos = updateNavPos;
-    updateNavPos = function (pos) { if (pos && pos.coords) { advState.accuracy = Number(pos.coords.accuracy); if (Number.isFinite(pos.coords.heading) && pos.coords.heading >= 0) advState.cog = normDeg(pos.coords.heading) } __oldUpdateNavPos(pos); if (navState.pos) updateTrackFromPosition(navState.pos); updateAdvancedInstruments(); };
+    updateNavPos = function(pos) { if (pos && pos.coords) { advState.accuracy = Number(pos.coords.accuracy); if (Number.isFinite(pos.coords.heading) && pos.coords.heading >= 0) advState.cog = normDeg(pos.coords.heading) } __oldUpdateNavPos(pos); if (navState.pos) updateTrackFromPosition(navState.pos); updateAdvancedInstruments(); };
     const __oldSetNavText = setNavText;
-    setNavText = function () { __oldSetNavText(); updateAdvancedInstruments(); };
+    setNavText = function() { __oldSetNavText(); updateAdvancedInstruments(); };
     const __oldDrawNavMap = drawNavMap;
-    drawNavMap = function () { __oldDrawNavMap(); drawAdvancedMap(); };
+    drawNavMap = function() { __oldDrawNavMap(); drawAdvancedMap(); };
     const __oldInitNav = initNav;
-    initNav = function () { __oldInitNav(); bindAdvancedNav(); updateAdvancedInstruments(); drawAdvancedMap(); };
+    initNav = function() { __oldInitNav(); bindAdvancedNav(); updateAdvancedInstruments(); drawAdvancedMap(); };
     const __oldUpdateWeatherWarning = updateWeatherWarning;
-    updateWeatherWarning = function () { __oldUpdateWeatherWarning(); updateAdvancedInstruments(); };
+    updateWeatherWarning = function() { __oldUpdateWeatherWarning(); updateAdvancedInstruments(); };
 
     async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo() }
     initApp();
