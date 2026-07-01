@@ -2304,7 +2304,7 @@
     /* Advanced marine GPS instruments v22 */
     .navExtraTop {
       display: grid;
-      grid-template-columns: repeat(10, minmax(0, 1fr));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 8px;
       margin: -4px 0 12px
     }
@@ -2319,6 +2319,99 @@
     .navExtraTop .navStat b {
       font-size: 15px;
       margin-top: 5px
+    }
+
+    .windInstrument {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      grid-column: span 2
+    }
+
+    .windDial {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #f8feff 0 28%, #dff3f6 29% 48%, #0f5968 49% 52%, #103540 53% 100%);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 8px 18px rgba(10, 61, 74, .16)
+    }
+
+    .windDial:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 24px solid #0b6173;
+      transform: translate(-50%, -62%);
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .18));
+      z-index: 2
+    }
+
+    .windDial:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+      transform: translate(-50%, 38%);
+      z-index: 3
+    }
+
+    .windArrow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 4px;
+      height: 43px;
+      border-radius: 999px;
+      background: #ff8a3d;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transform-origin: 50% 50%;
+      transition: transform .2s linear, opacity .2s linear;
+      box-shadow: 0 0 12px rgba(255, 138, 61, .55);
+      opacity: .35
+    }
+
+    .windArrow:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent
+    }
+
+    .windArrow:before {
+      top: -2px;
+      border-bottom: 12px solid #ff8a3d
+    }
+
+    .windInstrumentText {
+      min-width: 0
+    }
+
+    .windInstrumentText b {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .windInstrumentText small:last-child {
+      margin-top: 3px;
+      color: #0b6173;
+      text-transform: none;
+      letter-spacing: 0
     }
 
     .navStat.good {
@@ -2834,6 +2927,10 @@
             <div class="navStat"><small>Progress</small><b id="navProgress">—%</b></div>
             <div class="navStat"><small>GPS accuracy</small><b id="navAccuracy">—</b></div>
             <div class="navStat"><small>Άνεμος/πορεία</small><b id="navWindRel">—</b></div>
+            <div class="navStat windInstrument" id="navWindInstrument">
+              <div class="windDial" aria-hidden="true"><span class="windArrow" id="navWindArrow"></span></div>
+              <div class="windInstrumentText"><small>Άνεμος στο σκάφος</small><b id="navWindBoat">—</b><small id="navWindBoatMeta">—</small></div>
+            </div>
             <div class="navStat"><small>SeaTrip score</small><b id="navSeaScore">—</b></div>
             <div class="navStat"><small>Fuel reserve</small><b id="navFuelReserve">—</b></div>
           </div>
@@ -3106,6 +3203,7 @@
       { key: 'progress', label: 'Progress', note: 'Ποσοστό προόδου διαδρομής.', selector: '#navProgress', card: true },
       { key: 'accuracy', label: 'GPS accuracy', note: 'Ακρίβεια GPS.', selector: '#navAccuracy', card: true },
       { key: 'windRel', label: 'Άνεμος / πορεία', note: 'Σχετικός άνεμος με την πορεία.', selector: '#navWindRel', card: true },
+      { key: 'windInstrument', label: 'Όργανο ανέμου', note: 'Σκάφος και βέλος σχετικής διεύθυνσης ανέμου.', selector: '#navWindInstrument' },
       { key: 'seaScore', label: 'SeaTrip score', note: 'Γρήγορη ένδειξη συνθηκών.', selector: '#navSeaScore', card: true },
       { key: 'fuelReserve', label: 'Fuel reserve', note: 'Reserve και point of no return.', selector: '#navFuelReserve', card: true },
       { key: 'compass', label: 'Πυξίδα', note: 'Η μεγάλη πυξίδα πορείας.', selector: '.navCompass' },
@@ -3401,7 +3499,8 @@
     async function saveOfflineAssets() { try { if (!('caches' in window)) { toast('Δεν υποστηρίζεται offline cache'); return } let cache = await caches.open('captain-stion-offline-v1'); await cache.addAll(['./', './index.html', './manifest.json', './data.json', './icon-192.png', './icon-512.png', './sea_background.jpg']); toast('✓ αποθηκεύτηκε offline') } catch (e) { toast('Δεν αποθηκεύτηκαν όλα τα offline αρχεία') } }
     function fillNavBoatSelect() { let sel = $('navBoatSelect'); if (!sel) return; sel.innerHTML = '<option value="">Σκάφος για fuel</option>' + state.boats.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join(''); sel.value = navState.fuelBoatId || ''; updateNavFuelText() }
     function setNavText() { let p = navState.pos, wp = activeWp(); $('navSpeed').textContent = fmt(navState.speed, 1) + ' kn'; $('navHeading').textContent = Number.isFinite(navState.heading) ? fmt(normDeg(navState.heading), 0) + '°' : '—°'; $('navPos').textContent = p ? (p.lat.toFixed(5) + ', ' + p.lon.toFixed(5)) : '—'; if (wp && p) { let br = bearing(p, wp), dist = havNm(p, wp), err = signedDeg(navState.heading - br), xte = wp.start ? crossTrackNm(wp.start, wp, p) : 0, idx = navState.waypoints.indexOf(wp) + 1; $('navBearing').textContent = fmt(br, 0) + '°'; $('navDistance').textContent = fmt(dist, 2) + ' nm'; if ($('navEta')) $('navEta').textContent = etaText(dist, navState.speed); updateCompass(navState.heading, br, idx, dist, err, xte) } else { $('navBearing').textContent = '—°'; $('navDistance').textContent = '— nm'; if ($('navEta')) $('navEta').textContent = '—'; updateCompass(navState.heading, NaN, 0, NaN, NaN, NaN) } updateNavFuelText(); updateAnchorUi() }
-    function drawNavMap() { let m = $('liveMap'); if (!m) return; let w = m.clientWidth, h = m.clientHeight; if (!w || !h) return; let p = navState.center || navState.pos || NAV_DEFAULT_POS; let z = navState.zoom, c = tileXY(p.lat, p.lon, z), cp = navCenterPx(), mode = $('navMode')?.value || 'north'; navState.mapDisplayHeading = unwrapToPreviousDeg(navState.heading || 0, navState.mapDisplayHeading); let mapH = Number.isFinite(navState.mapDisplayHeading) ? navState.mapDisplayHeading : normDeg(navState.heading || 0), rot = (mode === 'heading' || mode === 'bottom') ? -mapH : 0; let rotEl = $('mapRot'); rotEl.style.transformOrigin = cp.x + 'px ' + cp.y + 'px'; rotEl.style.transform = 'rotate(' + rot + 'deg)'; let pad = 360, minX = Math.floor((c.x - cp.x - pad) / 256), maxX = Math.floor((c.x + (w - cp.x) + pad) / 256), minY = Math.floor((c.y - cp.y - pad) / 256), maxY = Math.floor((c.y + (h - cp.y) + pad) / 256), key = [z, minX, maxX, minY, maxY, Math.round(c.x), Math.round(c.y), w, h].join(':'); if (key !== navState.tilesKey) { navState.tilesKey = key; let base = '', sea = '', n = 2 ** z; for (let x = minX; x <= maxX; x++)for (let y = minY; y <= maxY; y++) { if (y < 0 || y >= n) continue; let xx = ((x % n) + n) % n, left = x * 256 - c.x + cp.x + pad, top = y * 256 - c.y + cp.y + pad; base += `<img alt="" src="https://tile.openstreetmap.org/${z}/${xx}/${y}.png" style="left:${left}px;top:${top}px">`; sea += `<img alt="" src="https://tiles.openseamap.org/seamark/${z}/${xx}/${y}.png" style="left:${left}px;top:${top}px">` } $('baseTiles').style.transform = $('seaTiles').style.transform = `translate(${-pad}px,${-pad}px)`; $('baseTiles').innerHTML = base; $('seaTiles').innerHTML = sea; } function pt(q) { let xy = tileXY(q.lat, q.lon, z); return { x: xy.x - c.x + cp.x, y: xy.y - c.y + cp.y } } let bp = navState.pos ? pt(navState.pos) : cp; $('boatMarker').style.left = bp.x + 'px'; $('boatMarker').style.top = bp.y + 'px'; let markerRot = mode === 'north' ? mapH : normDeg(navState.heading || 0); $('boatMarker').style.transform = `translate(-50%,-50%) rotate(${markerRot}deg)`; $('boatMarker').classList.remove('boat2d'); let wpPath = (navState.connectWps && navState.waypoints.length > 1) ? navState.waypoints.map((q, i) => { let pp = pt(q); return (i ? 'L' : 'M') + pp.x + ' ' + pp.y }).join(' ') : ''; $('navWpPath').setAttribute('d', wpPath); let headEnd = navState.pos ? pt(destPoint(navState.pos, navState.heading, 1)) : null; $('navHeadingPath').setAttribute('d', navState.pos && headEnd ? `M${bp.x} ${bp.y} L${headEnd.x} ${headEnd.y}` : ''); let wp = activeWp(); $('navRoutePath').setAttribute('d', wp && navState.pos ? `M${bp.x} ${bp.y} L${pt(wp).x} ${pt(wp).y}` : ''); $('wpLayer').innerHTML = navState.waypoints.map((q, i) => { let a = q.id === navState.activeWpId, pp = pt(q); return `<div class="navMarker wpMarker ${a ? 'active' : ''}" data-wpid="${q.id}" style="left:${pp.x}px;top:${pp.y}px;transform:translate(-50%,-100%) rotate(${-45 - rot}deg)"><span class="wpMarkerLabel">${i + 1}</span></div>` }).join(''); setNavText(); updateWpSelect(); updateWeatherWarning() }
+    function headingPreviewPx(z) { return Math.max(34, Math.min(360, Math.round(42 * Math.pow(1.42, z - 13)))) }
+    function drawNavMap() { let m = $('liveMap'); if (!m) return; let w = m.clientWidth, h = m.clientHeight; if (!w || !h) return; let p = navState.center || navState.pos || NAV_DEFAULT_POS; let z = navState.zoom, c = tileXY(p.lat, p.lon, z), cp = navCenterPx(), mode = $('navMode')?.value || 'north'; navState.mapDisplayHeading = unwrapToPreviousDeg(navState.heading || 0, navState.mapDisplayHeading); let mapH = Number.isFinite(navState.mapDisplayHeading) ? navState.mapDisplayHeading : normDeg(navState.heading || 0), rot = (mode === 'heading' || mode === 'bottom') ? -mapH : 0; let rotEl = $('mapRot'); rotEl.style.transformOrigin = cp.x + 'px ' + cp.y + 'px'; rotEl.style.transform = 'rotate(' + rot + 'deg)'; let pad = 360, minX = Math.floor((c.x - cp.x - pad) / 256), maxX = Math.floor((c.x + (w - cp.x) + pad) / 256), minY = Math.floor((c.y - cp.y - pad) / 256), maxY = Math.floor((c.y + (h - cp.y) + pad) / 256), key = [z, minX, maxX, minY, maxY, Math.round(c.x), Math.round(c.y), w, h].join(':'); if (key !== navState.tilesKey) { navState.tilesKey = key; let base = '', sea = '', n = 2 ** z; for (let x = minX; x <= maxX; x++)for (let y = minY; y <= maxY; y++) { if (y < 0 || y >= n) continue; let xx = ((x % n) + n) % n, left = x * 256 - c.x + cp.x + pad, top = y * 256 - c.y + cp.y + pad; base += `<img alt="" src="https://tile.openstreetmap.org/${z}/${xx}/${y}.png" style="left:${left}px;top:${top}px">`; sea += `<img alt="" src="https://tiles.openseamap.org/seamark/${z}/${xx}/${y}.png" style="left:${left}px;top:${top}px">` } $('baseTiles').style.transform = $('seaTiles').style.transform = `translate(${-pad}px,${-pad}px)`; $('baseTiles').innerHTML = base; $('seaTiles').innerHTML = sea; } function pt(q) { let xy = tileXY(q.lat, q.lon, z); return { x: xy.x - c.x + cp.x, y: xy.y - c.y + cp.y } } let bp = navState.pos ? pt(navState.pos) : cp; $('boatMarker').style.left = bp.x + 'px'; $('boatMarker').style.top = bp.y + 'px'; let markerRot = mode === 'north' ? mapH : normDeg(navState.heading || 0); $('boatMarker').style.transform = `translate(-50%,-50%) rotate(${markerRot}deg)`; $('boatMarker').classList.remove('boat2d'); let wpPath = (navState.connectWps && navState.waypoints.length > 1) ? navState.waypoints.map((q, i) => { let pp = pt(q); return (i ? 'L' : 'M') + pp.x + ' ' + pp.y }).join(' ') : ''; $('navWpPath').setAttribute('d', wpPath); let headPx = headingPreviewPx(z), headRad = rad(normDeg(navState.heading || 0)), headEnd = { x: bp.x + Math.sin(headRad) * headPx, y: bp.y - Math.cos(headRad) * headPx }; $('navHeadingPath').setAttribute('d', navState.pos ? `M${bp.x} ${bp.y} L${headEnd.x} ${headEnd.y}` : ''); let wp = activeWp(); $('navRoutePath').setAttribute('d', wp && navState.pos ? `M${bp.x} ${bp.y} L${pt(wp).x} ${pt(wp).y}` : ''); $('wpLayer').innerHTML = navState.waypoints.map((q, i) => { let a = q.id === navState.activeWpId, pp = pt(q); return `<div class="navMarker wpMarker ${a ? 'active' : ''}" data-wpid="${q.id}" style="left:${pp.x}px;top:${pp.y}px;transform:translate(-50%,-100%) rotate(${-45 - rot}deg)"><span class="wpMarkerLabel">${i + 1}</span></div>` }).join(''); setNavText(); updateWpSelect(); updateWeatherWarning() }
     function handleDeviceOrientation(e) { let h = NaN; if (Number.isFinite(e.webkitCompassHeading)) h = e.webkitCompassHeading; else if (Number.isFinite(e.alpha)) h = 360 - e.alpha; if (Number.isFinite(h)) { navState.compassHeading = normDeg(h); if (!navState.pos || navState.speed < 0.8) { navState.heading = navState.compassHeading; navState.headingSource = 'compass'; drawNavMap(); } } }
     async function startCompassHeading() { if (navState.compassReady) return; try { if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') { let res = await DeviceOrientationEvent.requestPermission(); if (res !== 'granted') return; } window.addEventListener('deviceorientation', handleDeviceOrientation, true); window.addEventListener('deviceorientationabsolute', handleDeviceOrientation, true); navState.compassReady = true; } catch (e) { console.warn('Compass heading unavailable', e) } }
     function updateNavPos(pos) { let c = pos.coords, prev = navState.pos, now = { lat: c.latitude, lon: c.longitude, t: Date.now() }; navState.prev = prev || navState.prev; navState.pos = now; updateWeatherForPosition(now); if (navState.followCenter && !navState.drag) navState.center = now; navState.speed = Number.isFinite(c.speed) ? Math.max(0, c.speed * 1.943844) : 0; let d = prev ? havNm(prev, now) : NaN; if (prev && navFuelBoat()) { let dt = Math.max(0, (now.t - (prev.t || now.t)) / 3600000); if (Number.isFinite(d) && d > 0.001 && d < 1 && dt > 0 && dt < 0.25) { let kn = navState.speed || d / dt; navState.fuelNm += d; navState.fuelL += navFuelRate(navFuelBoat(), kn) * dt } } let gpsHeading = (Number.isFinite(c.heading) && c.heading >= 0) ? normDeg(c.heading) : NaN; let moveHeading = (prev && Number.isFinite(d) && d > 0.0006) ? bearing(prev, now) : NaN; if (Number.isFinite(gpsHeading) && navState.speed > 0.8) { navState.heading = gpsHeading; navState.headingSource = 'gps' } else if (Number.isFinite(moveHeading)) { navState.heading = moveHeading; navState.headingSource = 'movement' } else if (Number.isFinite(navState.compassHeading)) { navState.heading = navState.compassHeading; navState.headingSource = 'compass' } updateGpsUi(); drawNavMap() }
@@ -3506,6 +3605,7 @@
     function nearestSafePoint(p) { if (!p) return null; return SAFE_POINTS.map(s => ({ ...s, dist: havNm(p, s), brg: bearing(p, s) })).sort((a, b) => a.dist - b.dist)[0] || null }
     function routeTotalLeft(p) { let wps = navState.waypoints || [], wp = activeWp(); if (!p || !wp) return NaN; let i = Math.max(0, wps.findIndex(w => w.id === wp.id)); let total = havNm(p, wp); for (let n = i; n < wps.length - 1; n++) total += havNm(wps[n], wps[n + 1]); return total }
     function windRelativeText(brg) { if (!Number.isFinite(WX.windDir) || !Number.isFinite(brg)) return '—'; let rel = signedDeg(WX.windDir - brg), a = Math.abs(rel), side = rel > 0 ? 'δεξιά' : 'αριστερά', kind = a < 35 ? 'κόντρα' : a < 75 ? 'πλαγιομετωπικός' : a < 115 ? 'πλάγιος' : a < 155 ? 'πλαγιοπρύμνιος' : 'πρύμα'; return `${kind} ${fmt(a, 0)}° ${side}` }
+    function updateWindInstrument() { let arrow = $('navWindArrow'), label = $('navWindBoat'), meta = $('navWindBoatMeta'); if (!arrow || !label || !meta) return; let heading = Number.isFinite(navState.heading) ? normDeg(navState.heading) : NaN, wind = Number.isFinite(WX.windDir) ? normDeg(WX.windDir) : NaN; if (!Number.isFinite(heading) || !Number.isFinite(wind)) { arrow.style.opacity = '.35'; label.textContent = '—'; meta.textContent = Number.isFinite(wind) ? windGreek(wind) : 'χωρίς live άνεμο'; return } let rel = signedDeg(wind - heading), a = Math.abs(rel), side = a < 8 ? 'μπροστά' : rel > 0 ? 'δεξιά' : 'αριστερά'; arrow.style.opacity = '1'; arrow.style.transform = `translate(-50%, -50%) rotate(${rel}deg)`; label.textContent = `${fmt(a, 0)}° ${side}`; meta.textContent = `${windGreek(wind)} · ${fmt(WX.windKn, 1)} kn` }
     function seaScore(brg) { let score = 100, notes = []; let bf = Number.isFinite(WX.windKn) ? beaufort(WX.windKn) : NaN; if (Number.isFinite(bf)) { score -= Math.max(0, bf - 2) * 9; if (bf >= 5) notes.push(`${bf} Bf`) } if (Number.isFinite(WX.wave)) { score -= Math.max(0, WX.wave - .3) * 28; if (WX.wave >= .8) notes.push(`${fmt(WX.wave, 1)}m`) } if (Number.isFinite(WX.windDir) && Number.isFinite(brg) && Number.isFinite(WX.windKn)) { let rel = Math.abs(signedDeg(WX.windDir - brg)); if (rel < 60 && WX.windKn >= 10) { score -= 14; notes.push('κόντρα') } }
       score = Math.max(0, Math.min(100, Math.round(score))); return { score, label: score >= 75 ? 'OK' : score >= 50 ? 'οριακό' : 'όχι καλό', notes } }
     function currentLpnm() { let b = navFuelBoat(); if (!b) return NaN; if (advState.trackNm > .2 && navState.fuelL > .2) return navState.fuelL / advState.trackNm; let cs = num(b.cruiseSpeed, 0), fc = num(b.fuelCruise, 0); return cs > 0 ? fc / cs : NaN }
@@ -3534,7 +3634,7 @@
       setTextSafe('navRouteLeft', Number.isFinite(totalLeft) ? fmt(totalLeft, 2) + ' nm' : '— nm');
       setTextSafe('navProgress', Number.isFinite(prog) ? fmt(prog, 0) + '%' : '—%');
       setTextSafe('navAccuracy', Number.isFinite(advState.accuracy) ? '±' + fmt(advState.accuracy, 0) + ' m' : '—'); setStatClass('navAccuracy', Number.isFinite(advState.accuracy) ? (advState.accuracy <= 10 ? 'good' : advState.accuracy <= 30 ? 'caution' : 'warn') : '');
-      setTextSafe('navWindRel', windRelativeText(br));
+      setTextSafe('navWindRel', windRelativeText(br)); updateWindInstrument();
       let ss = seaScore(br); setTextSafe('navSeaScore', Number.isFinite(ss.score) ? `${ss.score}/100 ${ss.label}` : '—'); setStatClass('navSeaScore', ss.score >= 75 ? 'good' : ss.score >= 50 ? 'caution' : 'warn');
       updateFuelReserve(totalLeft); updateRouteAlarms(dist, xte, totalLeft); updateMOBText(); updateTrackSummary();
       let adv = $('advancedStatus'); if (adv) adv.textContent = wp ? `VMG ${Number.isFinite(vmg) ? fmt(vmg, 1) : '—'} kn · XTE ${Number.isFinite(xte) ? fmt(Math.abs(xte) * 1852, 0) : '—'} m` : 'Πάτα στον χάρτη για waypoint ή MOB για ασφάλεια';
