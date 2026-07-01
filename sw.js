@@ -1,4 +1,4 @@
-const CACHE_NAME = 'captain-stion-v25';
+const CACHE_NAME = 'captain-stion-v26';
 const ASSETS = [
   './',
   './index.html',

@@ -9,9 +9,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Captain Stion">
-  <link rel="manifest" href="manifest.json?v=25">
-  <link rel="icon" href="icon.svg?v=25" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon-192.png?v=25">
+  <link rel="manifest" href="manifest.json?v=26">
+  <link rel="icon" href="icon.svg?v=26" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png?v=26">
   <style>
     :root {
       --sea: #137988;
@@ -52,7 +52,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=25");
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=26");
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
@@ -1845,6 +1845,13 @@
         z-index: 28
       }
 
+      body.navFullscreen:not(.navClean) .waypointBar {
+        bottom: calc(226px + env(safe-area-inset-bottom));
+        z-index: 1102;
+        grid-template-columns: 1fr auto;
+        padding: 0 2px
+      }
+
       body.navFullscreen .waypointBar select {
         min-width: 0;
         min-height: 36px;
@@ -1889,6 +1896,11 @@
         white-space: nowrap
       }
 
+      body.navFullscreen:not(.navClean) .waypointBar:after {
+        content: 'στόχος';
+        background: rgba(226, 243, 247, .94)
+      }
+
       body.navFullscreen .mapTools {
         left: 8px;
         right: 8px;
@@ -1898,7 +1910,7 @@
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: center;
-        padding: 18px 8px 8px;
+        padding: 18px 70px 8px 8px;
         border-radius: 18px 18px 0 0;
         background: rgba(239, 249, 251, .82);
         border: 1px solid rgba(255, 255, 255, .76);
@@ -1958,7 +1970,9 @@
       }
 
       body.navFullscreen:not(.navClean) .zoomStack {
-        bottom: calc(226px + env(safe-area-inset-bottom))
+        right: 16px;
+        bottom: calc(24px + env(safe-area-inset-bottom));
+        z-index: 1102
       }
 
     body.navFullscreen .zoomStack .btn {
@@ -2649,7 +2663,7 @@
     }
 
     body.navFullscreen:not(.navClean) .navExtraTop {
-      bottom: calc(236px + env(safe-area-inset-bottom))
+      bottom: calc(274px + env(safe-area-inset-bottom))
     }
 
     body.navFullscreen .navExtraTop .navStat {
@@ -2829,7 +2843,7 @@
 <body>
   <div class="app">
     <header class="top">
-      <div class="logo"><img src="icon.svg?v=25" alt="">
+      <div class="logo"><img src="icon.svg?v=26" alt="">
         <div class="brand">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
@@ -3064,7 +3078,7 @@
             <div class="navStat"><small>Θερμοκρασία</small><b id="wxTemp">— °C</b></div>
             <div class="navStat"><small>Άνεμος</small><b id="wxWindDir">—</b></div>
             <div class="navStat"><small>Μποφόρ</small><b id="wxBeaufort">— Bf</b></div>
-            <div class="navStat"><small>Μίλια ανέμου</small><b id="wxWindKn">— kn</b></div>
+            <div class="navStat"><small>Άνεμος εδώ</small><b id="wxWindKn">— kn</b></div>
             <div class="navStat"><small>Κύμα</small><b id="wxWave">— m</b></div>
           </div>
           <div class="weatherRefresh" id="wxUpdated">Ο καιρός φορτώνει με το live GPS.</div>
@@ -3548,7 +3562,7 @@
     function invTileXY(x, y, z) { let n = 2 ** z, lon = x / (n * 256) * 360 - 180, lat = deg(Math.atan(Math.sinh(Math.PI * (1 - 2 * y / (n * 256))))); return { lat, lon } }
     function activeWp() { return navState.waypoints.find(w => w.id === navState.activeWpId) || navState.waypoints[0] || null }
     function saveWaypoints() { localStorage.setItem(NAV_KEY, JSON.stringify({ waypoints: navState.waypoints, activeWpId: navState.activeWpId, connectWps: navState.connectWps, fuelBoatId: navState.fuelBoatId })) }
-    function navCenterPx() { let m = $('liveMap'), mode = $('navMode')?.value || 'north'; return { x: m.clientWidth / 2, y: mode === 'bottom' ? m.clientHeight * .90 : m.clientHeight / 2 } }
+    function navCenterPx() { let m = $('liveMap'), mode = $('navMode')?.value || 'north', full = document.body.classList.contains('navFullscreen'), clean = document.body.classList.contains('navClean'); let y = m.clientHeight / 2; if (full && !clean) y = mode === 'bottom' ? m.clientHeight * .62 : m.clientHeight * .44; else if (full && mode === 'bottom') y = m.clientHeight * .78; else if (mode === 'bottom') y = m.clientHeight * .90; return { x: m.clientWidth / 2, y } }
     function updateWpSelect() { let sel = $('wpSelect'); if (!sel) return; let active = activeWp(); navState.activeWpId = active ? active.id : null; sel.innerHTML = '<option value="">Κανένα σημείο</option>' + navState.waypoints.map((w, i) => `<option value="${w.id}">${i + 1}. ${w.name || ('Σημείο ' + (i + 1))} · ${w.lat.toFixed(5)}, ${w.lon.toFixed(5)}</option>`).join(''); sel.value = navState.activeWpId || ''; }
     function compassLabel(deg) { deg = normDeg(deg); let names = { 0: 'N', 45: 'NE', 90: 'E', 135: 'SE', 180: 'S', 225: 'SW', 270: 'W', 315: 'NW' }; return names[deg] || '' }
     const COMPASS_MIN = -1440, COMPASS_MAX = 1440, COMPASS_STEP = 15;
@@ -3728,7 +3742,7 @@
     $('clearAnchorBtn').onclick = () => { anchorState.point = null; anchorState.on = false; stopAnchorAlarm(); releaseAnchorWakeLock(); saveAnchor(); toast('Καθαρίστηκε η άγκυρα') };
     $('anchorRadius').addEventListener('input', saveAnchor);
     $('offlineSaveBtn')?.addEventListener('click', saveOfflineAssets);
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=25').then(reg => reg.update()).catch(() => { }));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=26').then(reg => reg.update()).catch(() => { }));
 
 
     /* Advanced marine GPS instruments v22 */
