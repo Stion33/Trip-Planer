@@ -9,9 +9,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Captain Stion">
-  <link rel="manifest" href="manifest.json?v=27">
-  <link rel="icon" href="icon.svg?v=27" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon-192.png?v=27">
+  <link rel="manifest" href="manifest.json?v=28">
+  <link rel="icon" href="icon.svg?v=28" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png?v=28">
   <style>
     :root {
       --sea: #137988;
@@ -52,7 +52,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=27");
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=28");
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
@@ -985,8 +985,8 @@
     .zoomStack {
       position: absolute;
       right: 10px;
-      top: auto;
-      bottom: 12px;
+      top: 98px;
+      bottom: auto;
       z-index: 9;
       display: grid;
       gap: 8px
@@ -1011,14 +1011,14 @@
     .mapTools {
       position: absolute;
       left: 10px;
-      right: 68px;
-      top: auto;
-      bottom: 12px;
+      right: 10px;
+      top: 10px;
+      bottom: auto;
       z-index: 8;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      align-items: flex-end
+      align-items: flex-start
     }
 
     .mapTools .btn,
@@ -1038,7 +1038,7 @@
     .mapCredit {
       position: absolute;
       right: 10px;
-      bottom: 122px;
+      bottom: 12px;
       z-index: 8;
       background: rgba(255, 255, 255, .82);
       border-radius: 999px;
@@ -2846,7 +2846,7 @@
 <body>
   <div class="app">
     <header class="top">
-      <div class="logo"><img src="icon.svg?v=27" alt="">
+      <div class="logo"><img src="icon.svg?v=28" alt="">
         <div class="brand">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
@@ -3745,7 +3745,7 @@
     $('clearAnchorBtn').onclick = () => { anchorState.point = null; anchorState.on = false; stopAnchorAlarm(); releaseAnchorWakeLock(); saveAnchor(); toast('Καθαρίστηκε η άγκυρα') };
     $('anchorRadius').addEventListener('input', saveAnchor);
     $('offlineSaveBtn')?.addEventListener('click', saveOfflineAssets);
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=27').then(reg => reg.update()).catch(() => { }));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=28').then(reg => reg.update()).catch(() => { }));
 
 
     /* Advanced marine GPS instruments v22 */
