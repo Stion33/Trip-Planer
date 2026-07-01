@@ -2533,12 +2533,72 @@
       content: "MOB"
     }
 
-    body.navFullscreen .navExtraTop,
     body.navFullscreen .navAdvancedTools,
     body.navFullscreen .navAlarmPanel,
     body.navFullscreen .navTripPanel,
     body.navFullscreen .mobPanel {
       display: none !important
+    }
+
+    body.navFullscreen .navExtraTop {
+      position: fixed;
+      left: 8px;
+      bottom: calc(74px + env(safe-area-inset-bottom));
+      right: auto;
+      width: min(230px, calc(100vw - 92px));
+      z-index: 34;
+      display: block !important;
+      margin: 0;
+      pointer-events: none
+    }
+
+    body.navFullscreen .navExtraTop .navStat {
+      display: none !important
+    }
+
+    body.navFullscreen .navExtraTop #navWindInstrument {
+      display: grid !important;
+      min-height: 58px;
+      padding: 7px 9px;
+      border-radius: 14px;
+      grid-template-columns: 46px minmax(0, 1fr);
+      gap: 7px;
+      background: rgba(8, 28, 36, .78);
+      border-color: rgba(255, 255, 255, .22);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+      pointer-events: none
+    }
+
+    body.navFullscreen .navExtraTop #navWindInstrument small,
+    body.navFullscreen .navExtraTop #navWindInstrument b {
+      color: white
+    }
+
+    body.navFullscreen .navExtraTop #navWindInstrument small {
+      font-size: 8px;
+      line-height: 1.05
+    }
+
+    body.navFullscreen .navExtraTop #navWindInstrument b {
+      font-size: 14px;
+      line-height: 1.05;
+      margin-top: 4px
+    }
+
+    body.navFullscreen .navExtraTop .windDial {
+      width: 42px;
+      height: 42px
+    }
+
+    body.navFullscreen .navExtraTop .windDial:before {
+      border-left-width: 6px;
+      border-right-width: 6px;
+      border-bottom-width: 19px
+    }
+
+    body.navFullscreen .navExtraTop .windArrow {
+      height: 34px
     }
 
     @media(max-width:820px) {
