@@ -1045,6 +1045,43 @@
       font-weight: 650
     }
 
+    .navTargetChip {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 48px;
+      z-index: 9;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .88);
+      border: 1px solid rgba(255, 255, 255, .9);
+      color: var(--deep);
+      box-shadow: 0 10px 24px rgba(7, 80, 97, .12);
+      pointer-events: none
+    }
+
+    .navTargetChip strong {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px
+    }
+
+    .navTargetChip span {
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap
+    }
+
+    .navTargetChip.idle {
+      opacity: .86
+    }
+
     .tab.gpsTab span {
       font-size: 0
     }
@@ -1838,7 +1875,7 @@
       }
 
       body.navFullscreen .waypointBar:after {
-        content: 'εργαλεία από έξοδο';
+        content: 'στόχος';
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -1853,14 +1890,33 @@
       }
 
       body.navFullscreen .mapTools {
-        left: 6px;
-        right: 58px;
+        left: 8px;
+        right: 8px;
         bottom: calc(8px + env(safe-area-inset-bottom));
-        gap: 6px;
+        gap: 8px;
         z-index: 31;
         display: grid;
-        grid-template-columns: auto auto 1fr auto;
-        align-items: center
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: center;
+        padding: 18px 8px 8px;
+        border-radius: 18px 18px 0 0;
+        background: rgba(239, 249, 251, .82);
+        border: 1px solid rgba(255, 255, 255, .76);
+        border-bottom: 0;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 -12px 30px rgba(0, 0, 0, .16)
+      }
+
+      body.navFullscreen .mapTools:before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 7px;
+        width: 44px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(7, 80, 97, .28);
+        transform: translateX(-50%)
       }
 
       body.navFullscreen .mapTools .btn,
@@ -1883,16 +1939,15 @@
       }
 
       body.navFullscreen .mapTools #navMode {
-        grid-column: 1/4;
+        grid-column: 1/-1;
         width: 100%;
         font-size: 13px;
         font-weight: 900;
         background: rgba(255, 255, 255, .92)
       }
 
-      body.navFullscreen .mapTools #toggleWpLineBtn,
-      body.navFullscreen .mapTools #clearWpBtn {
-        display: none !important
+      body.navFullscreen .mapTools #fullscreenNavBtn {
+        order: 7
       }
 
       body.navFullscreen .zoomStack {
@@ -1902,13 +1957,43 @@
         z-index: 32
       }
 
-      body.navFullscreen .zoomStack .btn {
-        width: 46px;
-        min-height: 46px;
-        height: 46px;
+      body.navFullscreen:not(.navClean) .zoomStack {
+        bottom: calc(226px + env(safe-area-inset-bottom))
+      }
+
+    body.navFullscreen .zoomStack .btn {
+      width: 46px;
+      min-height: 46px;
+      height: 46px;
+      border-radius: 14px;
+      font-size: 22px;
+      background: rgba(226, 243, 247, .90)
+    }
+
+      body.navFullscreen .navTargetChip {
+        left: 8px;
+        right: 8px;
+        bottom: calc(268px + env(safe-area-inset-bottom));
+        z-index: 33;
         border-radius: 14px;
-        font-size: 22px;
-        background: rgba(226, 243, 247, .90)
+        padding: 8px 10px;
+        background: rgba(8, 28, 36, .78);
+        border-color: rgba(255, 255, 255, .22);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, .18)
+      }
+
+      body.navFullscreen .navTargetChip strong,
+      body.navFullscreen .navTargetChip span {
+        color: white
+      }
+
+      body.navFullscreen.navClean .navTargetChip {
+        bottom: calc(132px + env(safe-area-inset-bottom))
+      }
+
+      body.navFullscreen:not(.navClean) .navTargetChip {
+        display: none
       }
 
       body.navFullscreen .liveMap {
@@ -2246,12 +2331,23 @@
       display: grid;
       grid-template-columns: auto auto auto auto;
       gap: 6px;
-      z-index: 1100 !important
+      z-index: 1100 !important;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none
+    }
+
+    body.navFullscreen.navClean .mapTools:before {
+      display: none
     }
 
     body.navFullscreen.navClean .mapTools #navMode,
     body.navFullscreen.navClean .mapTools #toggleWpLineBtn,
-    body.navFullscreen.navClean .mapTools #clearWpBtn {
+    body.navFullscreen.navClean .mapTools #clearWpBtn,
+    body.navFullscreen.navClean .mapTools #clearNavLiveBtn {
       display: none !important
     }
 
@@ -2553,7 +2649,7 @@
     }
 
     body.navFullscreen:not(.navClean) .navExtraTop {
-      bottom: calc(126px + env(safe-area-inset-bottom))
+      bottom: calc(236px + env(safe-area-inset-bottom))
     }
 
     body.navFullscreen .navExtraTop .navStat {
@@ -3056,9 +3152,11 @@
               <button class="btn soft" id="toggleWpLineBtn">ένωση σημείων: off</button>
               <button class="btn soft" id="fullscreenNavBtn">⛶ full map</button>
               <button class="btn ghost" id="clearWpBtn">καθαρισμός σημείων</button>
+              <button class="btn ghost" id="clearNavLiveBtn">καθαρισμός live</button>
             </div>
             <div class="zoomStack"><button class="btn soft" id="zoomInBtn">+</button><button class="btn soft"
                 id="zoomOutBtn">−</button></div>
+            <div class="navTargetChip idle" id="navTargetChip"><strong>Κανένα σημείο</strong><span>—</span></div>
             <div class="mapCredit">OSM + OpenSeaMap tiles</div>
           </div>
 
@@ -3562,7 +3660,8 @@
     function initOfflineInfo() { let el = $('offlineStatus'); if (!el) return; let set = () => { let sw = 'serviceWorker' in navigator ? 'SW' : 'χωρίς SW'; el.textContent = (navigator.onLine ? 'online' : 'offline') + ' · ' + sw }; set(); window.addEventListener('online', set); window.addEventListener('offline', set) }
     async function saveOfflineAssets() { try { if (!('caches' in window)) { toast('Δεν υποστηρίζεται offline cache'); return } let cache = await caches.open('captain-stion-offline-v1'); await cache.addAll(['./', './index.html', './manifest.json', './data.json', './icon-192.png', './icon-512.png', './sea_background.jpg']); toast('✓ αποθηκεύτηκε offline') } catch (e) { toast('Δεν αποθηκεύτηκαν όλα τα offline αρχεία') } }
     function fillNavBoatSelect() { let sel = $('navBoatSelect'); if (!sel) return; sel.innerHTML = '<option value="">Σκάφος για fuel</option>' + state.boats.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join(''); sel.value = navState.fuelBoatId || ''; updateNavFuelText() }
-    function setNavText() { let p = navState.pos, wp = activeWp(); $('navSpeed').textContent = fmt(navState.speed, 1) + ' kn'; $('navHeading').textContent = Number.isFinite(navState.heading) ? fmt(normDeg(navState.heading), 0) + '°' : '—°'; $('navPos').textContent = p ? (p.lat.toFixed(5) + ', ' + p.lon.toFixed(5)) : '—'; if (wp && p) { let br = bearing(p, wp), dist = havNm(p, wp), err = signedDeg(navState.heading - br), xte = wp.start ? crossTrackNm(wp.start, wp, p) : 0, idx = navState.waypoints.indexOf(wp) + 1; $('navBearing').textContent = fmt(br, 0) + '°'; $('navDistance').textContent = fmt(dist, 2) + ' nm'; if ($('navEta')) $('navEta').textContent = etaText(dist, navState.speed); updateCompass(navState.heading, br, idx, dist, err, xte) } else { $('navBearing').textContent = '—°'; $('navDistance').textContent = '— nm'; if ($('navEta')) $('navEta').textContent = '—'; updateCompass(navState.heading, NaN, 0, NaN, NaN, NaN) } updateNavFuelText(); updateAnchorUi() }
+    function updateNavTargetChip(wp, dist) { let chip = $('navTargetChip'); if (!chip) return; let title = chip.querySelector('strong'), meta = chip.querySelector('span'); if (wp && Number.isFinite(dist)) { chip.classList.remove('idle'); title.textContent = 'Προς: ' + (wp.name || 'Σημείο'); meta.textContent = fmt(dist, 2) + ' nm · ' + etaText(dist, navState.speed) } else { chip.classList.add('idle'); title.textContent = 'Κανένα σημείο'; meta.textContent = navState.pos ? 'πάτα στον χάρτη' : 'GPS off' } }
+    function setNavText() { let p = navState.pos, wp = activeWp(); $('navSpeed').textContent = fmt(navState.speed, 1) + ' kn'; $('navHeading').textContent = Number.isFinite(navState.heading) ? fmt(normDeg(navState.heading), 0) + '°' : '—°'; $('navPos').textContent = p ? (p.lat.toFixed(5) + ', ' + p.lon.toFixed(5)) : '—'; if (wp && p) { let br = bearing(p, wp), dist = havNm(p, wp), err = signedDeg(navState.heading - br), xte = wp.start ? crossTrackNm(wp.start, wp, p) : 0, idx = navState.waypoints.indexOf(wp) + 1; $('navBearing').textContent = fmt(br, 0) + '°'; $('navDistance').textContent = fmt(dist, 2) + ' nm'; if ($('navEta')) $('navEta').textContent = etaText(dist, navState.speed); updateCompass(navState.heading, br, idx, dist, err, xte); updateNavTargetChip(wp, dist) } else { $('navBearing').textContent = '—°'; $('navDistance').textContent = '— nm'; if ($('navEta')) $('navEta').textContent = '—'; updateCompass(navState.heading, NaN, 0, NaN, NaN, NaN); updateNavTargetChip(null, NaN) } updateNavFuelText(); updateAnchorUi() }
     function headingPreviewPx(z) { return Math.max(68, Math.min(720, Math.round(84 * Math.pow(1.42, z - 13)))) }
     function drawNavMap() { let m = $('liveMap'); if (!m) return; let w = m.clientWidth, h = m.clientHeight; if (!w || !h) return; let p = navState.center || navState.pos || NAV_DEFAULT_POS; let z = navState.zoom, c = tileXY(p.lat, p.lon, z), cp = navCenterPx(), mode = $('navMode')?.value || 'north'; navState.mapDisplayHeading = unwrapToPreviousDeg(navState.heading || 0, navState.mapDisplayHeading); let mapH = Number.isFinite(navState.mapDisplayHeading) ? navState.mapDisplayHeading : normDeg(navState.heading || 0), rot = (mode === 'heading' || mode === 'bottom') ? -mapH : 0; let rotEl = $('mapRot'); rotEl.style.transformOrigin = cp.x + 'px ' + cp.y + 'px'; rotEl.style.transform = 'rotate(' + rot + 'deg)'; let pad = 360, minX = Math.floor((c.x - cp.x - pad) / 256), maxX = Math.floor((c.x + (w - cp.x) + pad) / 256), minY = Math.floor((c.y - cp.y - pad) / 256), maxY = Math.floor((c.y + (h - cp.y) + pad) / 256), key = [z, minX, maxX, minY, maxY, Math.round(c.x), Math.round(c.y), w, h].join(':'); if (key !== navState.tilesKey) { navState.tilesKey = key; let base = '', sea = '', n = 2 ** z; for (let x = minX; x <= maxX; x++)for (let y = minY; y <= maxY; y++) { if (y < 0 || y >= n) continue; let xx = ((x % n) + n) % n, left = x * 256 - c.x + cp.x + pad, top = y * 256 - c.y + cp.y + pad; base += `<img alt="" src="https://tile.openstreetmap.org/${z}/${xx}/${y}.png" style="left:${left}px;top:${top}px">`; sea += `<img alt="" src="https://tiles.openseamap.org/seamark/${z}/${xx}/${y}.png" style="left:${left}px;top:${top}px">` } $('baseTiles').style.transform = $('seaTiles').style.transform = `translate(${-pad}px,${-pad}px)`; $('baseTiles').innerHTML = base; $('seaTiles').innerHTML = sea; } function pt(q) { let xy = tileXY(q.lat, q.lon, z); return { x: xy.x - c.x + cp.x, y: xy.y - c.y + cp.y } } let bp = navState.pos ? pt(navState.pos) : cp; $('boatMarker').style.left = bp.x + 'px'; $('boatMarker').style.top = bp.y + 'px'; let markerRot = mode === 'north' ? mapH : normDeg(navState.heading || 0); $('boatMarker').style.transform = `translate(-50%,-50%) rotate(${markerRot}deg)`; $('boatMarker').classList.remove('boat2d'); let wpPath = (navState.connectWps && navState.waypoints.length > 1) ? navState.waypoints.map((q, i) => { let pp = pt(q); return (i ? 'L' : 'M') + pp.x + ' ' + pp.y }).join(' ') : ''; $('navWpPath').setAttribute('d', wpPath); let headPx = headingPreviewPx(z), headRad = rad(normDeg(navState.heading || 0)), headEnd = { x: bp.x + Math.sin(headRad) * headPx, y: bp.y - Math.cos(headRad) * headPx }; $('navHeadingPath').setAttribute('d', navState.pos ? `M${bp.x} ${bp.y} L${headEnd.x} ${headEnd.y}` : ''); let wp = activeWp(); $('navRoutePath').setAttribute('d', wp && navState.pos ? `M${bp.x} ${bp.y} L${pt(wp).x} ${pt(wp).y}` : ''); $('wpLayer').innerHTML = navState.waypoints.map((q, i) => { let a = q.id === navState.activeWpId, pp = pt(q); return `<div class="navMarker wpMarker ${a ? 'active' : ''}" data-wpid="${q.id}" style="left:${pp.x}px;top:${pp.y}px;transform:translate(-50%,-100%) rotate(${-45 - rot}deg)"><span class="wpMarkerLabel">${i + 1}</span></div>` }).join(''); setNavText(); updateWpSelect(); updateWeatherWarning() }
     function handleDeviceOrientation(e) { let h = NaN; if (Number.isFinite(e.webkitCompassHeading)) h = e.webkitCompassHeading; else if (Number.isFinite(e.alpha)) h = 360 - e.alpha; if (Number.isFinite(h)) { navState.compassHeading = normDeg(h); if (!navState.pos || navState.speed < 0.8) { navState.heading = navState.compassHeading; navState.headingSource = 'compass'; drawNavMap(); } } }
@@ -3576,8 +3675,9 @@
     function setActiveDelta(step) { if (!navState.waypoints.length) return; let i = Math.max(0, navState.waypoints.findIndex(w => w.id === navState.activeWpId)); i = (i + step + navState.waypoints.length) % navState.waypoints.length; navState.activeWpId = navState.waypoints[i].id; saveWaypoints(); drawNavMap() }
     function zoomNav(delta, focus) { let before = focus ? screenToLatLon(focus.x, focus.y) : null; let oldZoom = navState.zoom; navState.zoom = Math.max(3, Math.min(18, navState.zoom + delta)); if (navState.zoom === oldZoom) return; navState.followCenter = false; navState.tilesKey = ''; if (before && focus) { let after = screenToLatLon(focus.x, focus.y), center = navState.center || navState.pos || NAV_DEFAULT_POS; navState.center = { lat: center.lat + (before.lat - after.lat), lon: center.lon + (before.lon - after.lon) } } drawNavMap() }
     function panBy(dx, dy) { let center = navState.center || navState.pos || NAV_DEFAULT_POS, cp = tileXY(center.lat, center.lon, navState.zoom), mode = $('navMode')?.value || 'north', rot = (mode === 'heading' || mode === 'bottom') ? -normDeg(navState.heading) : 0, ang = rad(-rot), ux = dx * Math.cos(ang) - dy * Math.sin(ang), uy = dx * Math.sin(ang) + dy * Math.cos(ang); navState.followCenter = false; navState.center = invTileXY(cp.x - ux, cp.y - uy, navState.zoom); navState.tilesKey = ''; drawNavMap() }
+    function clearLiveNavigation() { if (!confirm('Να καθαρίσει waypoints, track, MOB και live fuel;')) return; navState.waypoints = []; navState.activeWpId = null; navState.connectWps = false; navState.fuelNm = 0; navState.fuelL = 0; advState.trackOn = false; advState.track = []; advState.trackNm = 0; advState.maxKn = 0; advState.movingMs = 0; advState.stoppedMs = 0; advState.startedAt = null; advState.lastT = null; advState.mob = null; advSave(); saveWaypoints(); let btn = $('toggleWpLineBtn'); if (btn) btn.textContent = 'ένωση σημείων: off'; drawNavMap(); updateTrackSummary(); updateMOBText(); updateNavFuelText(); toast('Καθαρίστηκε το live navigation') }
     function initNav() { let saved = localStorage.getItem(NAV_KEY); if (saved && !navState.waypoints.length) { try { let d = JSON.parse(saved); if (Array.isArray(d)) { navState.waypoints = d } else { navState.waypoints = d.waypoints || []; navState.activeWpId = d.activeWpId || null; navState.connectWps = !!d.connectWps; navState.fuelBoatId = d.fuelBoatId || null } } catch { } } fillNavBoatSelect(); updateGpsUi(); let btn = $('toggleWpLineBtn'); if (btn) btn.textContent = navState.connectWps ? 'ένωση σημείων: on' : 'ένωση σημείων: off'; drawNavMap(); applyNavVisibility(); if (!WX.last) updateWeatherForPosition(navState.pos || navState.center || NAV_DEFAULT_POS); }
-    $('startNavBtn').onclick = startNav; $('centerNavBtn').onclick = () => { navState.followCenter = true; navState.center = navState.pos || navState.center; navState.tilesKey = ''; drawNavMap(); toast('Ο χάρτης ξανακεντράρισε') }; $('navMode').onchange = () => { if (navState.followCenter) navState.center = navState.pos || navState.center; navState.tilesKey = ''; drawNavMap() }; $('toggleWpLineBtn').onclick = () => { navState.connectWps = !navState.connectWps; $('toggleWpLineBtn').textContent = navState.connectWps ? 'ένωση σημείων: on' : 'ένωση σημείων: off'; saveWaypoints(); drawNavMap() }; $('navBoatSelect').onchange = e => { navState.fuelBoatId = e.target.value || null; navState.fuelNm = 0; navState.fuelL = 0; saveWaypoints(); updateNavFuelText(); toast(navState.fuelBoatId ? 'Υπολογισμός fuel ενεργός' : 'Fuel off') }; $('resetFuelBtn').onclick = () => { navState.fuelNm = 0; navState.fuelL = 0; updateNavFuelText(); toast('Μηδενίστηκε το fuel') }; $('clearWpBtn').onclick = () => { navState.waypoints = []; navState.activeWpId = null; saveWaypoints(); drawNavMap(); toast('Καθαρίστηκαν τα σημεία') }; $('deleteWpBtn').onclick = () => { let id = navState.activeWpId; navState.waypoints = navState.waypoints.filter(w => w.id !== id); navState.activeWpId = navState.waypoints[0]?.id || null; saveWaypoints(); drawNavMap(); toast('Σβήστηκε το ενεργό σημείο') }; $('prevWpBtn').onclick = () => setActiveDelta(-1); $('nextWpBtn').onclick = () => setActiveDelta(1); $('wpSelect').onchange = e => { navState.activeWpId = e.target.value || null; saveWaypoints(); drawNavMap() }; $('zoomInBtn').onclick = () => zoomNav(1); $('zoomOutBtn').onclick = () => zoomNav(-1); $('fullscreenNavBtn').onclick = () => { let on = document.body.classList.toggle('navFullscreen'); document.body.classList.toggle('navClean', on); $('fullscreenNavBtn').textContent = on ? '× έξοδος' : '⛶ full map'; let tb = $('navToolsBtn'); if (tb) tb.textContent = '☰ εργαλεία'; setTimeout(() => { navState.tilesKey = ''; drawNavMap() }, 80) }; $('navToolsBtn').onclick = () => { if (!document.body.classList.contains('navFullscreen')) { toast('Πάτα πρώτα full map'); return } let clean = document.body.classList.toggle('navClean'); $('navToolsBtn').textContent = clean ? '☰ εργαλεία' : '✓ καθαρή'; setTimeout(() => { navState.tilesKey = ''; drawNavMap() }, 80) };
+    $('startNavBtn').onclick = startNav; $('centerNavBtn').onclick = () => { navState.followCenter = true; navState.center = navState.pos || navState.center; navState.tilesKey = ''; drawNavMap(); toast('Ο χάρτης ξανακεντράρισε') }; $('navMode').onchange = () => { if (navState.followCenter) navState.center = navState.pos || navState.center; navState.tilesKey = ''; drawNavMap() }; $('toggleWpLineBtn').onclick = () => { navState.connectWps = !navState.connectWps; $('toggleWpLineBtn').textContent = navState.connectWps ? 'ένωση σημείων: on' : 'ένωση σημείων: off'; saveWaypoints(); drawNavMap() }; $('navBoatSelect').onchange = e => { navState.fuelBoatId = e.target.value || null; navState.fuelNm = 0; navState.fuelL = 0; saveWaypoints(); updateNavFuelText(); toast(navState.fuelBoatId ? 'Υπολογισμός fuel ενεργός' : 'Fuel off') }; $('resetFuelBtn').onclick = () => { navState.fuelNm = 0; navState.fuelL = 0; updateNavFuelText(); toast('Μηδενίστηκε το fuel') }; $('clearWpBtn').onclick = () => { navState.waypoints = []; navState.activeWpId = null; saveWaypoints(); drawNavMap(); toast('Καθαρίστηκαν τα σημεία') }; $('clearNavLiveBtn').onclick = clearLiveNavigation; $('deleteWpBtn').onclick = () => { let id = navState.activeWpId; navState.waypoints = navState.waypoints.filter(w => w.id !== id); navState.activeWpId = navState.waypoints[0]?.id || null; saveWaypoints(); drawNavMap(); toast('Σβήστηκε το ενεργό σημείο') }; $('prevWpBtn').onclick = () => setActiveDelta(-1); $('nextWpBtn').onclick = () => setActiveDelta(1); $('wpSelect').onchange = e => { navState.activeWpId = e.target.value || null; saveWaypoints(); drawNavMap() }; $('zoomInBtn').onclick = () => zoomNav(1); $('zoomOutBtn').onclick = () => zoomNav(-1); $('fullscreenNavBtn').onclick = () => { let on = document.body.classList.toggle('navFullscreen'); document.body.classList.toggle('navClean', on); $('fullscreenNavBtn').textContent = on ? '× έξοδος' : '⛶ full map'; let tb = $('navToolsBtn'); if (tb) tb.textContent = '☰ εργαλεία'; setTimeout(() => { navState.tilesKey = ''; drawNavMap() }, 80) }; $('navToolsBtn').onclick = () => { if (!document.body.classList.contains('navFullscreen')) { toast('Πάτα πρώτα full map'); return } let clean = document.body.classList.toggle('navClean'); $('navToolsBtn').textContent = clean ? '☰ εργαλεία' : '✓ καθαρή'; setTimeout(() => { navState.tilesKey = ''; drawNavMap() }, 80) };
     $('liveMap').addEventListener('click', e => { if (Date.now() < navState.suppressClickUntil || e.target.closest('.mapTools') || e.target.closest('.zoomStack') || navState.drag?.moved) return; let wpEl = e.target.closest('.wpMarker'); if (wpEl) { navState.activeWpId = wpEl.dataset.wpid; saveWaypoints(); drawNavMap(); return } let now = Date.now(); if (now - navState.lastTap < 260) { zoomNav(1, { x: e.clientX, y: e.clientY }); navState.lastTap = 0; return } navState.lastTap = now; setTimeout(() => { if (Date.now() - navState.lastTap >= 250) { addWaypoint(screenToLatLon(e.clientX, e.clientY)); navState.lastTap = 0 } }, 255) });
     $('liveMap').addEventListener('wheel', e => { e.preventDefault(); zoomNav(e.deltaY < 0 ? 1 : -1, { x: e.clientX, y: e.clientY }) }, { passive: false });
     $('liveMap').addEventListener('pointerdown', e => { if (e.target.closest('.mapTools') || e.target.closest('.zoomStack')) return; let wpEl = e.target.closest('.wpMarker'); $('liveMap').setPointerCapture(e.pointerId); if (wpEl) { navState.activeWpId = wpEl.dataset.wpid; navState.drag = { type: 'wp', wpid: wpEl.dataset.wpid, x: e.clientX, y: e.clientY, moved: false }; saveWaypoints(); drawNavMap(); toast('Σύρε για μετακίνηση σημείου'); return } navState.drag = { type: 'map', x: e.clientX, y: e.clientY, moved: false }; $('liveMap').classList.add('dragging') });
@@ -3588,7 +3688,7 @@
     $('liveMap').addEventListener('touchend', e => { if (e.touches.length < 2) { if (navState.pinch) navState.suppressClickUntil = Date.now() + 350; navState.pinch = null } });
     window.addEventListener('resize', () => { navState.tilesKey = ''; drawNavMap() });
     function bindFullscreenTouchButton(id) { let el = $(id); if (!el || el.dataset.touchFix) return; el.dataset.touchFix = '1'; let last = 0; el.addEventListener('touchend', e => { if (e._fullscreenControlHandled) return; if (document.body.classList.contains('navFullscreen')) { e.preventDefault(); e.stopImmediatePropagation(); last = Date.now(); if (typeof el.onclick === 'function') el.onclick.call(el, e); } }, { passive: false }); el.addEventListener('click', e => { if (Date.now() - last < 700 || Date.now() < (navState.controlTapUntil || 0)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true) }
-    ['startNavBtn', 'centerNavBtn', 'fullscreenNavBtn', 'navToolsBtn', 'zoomInBtn', 'zoomOutBtn'].forEach(bindFullscreenTouchButton);
+    ['startNavBtn', 'centerNavBtn', 'fullscreenNavBtn', 'navToolsBtn', 'zoomInBtn', 'zoomOutBtn', 'clearNavLiveBtn'].forEach(bindFullscreenTouchButton);
 
     function fullscreenControlAction(id) {
       if (id === 'startNavBtn') startNav();
@@ -3597,12 +3697,13 @@
       else if (id === 'navToolsBtn') { $('navToolsBtn').onclick(); }
       else if (id === 'zoomInBtn') zoomNav(1);
       else if (id === 'zoomOutBtn') zoomNav(-1);
+      else if (id === 'clearNavLiveBtn') clearLiveNavigation();
     }
     function fullscreenControlTouchFallback(e) {
       if (!document.body.classList.contains('navFullscreen')) return;
       let t = e.changedTouches && e.changedTouches[0];
       if (!t) return;
-      let ids = ['startNavBtn', 'centerNavBtn', 'fullscreenNavBtn', 'navToolsBtn', 'zoomInBtn', 'zoomOutBtn'];
+      let ids = ['startNavBtn', 'centerNavBtn', 'fullscreenNavBtn', 'navToolsBtn', 'zoomInBtn', 'zoomOutBtn', 'clearNavLiveBtn'];
       for (let id of ids) {
         let el = $(id);
         if (!el) continue;
