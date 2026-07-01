@@ -9,9 +9,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Captain Stion">
-  <link rel="manifest" href="manifest.json?v=23">
-  <link rel="icon" href="icon.svg?v=23" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon-192.png?v=23">
+  <link rel="manifest" href="manifest.json?v=25">
+  <link rel="icon" href="icon.svg?v=25" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png?v=25">
   <style>
     :root {
       --sea: #137988;
@@ -52,7 +52,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=23");
+      background-image: linear-gradient(180deg, rgba(255, 255, 255, .23), rgba(255, 255, 255, .18)), linear-gradient(180deg, rgba(209, 238, 247, .26), rgba(6, 42, 57, .20)), url("sea_background.jpg?v=25");
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
@@ -2829,7 +2829,7 @@
 <body>
   <div class="app">
     <header class="top">
-      <div class="logo"><img src="icon.svg?v=23" alt="">
+      <div class="logo"><img src="icon.svg?v=25" alt="">
         <div class="brand">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
@@ -3728,7 +3728,7 @@
     $('clearAnchorBtn').onclick = () => { anchorState.point = null; anchorState.on = false; stopAnchorAlarm(); releaseAnchorWakeLock(); saveAnchor(); toast('Καθαρίστηκε η άγκυρα') };
     $('anchorRadius').addEventListener('input', saveAnchor);
     $('offlineSaveBtn')?.addEventListener('click', saveOfflineAssets);
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => { }));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=25').then(reg => reg.update()).catch(() => { }));
 
 
     /* Advanced marine GPS instruments v22 */
