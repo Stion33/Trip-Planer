@@ -99,14 +99,27 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 12px
+      gap: 12px;
+      cursor: pointer;
+      border-radius: 22px;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    .logo:focus-visible {
+      outline: 3px solid rgba(255, 179, 92, .9);
+      outline-offset: 5px
+    }
+
+    .logo:active img {
+      transform: scale(.96)
     }
 
     .logo img {
       width: 56px;
       height: 56px;
       border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(7, 80, 97, .18)
+      box-shadow: 0 8px 24px rgba(7, 80, 97, .18);
+      transition: transform .12s ease
     }
 
     .brand {
@@ -2846,7 +2859,7 @@
 <body>
   <div class="app">
     <header class="top">
-      <div class="logo"><img src="icon.svg?v=28" alt="">
+      <div class="logo" id="logoHorn" role="button" tabindex="0" aria-label="Κόρνα πλοίου"><img src="icon.svg?v=28" alt="">
         <div class="brand">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
@@ -3408,6 +3421,30 @@
     function save() { localStorage.setItem(KEY, JSON.stringify(state)); counts() } function id(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
     function num(v, d = 0) { const x = Number(String(v).replace(',', '.')); return Number.isFinite(x) ? x : d } function fmt(x, d = 1) { return Number.isFinite(x) ? x.toLocaleString('el-GR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—' } function eur(x) { return Number.isFinite(x) ? x.toLocaleString('el-GR', { style: 'currency', currency: 'EUR' }) : '—' } function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])) }
     function toast(t) { $('toast').textContent = t; $('toast').classList.add('on'); clearTimeout(window.tt); window.tt = setTimeout(() => $('toast').classList.remove('on'), 1800) }
+    let logoHornCtx = null;
+    async function playLogoHorn() {
+      try {
+        if (!logoHornCtx) logoHornCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (logoHornCtx.state === 'suspended') await logoHornCtx.resume();
+        let ctx = logoHornCtx, now = ctx.currentTime, out = ctx.createGain();
+        out.gain.setValueAtTime(0.0001, now);
+        out.gain.exponentialRampToValueAtTime(0.8, now + .18);
+        out.gain.setValueAtTime(0.8, now + .75);
+        out.gain.exponentialRampToValueAtTime(0.0001, now + 1.45);
+        out.connect(ctx.destination);
+        [110, 138.6, 164.8].forEach((freq, i) => {
+          let osc = ctx.createOscillator(), gain = ctx.createGain();
+          osc.type = i ? 'triangle' : 'sawtooth';
+          osc.frequency.setValueAtTime(freq * .98, now);
+          osc.frequency.linearRampToValueAtTime(freq, now + .22);
+          gain.gain.value = i ? .24 : .38;
+          osc.connect(gain).connect(out);
+          osc.start(now);
+          osc.stop(now + 1.5);
+        });
+        try { navigator.vibrate && navigator.vibrate(90) } catch { }
+      } catch { toast('Ο ήχος δεν άνοιξε') }
+    }
     function counts() { $('boatCount').textContent = state.boats.length; $('tripCount').textContent = state.routes.length; $('rentCount').textContent = state.rentals.length }
     function fillSelect(el, arr) { $(el).innerHTML = arr.map(x => `<option value="${x.id}">${esc(x.name)}${x.distance ? ' · ' + fmt(x.distance) + ' nm' : ''}</option>`).join('') }
     function render() { counts(); fillSelect('calcBoat', state.boats); fillSelect('calcRoute', state.routes); fillSelect('rentRoute', state.routes); $('fuelPrice').value = state.settings.fuelPrice; $('oilPrice').value = state.settings.oilPrice; $('safety').value = state.settings.safety; $('tripType').value = state.settings.tripType; $('rentFuelPrice').value = state.settings.fuelPrice; $('rentOilPrice').value = state.settings.oilPrice; $('rentSafety').value = state.settings.safety; $('rentTripType').value = state.settings.tripType; $('rentDays').value = state.settings.rentDays; $('rentProfile').value = state.settings.rentProfile || 'balanced'; Object.entries(state.settings.w).forEach(([k, v]) => { let el = $('w' + k[0].toUpperCase() + k.slice(1)); if (el) el.value = v }); applyProfile(false); syncDistance(); syncRentDistance(); renderBoats(); renderRoutes(); renderRentals(); renderLinks(); renderNavRulesInfo(); renderNavVisibilitySettings(); applyNavVisibility(); calculate(); rankRentals() }
@@ -3453,6 +3490,8 @@
     $('calculateBtn').onclick = calculate; $('resetDistanceBtn').onclick = syncDistance; $('rankRentBtn').onclick = rankRentals; $('selectAllRentBtn').onclick = () => { state.rentals.forEach(r => r.selected = true); save(); renderRentals(); rankRentals() }; $('rentRoute').onchange = () => { syncRentDistance(); rankRentals() }; $('calcRoute').onchange = () => { syncDistance(); calculate() };['distance', 'fuelPrice', 'oilPrice', 'safety', 'tripType', 'calcBoat'].forEach(x => $(x).addEventListener('input', calculate));['rentDistance', 'rentDays', 'rentFuelPrice', 'rentOilPrice', 'rentSafety', 'rentTripType', 'wCost', 'wTime', 'wFuel', 'wRange', 'wSpeed', 'wTank'].forEach(x => $(x).addEventListener('input', rankRentals));
     $('rentProfile').addEventListener('change', () => applyProfile(true));
     $$('.w').forEach(i => i.addEventListener('input', () => { if ($('rentProfile').value !== 'custom') $('rentProfile').value = 'custom'; state.settings.rentProfile = 'custom' }));
+    $('logoHorn')?.addEventListener('click', playLogoHorn);
+    $('logoHorn')?.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playLogoHorn() } });
     $('measureBtn').onclick = measureNm;
     $('openSeaMapBtn').onclick = () => open('https://map.openseamap.org/', '_blank');
     $('openWindyBtn').onclick = () => open('https://www.windy.com/-Waves-waves?waves,38.065,24.583,6', '_blank');
