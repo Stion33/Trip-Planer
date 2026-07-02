@@ -80,6 +80,56 @@
       z-index: 1
     }
 
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      background: var(--sea);
+      transition: opacity .38s ease, visibility .38s ease;
+      transform: translateZ(0)
+    }
+
+    .splash.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none
+    }
+
+    .splash img {
+      width: clamp(96px, 22vw, 152px);
+      height: clamp(96px, 22vw, 152px);
+      border-radius: 32px;
+      box-shadow: 0 24px 58px rgba(4, 42, 52, .28);
+      animation: splashLogo 1.15s ease-in-out both
+    }
+
+    @keyframes splashLogo {
+      0% {
+        opacity: 0;
+        transform: scale(.88)
+      }
+
+      55% {
+        opacity: 1;
+        transform: scale(1.04)
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .splash,
+      .splash img {
+        animation: none;
+        transition: none
+      }
+    }
+
     .glass {
       background: var(--card);
       backdrop-filter: blur(18px);
@@ -2968,6 +3018,7 @@
 </head>
 
 <body>
+  <div class="splash" id="splashScreen" aria-hidden="true"><img src="icon.svg?v=28" alt=""></div>
   <div class="app">
     <header class="top">
       <div class="logo" id="logoHorn" role="button" tabindex="0" aria-label="Κόρνα πλοίου"><img src="icon.svg?v=28" alt="">
@@ -4129,8 +4180,16 @@
     const __oldUpdateWeatherWarning = updateWeatherWarning;
     updateWeatherWarning = function() { __oldUpdateWeatherWarning(); updateAdvancedInstruments(); };
 
+    const splashShownAt = performance.now();
+    function hideSplash() {
+      let splash = $('splashScreen');
+      if (!splash) return;
+      let wait = Math.max(0, 900 - (performance.now() - splashShownAt));
+      setTimeout(() => splash.classList.add('hide'), wait);
+      setTimeout(() => splash.remove(), wait + 450);
+    }
     async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo(); loadChecklist() }
-    initApp();
+    initApp().catch(err => console.warn('App init failed', err)).finally(hideSplash);
   </script>
 </body>
 
