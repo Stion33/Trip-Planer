@@ -86,6 +86,7 @@
       z-index: 1000;
       display: grid;
       place-items: center;
+      min-height: 100dvh;
       background: var(--sea);
       transition: opacity .38s ease, visibility .38s ease;
       transform: translateZ(0)
@@ -98,10 +99,10 @@
     }
 
     .splash img {
-      width: clamp(96px, 22vw, 152px);
-      height: clamp(96px, 22vw, 152px);
-      border-radius: 32px;
-      box-shadow: 0 24px 58px rgba(4, 42, 52, .28);
+      width: clamp(148px, 34vw, 240px);
+      height: clamp(148px, 34vw, 240px);
+      border-radius: 42px;
+      box-shadow: 0 30px 70px rgba(4, 42, 52, .32);
       animation: splashLogo 1.15s ease-in-out both
     }
 
