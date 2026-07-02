@@ -3896,7 +3896,7 @@
     const __oldUpdateWeatherWarning = updateWeatherWarning;
     updateWeatherWarning = function() { __oldUpdateWeatherWarning(); updateAdvancedInstruments(); };
 
-    async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo(); initNav() }
+    async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo() }
     initApp();
   </script>
 </body>
