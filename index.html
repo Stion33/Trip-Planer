@@ -125,7 +125,18 @@
     .brand {
       font-weight: 850;
       letter-spacing: -.04em;
-      font-size: 28px
+      font-size: 28px;
+      border-radius: 14px;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    .brand[role="button"] {
+      cursor: pointer
+    }
+
+    .brand:focus-visible {
+      outline: 3px solid rgba(255, 179, 92, .9);
+      outline-offset: 5px
     }
 
     .iconBtn,
@@ -2894,6 +2905,56 @@
       transition: transform .28s ease
     }
 
+    .secretOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(3, 23, 31, .58);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease
+    }
+
+    .secretOverlay.on {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .secretFrame {
+      position: relative;
+      width: min(780px, 92vw);
+      max-height: 86vh
+    }
+
+    .secretFrame img {
+      display: block;
+      width: 100%;
+      max-height: 86vh;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .34);
+      background: white
+    }
+
+    .secretClose {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: white;
+      color: var(--deep);
+      box-shadow: 0 12px 26px rgba(3, 23, 31, .24);
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer
+    }
+
     @media(max-width:820px) {
       body.navPrefsOpen .app {
         transform: translateX(-22vw)
@@ -2907,7 +2968,7 @@
   <div class="app">
     <header class="top">
       <div class="logo" id="logoHorn" role="button" tabindex="0" aria-label="Κόρνα πλοίου"><img src="icon.svg?v=28" alt="">
-        <div class="brand">Captain Stion</div>
+        <div class="brand" id="brandSecret" role="button" tabindex="0" aria-label="Captain Stion">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
           aria-label="Settings"><svg viewBox="-5 -5 74 74" aria-hidden="true">
@@ -3415,6 +3476,12 @@
           <path d="M24 41h18" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" />
         </svg></span></button><button class="tab" data-page="mapPage"><span class="infoIcon">i</span></button></nav>
   <div class="toast" id="toast"></div>
+  <div class="secretOverlay" id="secretOverlay" aria-hidden="true">
+    <div class="secretFrame" role="dialog" aria-modal="true" aria-label="Secret image">
+      <button class="secretClose" id="secretCloseBtn" type="button" aria-label="Close">×</button>
+      <img id="secretImage" src="" alt="">
+    </div>
+  </div>
   <div class="navPrefsBackdrop" id="navPrefsBackdrop"></div>
   <aside class="navPrefsSheet" id="navPrefsSheet" aria-label="Επιλογές οργάνων Navigation">
     <div class="navPrefsHead">
@@ -3548,6 +3615,59 @@
         try { navigator.vibrate && navigator.vibrate(90) } catch { }
       } catch { toast('Ο ήχος δεν άνοιξε') }
     }
+    function openSecretImage(src, alt) {
+      let overlay = $('secretOverlay'), img = $('secretImage');
+      if (!overlay || !img) return;
+      img.src = src;
+      img.alt = alt || '';
+      overlay.classList.add('on');
+      overlay.setAttribute('aria-hidden', 'false');
+      $('secretCloseBtn')?.focus();
+    }
+    function closeSecretImage() {
+      let overlay = $('secretOverlay'), img = $('secretImage');
+      if (!overlay || !img) return;
+      overlay.classList.remove('on');
+      overlay.setAttribute('aria-hidden', 'true');
+      setTimeout(() => { if (!overlay.classList.contains('on')) img.src = '' }, 220);
+    }
+    function bindMorseSecret(el, src, alt, stopEvents = false) {
+      if (!el) return;
+      const target = '...---...';
+      let sequence = '', downAt = 0, resetTimer = null;
+      let resetSoon = () => { clearTimeout(resetTimer); resetTimer = setTimeout(() => sequence = '', 1400) };
+      let addSignal = signal => {
+        sequence = (sequence + signal).slice(-target.length);
+        if (sequence === target) {
+          sequence = '';
+          clearTimeout(resetTimer);
+          openSecretImage(src, alt);
+          try { navigator.vibrate && navigator.vibrate([80, 40, 80]) } catch { }
+        } else {
+          resetSoon();
+        }
+      };
+      el.addEventListener('pointerdown', e => {
+        if (stopEvents) e.stopPropagation();
+        if (e.button && e.button !== 0) return;
+        downAt = performance.now();
+      });
+      el.addEventListener('pointerup', e => {
+        if (stopEvents) e.stopPropagation();
+        if (!downAt) return;
+        addSignal(performance.now() - downAt >= 360 ? '-' : '.');
+        downAt = 0;
+      });
+      el.addEventListener('pointercancel', () => downAt = 0);
+      el.addEventListener('contextmenu', e => e.preventDefault());
+      el.addEventListener('keydown', e => {
+        if (stopEvents) e.stopPropagation();
+        if (e.key === '.' || e.key === '-') {
+          e.preventDefault();
+          addSignal(e.key);
+        }
+      });
+    }
     function counts() { $('boatCount').textContent = state.boats.length; $('tripCount').textContent = state.routes.length; $('rentCount').textContent = state.rentals.length }
     function fillSelect(el, arr) { $(el).innerHTML = arr.map(x => `<option value="${x.id}">${esc(x.name)}${x.distance ? ' · ' + fmt(x.distance) + ' nm' : ''}</option>`).join('') }
     function render() { counts(); fillSelect('calcBoat', state.boats); fillSelect('calcRoute', state.routes); fillSelect('rentRoute', state.routes); $('fuelPrice').value = state.settings.fuelPrice; $('oilPrice').value = state.settings.oilPrice; $('safety').value = state.settings.safety; $('tripType').value = state.settings.tripType; $('rentFuelPrice').value = state.settings.fuelPrice; $('rentOilPrice').value = state.settings.oilPrice; $('rentSafety').value = state.settings.safety; $('rentTripType').value = state.settings.tripType; $('rentDays').value = state.settings.rentDays; $('rentProfile').value = state.settings.rentProfile || 'balanced'; Object.entries(state.settings.w).forEach(([k, v]) => { let el = $('w' + k[0].toUpperCase() + k.slice(1)); if (el) el.value = v }); applyProfile(false); syncDistance(); syncRentDistance(); renderBoats(); renderRoutes(); renderRentals(); renderLinks(); renderNavRulesInfo(); renderNavVisibilitySettings(); applyNavVisibility(); calculate(); rankRentals() }
@@ -3593,8 +3713,13 @@
     $('calculateBtn').onclick = calculate; $('resetDistanceBtn').onclick = syncDistance; $('rankRentBtn').onclick = rankRentals; $('selectAllRentBtn').onclick = () => { state.rentals.forEach(r => r.selected = true); save(); renderRentals(); rankRentals() }; $('rentRoute').onchange = () => { syncRentDistance(); rankRentals() }; $('calcRoute').onchange = () => { syncDistance(); calculate() };['distance', 'fuelPrice', 'oilPrice', 'safety', 'tripType', 'calcBoat'].forEach(x => $(x).addEventListener('input', calculate));['rentDistance', 'rentDays', 'rentFuelPrice', 'rentOilPrice', 'rentSafety', 'rentTripType', 'wCost', 'wTime', 'wFuel', 'wRange', 'wSpeed', 'wTank'].forEach(x => $(x).addEventListener('input', rankRentals));
     $('rentProfile').addEventListener('change', () => applyProfile(true));
     $$('.w').forEach(i => i.addEventListener('input', () => { if ($('rentProfile').value !== 'custom') $('rentProfile').value = 'custom'; state.settings.rentProfile = 'custom' }));
-    $('logoHorn')?.addEventListener('click', playLogoHorn);
-    $('logoHorn')?.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playLogoHorn() } });
+    bindMorseSecret($('logoHorn'), 'foundit.jpeg', 'Found secret image');
+    bindMorseSecret($('brandSecret'), 'foundit2.JPG', 'Found second secret image', true);
+    $('logoHorn')?.addEventListener('click', e => { if (!e.target.closest('#brandSecret')) playLogoHorn() });
+    $('logoHorn')?.addEventListener('keydown', e => { if (!e.target.closest('#brandSecret') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); playLogoHorn() } });
+    $('secretOverlay')?.addEventListener('click', e => { if (e.target.id === 'secretOverlay') closeSecretImage() });
+    $('secretCloseBtn')?.addEventListener('click', closeSecretImage);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSecretImage() });
     $('measureBtn').onclick = measureNm;
     $('openSeaMapBtn').onclick = () => open('https://map.openseamap.org/', '_blank');
     $('openWindyBtn').onclick = () => open('https://www.windy.com/-Waves-waves?waves,38.065,24.583,6', '_blank');
