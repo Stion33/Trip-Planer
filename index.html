@@ -3631,40 +3631,31 @@
       overlay.setAttribute('aria-hidden', 'true');
       setTimeout(() => { if (!overlay.classList.contains('on')) img.src = '' }, 220);
     }
-    function bindMorseSecret(el, src, alt, stopEvents = false) {
+    function bindTripleClickSecret(el, src, alt, stopEvents = false) {
       if (!el) return;
-      const target = '...---...';
-      let sequence = '', downAt = 0, resetTimer = null;
-      let resetSoon = () => { clearTimeout(resetTimer); resetTimer = setTimeout(() => sequence = '', 1400) };
-      let addSignal = signal => {
-        sequence = (sequence + signal).slice(-target.length);
-        if (sequence === target) {
-          sequence = '';
-          clearTimeout(resetTimer);
+      let clicks = 0, lastClick = 0, resetTimer = null;
+      let countClick = () => {
+        let now = Date.now();
+        clicks = now - lastClick > 900 ? 1 : clicks + 1;
+        lastClick = now;
+        clearTimeout(resetTimer);
+        if (clicks >= 3) {
+          clicks = 0;
           openSecretImage(src, alt);
           try { navigator.vibrate && navigator.vibrate([80, 40, 80]) } catch { }
         } else {
-          resetSoon();
+          resetTimer = setTimeout(() => clicks = 0, 900);
         }
       };
-      el.addEventListener('pointerdown', e => {
+      el.addEventListener('click', e => {
         if (stopEvents) e.stopPropagation();
-        if (e.button && e.button !== 0) return;
-        downAt = performance.now();
+        countClick();
       });
-      el.addEventListener('pointerup', e => {
-        if (stopEvents) e.stopPropagation();
-        if (!downAt) return;
-        addSignal(performance.now() - downAt >= 360 ? '-' : '.');
-        downAt = 0;
-      });
-      el.addEventListener('pointercancel', () => downAt = 0);
-      el.addEventListener('contextmenu', e => e.preventDefault());
       el.addEventListener('keydown', e => {
         if (stopEvents) e.stopPropagation();
-        if (e.key === '.' || e.key === '-') {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          addSignal(e.key);
+          countClick();
         }
       });
     }
@@ -3713,8 +3704,8 @@
     $('calculateBtn').onclick = calculate; $('resetDistanceBtn').onclick = syncDistance; $('rankRentBtn').onclick = rankRentals; $('selectAllRentBtn').onclick = () => { state.rentals.forEach(r => r.selected = true); save(); renderRentals(); rankRentals() }; $('rentRoute').onchange = () => { syncRentDistance(); rankRentals() }; $('calcRoute').onchange = () => { syncDistance(); calculate() };['distance', 'fuelPrice', 'oilPrice', 'safety', 'tripType', 'calcBoat'].forEach(x => $(x).addEventListener('input', calculate));['rentDistance', 'rentDays', 'rentFuelPrice', 'rentOilPrice', 'rentSafety', 'rentTripType', 'wCost', 'wTime', 'wFuel', 'wRange', 'wSpeed', 'wTank'].forEach(x => $(x).addEventListener('input', rankRentals));
     $('rentProfile').addEventListener('change', () => applyProfile(true));
     $$('.w').forEach(i => i.addEventListener('input', () => { if ($('rentProfile').value !== 'custom') $('rentProfile').value = 'custom'; state.settings.rentProfile = 'custom' }));
-    bindMorseSecret($('logoHorn'), 'foundit.jpeg', 'Found secret image');
-    bindMorseSecret($('brandSecret'), 'foundit2.JPG', 'Found second secret image', true);
+    bindTripleClickSecret($('logoHorn'), 'foundit.jpeg', 'Found secret image');
+    bindTripleClickSecret($('brandSecret'), 'foundit2.JPG', 'Found second secret image', true);
     $('logoHorn')?.addEventListener('click', e => { if (!e.target.closest('#brandSecret')) playLogoHorn() });
     $('logoHorn')?.addEventListener('keydown', e => { if (!e.target.closest('#brandSecret') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); playLogoHorn() } });
     $('secretOverlay')?.addEventListener('click', e => { if (e.target.id === 'secretOverlay') closeSecretImage() });
