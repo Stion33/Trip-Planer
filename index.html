@@ -245,6 +245,7 @@
 
     .settingsGear {
       width: 58px;
+      height: 58px;
       min-height: 58px;
       border-radius: 22px;
       padding: 0;
@@ -252,6 +253,8 @@
       line-height: 1;
       color: var(--muted);
       font-weight: 700;
+      align-items: center;
+      justify-content: center;
       overflow: visible
     }
 
@@ -2971,10 +2974,13 @@
         <div class="brand" id="brandSecret" role="button" tabindex="0" aria-label="Captain Stion">Captain Stion</div>
       </div>
       <div class="actions"><button class="btn soft settingsGear" id="settingsBtn" title="Settings"
-          aria-label="Settings"><svg viewBox="-5 -5 74 74" aria-hidden="true">
+          aria-label="Settings"><svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 23a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" fill="none" stroke="currentColor"
+              stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
             <path
-              d="M32 23a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm25 13v-8l-7.4-2.2a18.7 18.7 0 0 0-2-4.8l3.7-6.8-5.7-5.7-6.8 3.7a18.7 18.7 0 0 0-4.8-2L32 3h-8l-2.2 7.4a18.7 18.7 0 0 0-4.8 2l-6.8-3.7-5.7 5.7 3.7 6.8a18.7 18.7 0 0 0-2 4.8L-1 28v8l7.4 2.2a18.7 18.7 0 0 0 2 4.8l-3.7 6.8 5.7 5.7 6.8-3.7a18.7 18.7 0 0 0 4.8 2L24 61h8l2.2-7.4a18.7 18.7 0 0 0 4.8-2l6.8 3.7 5.7-5.7-3.7-6.8a18.7 18.7 0 0 0 2-4.8L57 36Z"
-              fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              d="M57 36v-8l-7.4-2.2a18.7 18.7 0 0 0-2-4.8l3.7-6.8-5.7-5.7-6.8 3.7a18.7 18.7 0 0 0-4.8-2L32 3h-8l-2.2 7.4a18.7 18.7 0 0 0-4.8 2l-6.8-3.7-5.7 5.7 3.7 6.8a18.7 18.7 0 0 0-2 4.8L-1 28v8l7.4 2.2a18.7 18.7 0 0 0 2 4.8l-3.7 6.8 5.7 5.7 6.8-3.7a18.7 18.7 0 0 0 4.8 2L24 61h8l2.2-7.4a18.7 18.7 0 0 0 4.8-2l6.8 3.7 5.7-5.7-3.7-6.8a18.7 18.7 0 0 0 2-4.8L57 36Z"
+              transform="translate(4 0)" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg></button></div>
     </header>
 
@@ -3005,7 +3011,7 @@
                   <option value="2">↔</option>
                 </select></div>
             </div>
-            <div class="actions"><button class="btn" id="calculateBtn">╍╍×</button><button class="btn ghost"
+            <div class="actions"><button class="btn" id="calculateBtn">Υπολογισμός</button><button class="btn ghost"
                 id="resetDistanceBtn">↺ nm</button></div>
           </div>
           <div class="cards" id="results"></div>
