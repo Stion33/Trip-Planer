@@ -226,6 +226,12 @@
       line-height: 1
     }
 
+    .checkIcon {
+      width: 34px;
+      height: 34px;
+      display: block
+    }
+
     .settingsGear {
       width: 58px;
       min-height: 58px;
@@ -254,7 +260,7 @@
     }
 
     .hero {
-      display: grid;
+      display: none;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 12px;
       margin-bottom: 14px
@@ -284,7 +290,7 @@
     }
 
     .subtabs {
-      display: flex;
+      display: none;
       gap: 8px;
       overflow: auto;
       margin: 12px 0 14px;
@@ -311,6 +317,53 @@
     .panel {
       padding: 18px;
       margin-bottom: 14px
+    }
+
+    .checklistGroup {
+      display: grid;
+      gap: 10px
+    }
+
+    .checkItem {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .7);
+      font-weight: 800;
+      color: var(--deep)
+    }
+
+    .checkItem input {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--sea);
+      flex: 0 0 auto
+    }
+
+    .checkItem small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.35
+    }
+
+    .card.checkDone {
+      background: #e7f8ef !important;
+      border-color: rgba(8, 121, 93, .35) !important
+    }
+
+    .card.checkDone .name,
+    .card.checkDone .checkItem {
+      color: var(--ok)
+    }
+
+    .card.checkDone .checkItem {
+      background: rgba(255, 255, 255, .82);
+      border-color: rgba(8, 121, 93, .24)
     }
 
     .grid {
@@ -3079,6 +3132,54 @@
         </div>
       </section>
 
+      <section class="page" id="checklistPage">
+        <div class="panel glass grid">
+          <div class="card" style="box-shadow:none">
+            <div class="name">Checklist αναχώρησης</div>
+            <div class="mini">Γρήγορος έλεγχος πριν φύγεις. Τα check μένουν μόνο μέσα σε αυτή τη σελίδα.</div>
+          </div>
+          <div class="grid two">
+            <div class="card" style="box-shadow:none">
+              <div class="name">Σκάφος</div>
+              <div class="checklistGroup">
+                <label class="checkItem"><input type="checkbox" data-checklist="fuel"><span>Καύσιμο<small>Αρκετό για διαδρομή, επιστροφή και reserve.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="engine"><span>Μηχανή<small>Νερά ψύξης, λάδι, μπαταρία και σβήσιμο/εκκίνηση.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="anchor"><span>Άγκυρα<small>Άγκυρα, σχοινί/αλυσίδα και εύκολη πρόσβαση.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="lights"><span>Φώτα<small>Φώτα πορείας, φακός και εφεδρικό φως.</small></span></label>
+              </div>
+            </div>
+            <div class="card" style="box-shadow:none">
+              <div class="name">Ασφάλεια</div>
+              <div class="checklistGroup">
+                <label class="checkItem"><input type="checkbox" data-checklist="lifejackets"><span>Σωσίβια<small>Ένα για κάθε άτομο, σωστό μέγεθος, εύκολα προσβάσιμα.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="phone"><span>Κινητό / επικοινωνία<small>Φορτισμένο κινητό, power bank ή VHF όπου υπάρχει.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="firstaid"><span>Φαρμακείο<small>Βασικό φαρμακείο και προσωπικά φάρμακα.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="water"><span>Νερό<small>Νερό για όλους και κάτι έξτρα για καθυστέρηση.</small></span></label>
+              </div>
+            </div>
+            <div class="card" style="box-shadow:none">
+              <div class="name">Πορεία</div>
+              <div class="checklistGroup">
+                <label class="checkItem"><input type="checkbox" data-checklist="weather"><span>Καιρός<small>Άνεμος, κύμα, πιθανή αλλαγή και ώρα επιστροφής.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="route"><span>Διαδρομή<small>Προορισμός, εναλλακτικό σημείο και απόσταση.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="gps"><span>Navigation<small>Άνοιξε Navigation και δες ότι έχει πιάσει στίγμα.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="home"><span>Επιστροφή<small>Ξέρεις πού γυρνάς και πόσο καύσιμο κρατάς.</small></span></label>
+              </div>
+            </div>
+            <div class="card" style="box-shadow:none">
+              <div class="name">Άνθρωποι</div>
+              <div class="checklistGroup">
+                <label class="checkItem"><input type="checkbox" data-checklist="crew"><span>Ενημέρωση επιβατών<small>Πού κάθονται, πού είναι τα σωσίβια και τι κάνουν αν πέσει κάποιος.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="documents"><span>Έγγραφα<small>Άδεια, ασφάλεια, ταυτότητες και απαραίτητα χαρτιά.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="sun"><span>Ήλιος<small>Καπέλο, γυαλιά, αντηλιακό και ρούχα για αέρα.</small></span></label>
+                <label class="checkItem"><input type="checkbox" data-checklist="shore"><span>Άτομο στη στεριά<small>Κάποιος ξέρει περίπου πού πας και πότε γυρνάς.</small></span></label>
+              </div>
+            </div>
+          </div>
+          <div class="actions"><button class="btn ghost" id="resetChecklistBtn">↺ καθάρισμα</button></div>
+        </div>
+      </section>
+
 
       <section class="page" id="navPage">
         <div class="panel glass navPanel">
@@ -3295,16 +3396,22 @@
             stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M31 38.8C38.5 23.8 37.5 12.5 31.8 3.8 45.5 9.2 57.7 22.6 59.8 41.8c-10.3-2.5-19.9-3.4-28.8-3Z"
             stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg></span></button><button class="tab gpsTab" data-page="navPage"><span><svg class="gpsIcon"
-          viewBox="0 0 64 64" aria-hidden="true" fill="none">
-          <path d="M51 7 25.5 58 20 36 6 30 51 7Z" fill="currentColor" />
-          <path d="M25.5 58 32 36 51 7" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round"
-            stroke-linejoin="round" />
         </svg></span></button><button class="tab" data-page="rentPage"><span><svg class="sunIcon" viewBox="0 0 64 64"
           aria-hidden="true" fill="none">
           <circle cx="32" cy="32" r="11" stroke="currentColor" stroke-width="5" />
           <path d="M32 5v10M32 49v10M5 32h10M49 32h10M13 13l7 7M44 44l7 7M51 13l-7 7M20 44l-7 7" stroke="currentColor"
             stroke-width="5" stroke-linecap="round" />
+        </svg></span></button><button class="tab gpsTab" data-page="navPage"><span><svg class="gpsIcon"
+          viewBox="0 0 64 64" aria-hidden="true" fill="none">
+          <path d="M51 7 25.5 58 20 36 6 30 51 7Z" fill="currentColor" />
+          <path d="M25.5 58 32 36 51 7" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg></span></button><button class="tab" data-page="checklistPage"><span><svg class="checkIcon"
+          viewBox="0 0 64 64" aria-hidden="true" fill="none">
+          <rect x="13" y="9" width="38" height="46" rx="8" stroke="currentColor" stroke-width="4.4" />
+          <path d="M24 25l5 5 11-12" stroke="currentColor" stroke-width="5" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M24 41h18" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" />
         </svg></span></button><button class="tab" data-page="mapPage"><span class="infoIcon">i</span></button></nav>
   <div class="toast" id="toast"></div>
   <div class="navPrefsBackdrop" id="navPrefsBackdrop"></div>
@@ -3325,6 +3432,7 @@
 
   <script>
     const KEY = 'seatrip_app_v1';
+    const CHECKLIST_KEY = 'captain_stion_checklist_v1';
     const defaults = {
       boats: [
         { id: "boat-galini", name: "Γαλήνη", cruiseSpeed: 20, maxSpeed: 30, fuelCruise: 10, fuelMax: 18, fuelTank: 25, oilTank: 2, oilRatio: 0.02 },
@@ -3413,6 +3521,8 @@
     function save() { localStorage.setItem(KEY, JSON.stringify(state)); counts() } function id(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
     function num(v, d = 0) { const x = Number(String(v).replace(',', '.')); return Number.isFinite(x) ? x : d } function fmt(x, d = 1) { return Number.isFinite(x) ? x.toLocaleString('el-GR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—' } function eur(x) { return Number.isFinite(x) ? x.toLocaleString('el-GR', { style: 'currency', currency: 'EUR' }) : '—' } function esc(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])) }
     function toast(t) { $('toast').textContent = t; $('toast').classList.add('on'); clearTimeout(window.tt); window.tt = setTimeout(() => $('toast').classList.remove('on'), 1800) }
+    function updateChecklistGroups() { $$('#checklistPage .card').forEach(card => { let boxes = [...card.querySelectorAll('[data-checklist]')]; if (boxes.length) card.classList.toggle('checkDone', boxes.every(x => x.checked)) }) }
+    function loadChecklist() { let saved = {}; try { saved = JSON.parse(localStorage.getItem(CHECKLIST_KEY) || '{}') } catch { saved = {} } $$('[data-checklist]').forEach(ch => { ch.checked = !!saved[ch.dataset.checklist]; ch.onchange = () => { let data = {}; $$('[data-checklist]').forEach(x => data[x.dataset.checklist] = x.checked); localStorage.setItem(CHECKLIST_KEY, JSON.stringify(data)); updateChecklistGroups() } }); updateChecklistGroups(); $('resetChecklistBtn')?.addEventListener('click', () => { $$('[data-checklist]').forEach(x => x.checked = false); localStorage.removeItem(CHECKLIST_KEY); updateChecklistGroups(); toast('Καθαρίστηκε το checklist') }) }
     let logoHornCtx = null;
     async function playLogoHorn() {
       try {
@@ -3896,7 +4006,7 @@
     const __oldUpdateWeatherWarning = updateWeatherWarning;
     updateWeatherWarning = function() { __oldUpdateWeatherWarning(); updateAdvancedInstruments(); };
 
-    async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo() }
+    async function initApp() { await loadDataJson(false, false); state = load(); render(); loadAnchor(); initOfflineInfo(); loadChecklist() }
     initApp();
   </script>
 </body>
