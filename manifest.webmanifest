@@ -1,0 +1,25 @@
+{
+  "name": "STUC",
+  "short_name": "STUC",
+  "description": "Πρόγραμμα εξεταστικής και πρόοδος μαθημάτων ΜΠΔ Πολυτεχνείου Κρήτης.",
+  "lang": "el",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7faf9",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "./assets/stion-logo.jpeg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/stion-logo.jpeg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}
